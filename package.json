@@ -12,6 +12,7 @@
     "start": "npm run start -w apps/web",
     "lint": "npm run lint -w apps/web",
     "db:generate": "npm run generate -w packages/database",
-    "db:push": "npm run push -w packages/database"
+    "db:push": "npm run push -w packages/database",
+    "db:seed": "npm run seed -w packages/database"
   }
 }

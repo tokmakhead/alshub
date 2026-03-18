@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +33,35 @@ async function main() {
     });
   }
   console.log("Sources seeded.");
+
+  // 3. Admin User
+  const adminEmail = "admin@alshub.org";
+  const hashedPassword = await bcrypt.hash("ercaneko1!", 10);
+  const adminRole = await prisma.role.findUnique({ where: { name: "ADMIN" } });
+
+  if (adminRole) {
+    const user = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: { password: hashedPassword },
+      create: {
+        email: adminEmail,
+        password: hashedPassword,
+        name: "Admin User",
+      },
+    });
+
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId: { userId: user.id, roleId: adminRole.id },
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        roleId: adminRole.id,
+      },
+    });
+    console.log("Admin user seeded.");
+  }
 
   console.log("Seeding finished.");
 }

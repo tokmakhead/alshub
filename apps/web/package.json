@@ -18,8 +18,8 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "zod": "^4.3.6",
-    "@alshub/database": "workspace:*",
-    "@alshub/shared": "workspace:*"
+    "@alshub/database": "file:../../packages/database",
+    "@alshub/shared": "file:../../packages/shared"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

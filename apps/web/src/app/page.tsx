@@ -7,7 +7,7 @@ export default function Home() {
         ALS Hub
       </h1>
       
-      <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '3rem', lineWeight: '1.6' }}>
+      <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '3rem', lineHeight: '1.6' }}>
         ALS hastalığı ile ilgili dünyadaki en güncel bilimsel gelişmeleri, klinik çalışmaları ve resmi onay süreçlerini Türkçe ve sade bir dille takip edin.
       </p>
 

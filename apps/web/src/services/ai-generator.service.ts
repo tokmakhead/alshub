@@ -8,7 +8,7 @@ export class AIGeneratorService {
   private provider: GeminiProvider;
 
   constructor() {
-    this.provider = new GeminiProvider(config.ai.geminiApiKey);
+    this.provider = new GeminiProvider(config.ai.geminiKey);
   }
 
   async generateDraft(refType: RefType, refId: number, data: any) {

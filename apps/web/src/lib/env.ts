@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // Core
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.string().min(1),
   APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
 
@@ -23,7 +23,7 @@ const envSchema = z.object({
   PUBMED_BASE_URL: z.string().url().default("https://eutils.ncbi.nlm.nih.gov/entrez/eutils"),
   OPENFDA_BASE_URL: z.string().url().default("https://api.fda.gov"),
   DAILYMED_BASE_URL: z.string().url().default("https://dailymed.nlm.nih.gov/dailymed/services/v2"),
-  DRUGSFDA_BASE_URL: z.string().url().optional(),
+  DRUGSFDA_BASE_URL: z.string().optional(),
   ORANGEBOOK_SOURCE_PATH: z.string().optional(),
 });
 

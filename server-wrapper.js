@@ -1,32 +1,35 @@
-// server-wrapper.js
-// This script ensures environment variables are loaded and then starts the Next.js server
-
-const fs = require('fs');
-const path = require('path');
+// server-wrapper.js (Legacy compatible)
+var fs = require('fs');
+var path = require('path');
 
 console.log('--- WRAPPER STARTING ---');
+console.log('Detected Node Version: ' + process.version);
 
-// Simple .env parser to avoid extra dependencies
-const envPath = path.join(__dirname, '.env');
-if (fs.existsSync(envPath)) {
-  const envConfig = fs.readFileSync(envPath, 'utf8');
-  envConfig.split('\n').forEach(line => {
-    const [key, ...valueParts] = line.split('=');
-    if (key && valueParts.length > 0) {
-      const value = valueParts.join('=').trim();
-      process.env[key.trim()] = value;
-    }
-  });
-  console.log('.env file loaded manually.');
+if (process.version.substring(1, 3) < 18) {
+  console.error('❌ CRITICAL: Next.js 15 requires Node.js 18+. Currently running on ' + process.version);
+  process.exit(1);
 }
 
-// Start the real Next.js server
 try {
-  console.log('--- STARTING SERVER.JS ---');
+  var envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    var envConfig = fs.readFileSync(envPath, 'utf8');
+    var lines = envConfig.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var parts = line.split('=');
+        if (parts.length >= 2) {
+            var key = parts[0].trim();
+            var value = parts.slice(1).join('=').trim();
+            process.env[key] = value;
+        }
+    }
+    console.log('.env loaded.');
+  }
+  console.log('Starting server.js...');
   require('./server.js');
-} catch (error) {
-  console.error('--- CRITICAL REFRESH ERROR ---');
-  console.error(error.message);
-  console.error(error.stack);
+} catch (e) {
+  console.error('Startup Error: ' + e.message);
+  console.error(e.stack);
   process.exit(1);
 }

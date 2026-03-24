@@ -12,15 +12,26 @@ echo "3. Building the project (This may take a few minutes)..."
 npm run build
 
 echo "4. Deploying Standalone files (Crucial for Plesk)..."
-# Next.js standalone output moves to apps/web/.next/standalone
-# We need to copy these to where Passenger is looking.
-cp -r apps/web/.next/standalone/. ./
-cp -r apps/web/public ./apps/web/
-cp -r apps/web/.next/static ./apps/web/.next/
+# We are in /var/www/vhosts/mioly.app/alshub.mioly.app/
+# The build output is in apps/web/.next/standalone/
+
+if [ -d "apps/web/.next/standalone" ]; then
+    echo "Copying standalone server files..."
+    cp -r apps/web/.next/standalone/. ./
+    
+    echo "Copying static assets..."
+    mkdir -p public
+    cp -r apps/web/public/. ./public/ 2>/dev/null || echo "No public folder found in apps/web, skipping..."
+    
+    mkdir -p .next/static
+    cp -r apps/web/.next/static/. ./.next/static/ 2>/dev/null || echo "No static folder found, skipping..."
+else
+    echo "ERROR: Standalone folder not found! Build might have failed or output path is different."
+fi
 
 echo "5. Restarting the application..."
 mkdir -p tmp
 touch tmp/restart.txt
 
 echo "--- Repair Complete! ---"
-echo "Please try to visit https://alshub.mioly.app/api/generate-drafts directly in your browser."
+echo "Check: https://alshub.mioly.app/api/generate-drafts"

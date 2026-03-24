@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import DataTable from "@/components/admin/data-table";
+import GenerateDraftsButton from "@/components/admin/generate-drafts-button";
 
 export default async function DraftsPage() {
   const drafts = await db.editorialContent.findMany({
@@ -8,9 +9,14 @@ export default async function DraftsPage() {
   });
 
   return (
-    <div className="container">
+    <div className="container" style={{ paddingTop: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>İçerik Taslakları</h1>
+        <GenerateDraftsButton />
+      </div>
+      
       <DataTable 
-        title="İçerik Taslakları"
+        title="Bekleyen Taslaklar"
         headers={["Başlık", "Tür", "Son Güncelleme"]}
         data={drafts}
         renderRow={(draft) => (

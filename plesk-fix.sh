@@ -39,6 +39,7 @@ if [ -d "apps/web/.next/standalone" ]; then
     echo "Copying static assets..."
     mkdir -p public
     mkdir -p apps/web/public
+    touch public/.keep
     cp -r apps/web/public/. ./public/ 2>/dev/null
     cp -r apps/web/public/. ./apps/web/public/ 2>/dev/null
     

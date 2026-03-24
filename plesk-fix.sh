@@ -8,17 +8,15 @@ mkdir -p "$npm_config_cache"
 echo "Current Node Version in Terminal: $(node -v)"
 
 # Attempt to find ANY Plesk Node 18 or higher
-PLESK_NODE=$(find /opt/plesk/node/*/bin/node -type f | sort -V | tail -n 1)
-if [ -z "$PLESK_NODE" ]; then
-    PLESK_NODE=$(which node)
+PLESK_NODE_BIN=$(find /opt/plesk/node/*/bin/node -type f | sort -V | tail -n 1)
+if [ -z "$PLESK_NODE_BIN" ]; then
+    PLESK_NODE_BIN=$(which node)
 fi
 
-echo "Using Node Binary: $PLESK_NODE"
-echo "Node Version to be used: $($PLESK_NODE -v)"
-
-# Alias npm to use this node
-alias node="$PLESK_NODE"
-alias npm="$PLESK_NODE $(which npm)"
+PLESK_NODE_DIR=$(dirname "$PLESK_NODE_BIN")
+echo "Using Node Directory: $PLESK_NODE_DIR"
+export PATH="$PLESK_NODE_DIR:$PATH"
+echo "Node Version to be used: $(node -v)"
 
 echo "1. Pulling latest code..."
 git pull origin main

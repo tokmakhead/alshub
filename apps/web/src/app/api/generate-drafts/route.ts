@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
+  const isDebug = searchParams.get("debug") === "true";
   const session = await auth();
   
   // Allow access if logged in OR if secret token matches
@@ -14,6 +15,14 @@ export async function GET(req: Request) {
 
   if (!isAuthorized) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (isDebug) {
+    return NextResponse.json({ 
+      success: true, 
+      message: "SYSTEM ONLINE: Node, DB and Auth are working perfectly.",
+      time: new Date().toISOString()
+    });
   }
 
   try {

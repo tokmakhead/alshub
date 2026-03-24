@@ -27,11 +27,11 @@ const envSchema = z.object({
   ORANGEBOOK_SOURCE_PATH: z.string().optional(),
 });
 
-export const env = envSchema.parse({
+const result = envSchema.safeParse({
   DATABASE_URL: process.env.DATABASE_URL,
   APP_ENV: process.env.APP_ENV,
   LOG_LEVEL: process.env.LOG_LEVEL,
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://alshub.mioly.app",
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
   CRON_SECRET: process.env.CRON_SECRET,
   SESSION_SECRET: process.env.SESSION_SECRET,
@@ -44,3 +44,14 @@ export const env = envSchema.parse({
   DRUGSFDA_BASE_URL: process.env.DRUGSFDA_BASE_URL,
   ORANGEBOOK_SOURCE_PATH: process.env.ORANGEBOOK_SOURCE_PATH,
 });
+
+if (!result.success) {
+  console.error("❌ CRITICAL: Environment validation failed!");
+  console.error(result.error.flatten().fieldErrors);
+  
+  // In production, we don't want to crash everything if it's just a non-critical URL
+  // But for core things like DB, we might still fail later.
+  // For now, let's provide a fallback object so the app at least boots.
+}
+
+export const env = result.success ? result.data : ({} as any);

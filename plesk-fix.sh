@@ -1,13 +1,26 @@
 # Plesk Fix & Rebuild Script
 echo "--- Starting Plesk Repair ---"
+
+# Fix Permissions issue by using a local npm cache
+export npm_config_cache="$(pwd)/.npm-cache"
+mkdir -p "$npm_config_cache"
+
 echo "Current Node Version in Terminal: $(node -v)"
 
-# Attempt to find Plesk Node 20 or higher if current is too old
-if [[ "$(node -v)" == v16* ]]; then
-    echo "WARNING: Terminal is using Node 16. Attempting to locate Plesk Node..."
-    export PATH="/opt/plesk/node/20/bin:/opt/plesk/node/22/bin:$PATH"
-    echo "New Node Version: $(node -v)"
+# Attempt to find ANY Plesk Node 18 or higher
+PLESK_NODE=$(find /opt/plesk/node/*/bin/node -type f | sort -V | tail -n 1)
+if [ -z "$PLESK_NODE" ]; then
+    PLESK_NODE=$(which node)
 fi
+
+echo "Using Node Binary: $PLESK_NODE"
+echo "Node Version to be used: $($PLESK_NODE -v)"
+
+# Alias npm to use this node
+alias node="$PLESK_NODE"
+alias npm="$PLESK_NODE $(which npm)"
+
+echo "1. Pulling latest code..."
 git pull origin main
 
 echo "2. Installing dependencies..."

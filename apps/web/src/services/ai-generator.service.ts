@@ -102,10 +102,9 @@ export class AIGeneratorService {
       where: {
         id: { notIn: processedDrugIds.length > 0 ? processedDrugIds : [-1] }
       },
-      take: 2
-    });
-
+    console.log(`Processing ${unprocessedDrugs.length} drugs...`);
     for (const drug of unprocessedDrugs) {
+      console.log(`Generating draft for Drug: ${drug.name}`);
       await this.generateDraft("DRUG", drug.id, drug);
       results.drugs++;
     }
@@ -120,10 +119,12 @@ export class AIGeneratorService {
       where: {
         id: { notIn: processedTrialIds.length > 0 ? processedTrialIds : [-1] }
       },
-      take: 2
+      take: 1
     });
 
+    console.log(`Processing ${unprocessedTrials.length} trials...`);
     for (const trial of unprocessedTrials) {
+      console.log(`Generating draft for Trial: ${trial.title}`);
       await this.generateDraft("TRIAL", trial.id, trial);
       results.trials++;
     }

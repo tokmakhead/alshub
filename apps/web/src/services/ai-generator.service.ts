@@ -88,4 +88,36 @@ export class AIGeneratorService {
       throw error;
     }
   }
+
+  async generateDraftsForUnprocessedRecords() {
+    const results = { drugs: 0, trials: 0, publications: 0 };
+
+    // 1. Process Drugs
+    const unprocessedDrugs = await db.drug.findMany({
+      where: {
+        EditorialContent: { none: {} }
+      },
+      take: 2 // Small batch for stability
+    });
+
+    for (const drug of unprocessedDrugs) {
+      await this.generateDraft("DRUG", drug.id, drug);
+      results.drugs++;
+    }
+
+    // 2. Process Trials
+    const unprocessedTrials = await db.trial.findMany({
+      where: {
+        EditorialContent: { none: {} }
+      },
+      take: 2
+    });
+
+    for (const trial of unprocessedTrials) {
+      await this.generateDraft("TRIAL", trial.id, trial);
+      results.trials++;
+    }
+
+    return results;
+  }
 }

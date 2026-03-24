@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     // Check for root-level session bypass (only for initial testing if needed, but let's try with auth)
-    const session = await auth();
+    const session = await auth() as any;
     if (!session || session.user?.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
     // Test DB Connection
     await db.$queryRaw`SELECT 1`;
 
-    const results = await AIGeneratorService.generateDraftsForUnprocessedRecords();
+    const generator = new AIGeneratorService();
+    const results = await generator.generateDraftsForUnprocessedRecords();
     
     return NextResponse.json({ 
       success: true, 

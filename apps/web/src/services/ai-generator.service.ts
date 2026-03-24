@@ -102,6 +102,9 @@ export class AIGeneratorService {
       where: {
         id: { notIn: processedDrugIds.length > 0 ? processedDrugIds : [-1] }
       },
+      take: 1
+    });
+
     console.log(`Processing ${unprocessedDrugs.length} drugs...`);
     for (const drug of unprocessedDrugs) {
       console.log(`Generating draft for Drug: ${drug.name}`);

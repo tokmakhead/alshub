@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
     const aiService = new AIGeneratorService();
     let totalGenerated = 0;
 
+    console.log("AI Generation: Starting process...");
+
     // 2. Identify missing Drug drafts
     const existingDrugIds = await db.editorialContent.findMany({
       where: { refType: "DRUG" },
@@ -23,10 +25,12 @@ export async function POST(req: NextRequest) {
 
     const drugsToProcess = await db.drug.findMany({
       where: { id: { notIn: existingDrugIds } },
-      take: 5, // Limit per call to avoid timeouts
+      take: 1, 
     });
 
+    console.log(`AI Generation: Found ${drugsToProcess.length} drugs to process.`);
     for (const drug of drugsToProcess) {
+      console.log(`AI Generation: Processing DRUG ${drug.id}...`);
       await aiService.generateDraft("DRUG", drug.id, drug);
       totalGenerated++;
     }
@@ -39,10 +43,12 @@ export async function POST(req: NextRequest) {
 
     const trialsToProcess = await db.trial.findMany({
       where: { id: { notIn: existingTrialIds } },
-      take: 5,
+      take: 1,
     });
 
+    console.log(`AI Generation: Found ${trialsToProcess.length} trials to process.`);
     for (const trial of trialsToProcess) {
+      console.log(`AI Generation: Processing TRIAL ${trial.id}...`);
       await aiService.generateDraft("TRIAL", trial.id, trial);
       totalGenerated++;
     }
@@ -55,13 +61,17 @@ export async function POST(req: NextRequest) {
 
     const pubsToProcess = await db.publication.findMany({
       where: { id: { notIn: existingPubIds } },
-      take: 5,
+      take: 1,
     });
 
+    console.log(`AI Generation: Found ${pubsToProcess.length} publications to process.`);
     for (const pub of pubsToProcess) {
+      console.log(`AI Generation: Processing PUBLICATION ${pub.id}...`);
       await aiService.generateDraft("PUBLICATION", pub.id, pub);
       totalGenerated++;
     }
+
+    console.log(`AI Generation: Completed. Total ${totalGenerated} drafts generated.`);
 
     return NextResponse.json({
       success: true,

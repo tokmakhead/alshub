@@ -7,7 +7,7 @@ import { env } from "@/lib/env";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: env.APP_ENV === "development",
   trustHost: true,
-  secret: env.SESSION_SECRET,
+  secret: env.SESSION_SECRET || process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",

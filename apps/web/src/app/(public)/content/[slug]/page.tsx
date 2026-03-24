@@ -37,7 +37,7 @@ export default async function ContentDetailPage({ params }: { params: Promise<{ 
         fontSize: '1.1rem',
         marginBottom: '4rem'
       }}>
-        {content.content?.split('\n').map((line, i) => (
+        {content.content?.split('\n').map((line: string, i: number) => (
           <p key={i} style={{ marginBottom: '1rem' }}>{line}</p>
         ))}
       </div>

@@ -23,10 +23,10 @@ export default function GenerateDraftsButton() {
         alert(data.message);
         router.refresh();
       } else {
-        alert("Hata: " + (data.error || "Bilinmeyen bir hata oluştu."));
+        alert("Hata (Dönüş): " + (data.error || "Bilinmeyen bir hata oluştu."));
       }
-    } catch (error) {
-      alert("Hata: Sunucuya ulaşılamadı.");
+    } catch (error: any) {
+      alert("Hata (Sistem): " + (error?.message || "Sunucuya ulaşılamadı. Lütfen build aldığınızdan ve sunucuyu restart ettiğinizden emin olun."));
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,7 @@ export default async function PublicDrugsPage() {
       </header>
 
       <div style={{ display: 'grid', gap: '1.5rem' }}>
-        {drugs.map((drug) => (
+        {drugs.map((drug: any) => (
           <Link key={drug.id} href={`/content/${drug.slug}`} style={{ textDecoration: 'none' }}>
             <div className="glass-card table-row" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>

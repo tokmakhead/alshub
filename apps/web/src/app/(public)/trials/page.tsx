@@ -15,7 +15,7 @@ export default async function PublicTrialsPage() {
       </header>
 
       <div style={{ display: 'grid', gap: '1.5rem' }}>
-        {trials.map((trial) => (
+        {trials.map((trial: any) => (
           <Link key={trial.id} href={`/content/${trial.slug}`} style={{ textDecoration: 'none' }}>
             <div className="glass-card table-row" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>

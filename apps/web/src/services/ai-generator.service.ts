@@ -93,11 +93,16 @@ export class AIGeneratorService {
     const results = { drugs: 0, trials: 0, publications: 0 };
 
     // 1. Process Drugs
+    const processedDrugIds = (await db.editorialContent.findMany({
+      where: { refType: "DRUG" },
+      select: { refId: true }
+    })).map(c => c.refId);
+
     const unprocessedDrugs = await db.drug.findMany({
       where: {
-        EditorialContent: { none: {} }
+        id: { notIn: processedDrugIds.length > 0 ? processedDrugIds : [-1] }
       },
-      take: 2 // Small batch for stability
+      take: 2
     });
 
     for (const drug of unprocessedDrugs) {
@@ -106,9 +111,14 @@ export class AIGeneratorService {
     }
 
     // 2. Process Trials
+    const processedTrialIds = (await db.editorialContent.findMany({
+      where: { refType: "TRIAL" },
+      select: { refId: true }
+    })).map(c => c.refId);
+
     const unprocessedTrials = await db.trial.findMany({
       where: {
-        EditorialContent: { none: {} }
+        id: { notIn: processedTrialIds.length > 0 ? processedTrialIds : [-1] }
       },
       take: 2
     });

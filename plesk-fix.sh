@@ -1,8 +1,13 @@
-#!/bin/bash
 # Plesk Fix & Rebuild Script
 echo "--- Starting Plesk Repair ---"
+echo "Current Node Version in Terminal: $(node -v)"
 
-echo "1. Pulling latest code..."
+# Attempt to find Plesk Node 20 or higher if current is too old
+if [[ "$(node -v)" == v16* ]]; then
+    echo "WARNING: Terminal is using Node 16. Attempting to locate Plesk Node..."
+    export PATH="/opt/plesk/node/20/bin:/opt/plesk/node/22/bin:$PATH"
+    echo "New Node Version: $(node -v)"
+fi
 git pull origin main
 
 echo "2. Installing dependencies..."

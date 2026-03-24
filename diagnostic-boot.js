@@ -30,11 +30,22 @@ console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'PRESENT (hidden)' : 'MI
 console.log('NEXTAUTH_SECRET:', process.env.NEXTAUTH_SECRET ? 'PRESENT' : 'MISSING');
 
 console.log('--- DB TEST ---');
-// Try to ping DB if env exists
 if (process.env.DATABASE_URL) {
-  console.log('Attempting DB ping...');
-  // Simple check via prisma if possible, or just log
+  console.log('DATABASE_URL is found.');
+  const { PrismaClient } = require('@prisma/client');
+  const prisma = new PrismaClient();
+  console.log('Attempting Prisma connection...');
+  prisma.$connect()
+    .then(() => {
+      console.log('✅ DATABASE CONNECTED SUCCESSFULLY!');
+      process.exit(0);
+    })
+    .catch(err => {
+      console.error('❌ DATABASE CONNECTION FAILED!');
+      console.error(err);
+      process.exit(1);
+    });
+} else {
+  console.log('DATABASE_URL is MISSING. Skipping DB test.');
+  process.exit(0);
 }
-
-console.log('--- DIAGNOSTIC COMPLETE ---');
-process.exit(0);

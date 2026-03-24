@@ -21,18 +21,12 @@ echo "Node Version to be used: $(node -v)"
 echo "1. Pulling latest code..."
 echo "1. Git pull is managed by Plesk. Proceeding to build..."
 
-echo "2. CLEAN SLATE & HOTPATCH: Resolving TypeScript errors directly..."
+echo "2. CLEAN SLATE: Reinstalling all dependencies with Node v25..."
 # Delete corrupted files
 rm -rf node_modules
 rm -rf apps/web/node_modules
 rm -rf packages/database/node_modules
 rm -f package-lock.json
-
-# HOTPATCH: Force fix TypeScript errors (in case git pull is stale)
-sed -i 's/(drug) =>/(drug: any) =>/g' apps/web/src/app/(public)/drugs/page.tsx 2>/dev/null
-sed -i 's/(trial) =>/(trial: any) =>/g' apps/web/src/app/(public)/trials/page.tsx 2>/dev/null
-sed -i 's/(pub) =>/(pub: any) =>/g' apps/web/src/app/(public)/publications/page.tsx 2>/dev/null
-sed -i "s/(line, i) =>/(line: string, i: number) =>/g" "apps/web/src/app/(public)/content/[slug]/page.tsx" 2>/dev/null
 
 # Fresh install
 npm install

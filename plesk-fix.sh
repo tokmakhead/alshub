@@ -31,6 +31,9 @@ rm -f package-lock.json
 # Fresh install
 npm install
 
+echo "2.1 Generating Prisma Client..."
+npm run db:generate
+
 echo "3. Cleaning and Building the project..."
 rm -rf apps/web/.next
 npm run build -w apps/web

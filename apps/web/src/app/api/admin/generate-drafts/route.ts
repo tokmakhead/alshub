@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { AIGeneratorService } from "@/services/ai-generator.service";
 
@@ -9,23 +8,17 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  // const session = await auth();
-
-  // 1. Temporary Bypass for Debugging (DO NOT LEAVE IN PROD)
-  console.log("AI Generation: AUTH BYPASS ACTIVE");
-  /*
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  */
-
   try {
+    console.log("AI Generation: Route entered.");
+    
+    // DB Test
+    const userCount = await db.user.count();
+    console.log(`AI Generation: DB Connection OK (User Count: ${userCount})`);
+
     const aiService = new AIGeneratorService();
     let totalGenerated = 0;
 
-    console.log("AI Generation: Starting process...");
-
-    // 2. Identify missing Drug drafts
+    // 1. Identify missing Drug drafts
     const existingDrugIds = await db.editorialContent.findMany({
       where: { refType: "DRUG" },
       select: { refId: true },
@@ -36,14 +29,12 @@ export async function POST(req: NextRequest) {
       take: 1, 
     });
 
-    console.log(`AI Generation: Found ${drugsToProcess.length} drugs to process.`);
     for (const drug of drugsToProcess) {
-      console.log(`AI Generation: Processing DRUG ${drug.id}...`);
       await aiService.generateDraft("DRUG", drug.id, drug);
       totalGenerated++;
     }
 
-    // 3. Identify missing Trial drafts
+    // 2. Identify missing Trial drafts
     const existingTrialIds = await db.editorialContent.findMany({
       where: { refType: "TRIAL" },
       select: { refId: true },
@@ -54,14 +45,12 @@ export async function POST(req: NextRequest) {
       take: 1,
     });
 
-    console.log(`AI Generation: Found ${trialsToProcess.length} trials to process.`);
     for (const trial of trialsToProcess) {
-      console.log(`AI Generation: Processing TRIAL ${trial.id}...`);
       await aiService.generateDraft("TRIAL", trial.id, trial);
       totalGenerated++;
     }
 
-    // 4. Identify missing Publication drafts
+    // 3. Identify missing Publication drafts
     const existingPubIds = await db.editorialContent.findMany({
       where: { refType: "PUBLICATION" },
       select: { refId: true },
@@ -72,14 +61,10 @@ export async function POST(req: NextRequest) {
       take: 1,
     });
 
-    console.log(`AI Generation: Found ${pubsToProcess.length} publications to process.`);
     for (const pub of pubsToProcess) {
-      console.log(`AI Generation: Processing PUBLICATION ${pub.id}...`);
       await aiService.generateDraft("PUBLICATION", pub.id, pub);
       totalGenerated++;
     }
-
-    console.log(`AI Generation: Completed. Total ${totalGenerated} drafts generated.`);
 
     return NextResponse.json({
       success: true,
@@ -87,10 +72,14 @@ export async function POST(req: NextRequest) {
       count: totalGenerated,
     });
 
-  } catch (error) {
-    console.error("Generate Drafts Error:", error);
+  } catch (error: any) {
+    console.error("CRITICAL API ERROR:", error);
     return NextResponse.json(
-      { error: "İçerik üretilirken bir hata oluştu." },
+      { 
+        error: error.message, 
+        stack: error.stack,
+        hint: "Check environment variables (DATABASE_URL, GEMINI_API_KEY) and DB connection."
+      },
       { status: 500 }
     );
   }

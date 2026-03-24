@@ -4,11 +4,15 @@ import { AIGeneratorService } from "@/services/ai-generator.service";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const token = searchParams.get("token");
   const session = await auth();
   
-  // Basic security: require session or a secret header for cron
-  if (!session) {
+  // Allow access if logged in OR if secret token matches
+  const isAuthorized = session || (token && token === process.env.CRON_SECRET);
+
+  if (!isAuthorized) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

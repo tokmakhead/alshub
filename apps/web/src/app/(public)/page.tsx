@@ -41,10 +41,6 @@ export default function HomePage() {
           />
         </div>
       </section>
-
-      <footer style={{ textAlign: 'center', padding: '2rem', opacity: 0.5, fontSize: '0.8rem' }}>
-        Build Version: v2.5.NUCLEAR-FIX-01
-      </footer>
     </div>
   );
 }

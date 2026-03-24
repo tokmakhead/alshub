@@ -1,9 +1,10 @@
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 
-export default async function ContentDetailPage({ params }: { params: { slug: string } }) {
+export default async function ContentDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const content = await db.editorialContent.findUnique({
-    where: { slug: params.slug, status: 'PUBLISHED' },
+    where: { slug: slug, status: 'PUBLISHED' },
     include: { aiJob: true }
   });
 

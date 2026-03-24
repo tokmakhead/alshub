@@ -1,8 +1,9 @@
 import { SearchService } from "@/services/search.service";
 import Link from "next/link";
 
-export default async function PublicSearchPage({ searchParams }: { searchParams: { q?: string } }) {
-  const query = searchParams.q || "";
+export default async function PublicSearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q } = await searchParams;
+  const query = q || "";
   const searchService = new SearchService();
   const results = await searchService.unifiedSearch(query);
 

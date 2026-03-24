@@ -2,8 +2,9 @@ import { db } from "@/lib/db";
 import EditContentForm from "@/components/admin/edit-content-form";
 import { notFound } from "next/navigation";
 
-export default async function EditContentPage({ params }: { params: { id: string } }) {
-  const contentId = parseInt(params.id);
+export default async function EditContentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const contentId = parseInt(id);
   if (isNaN(contentId)) notFound();
 
   const content = await db.editorialContent.findUnique({

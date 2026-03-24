@@ -54,10 +54,15 @@ if [ -d "apps/web/.next/standalone" ]; then
     cp -r apps/web/public/. ./public/ 2>/dev/null
     cp -r apps/web/public/. ./apps/web/public/ 2>/dev/null
     
-    mkdir -p .next/static
     mkdir -p apps/web/.next/static
     cp -r apps/web/.next/static/. ./.next/static/ 2>/dev/null
     cp -r apps/web/.next/static/. ./apps/web/.next/static/ 2>/dev/null
+    
+    echo "4.1 Restoring File Ownership (Crucial for Passenger)..."
+    # Get the owner of the parent directory to be safe
+    SITE_USER=$(ls -ld . | awk '{print $3}')
+    SITE_GROUP=$(ls -ld . | awk '{print $4}')
+    chown -R "$SITE_USER:$SITE_GROUP" .
 else
     echo "ERROR: Standalone folder not found!"
 fi

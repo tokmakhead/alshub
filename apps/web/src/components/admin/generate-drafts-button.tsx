@@ -14,7 +14,7 @@ export default function GenerateDraftsButton() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/generate-drafts", {
+      const res = await fetch("/api/generate-drafts", {
         method: "POST",
       });
       const data = await res.json();

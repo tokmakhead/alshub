@@ -19,13 +19,14 @@ export PATH="$PLESK_NODE_DIR:$PATH"
 echo "Node Version to be used: $(node -v)"
 
 echo "1. Pulling latest code..."
-git pull origin main
+echo "1. Git pull is managed by Plesk. Proceeding to build..."
 
 echo "2. Installing dependencies..."
 npm install
 
-echo "3. Building the project (This may take a few minutes)..."
-npm run build
+echo "3. Cleaning and Building the project..."
+rm -rf apps/web/.next
+npm run build -w apps/web
 
 echo "4. Deploying Standalone files (Crucial for Plesk)..."
 # We are in /var/www/vhosts/mioly.app/alshub.mioly.app/

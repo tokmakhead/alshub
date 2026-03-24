@@ -32,22 +32,29 @@ echo "4. Deploying Standalone files (Crucial for Plesk)..."
 # The build output is in apps/web/.next/standalone/
 
 if [ -d "apps/web/.next/standalone" ]; then
-    echo "Copying standalone server files..."
+    echo "Copying standalone server files to BOTH root and apps/web..."
     cp -r apps/web/.next/standalone/. ./
+    cp -r apps/web/.next/standalone/. ./apps/web/
     
     echo "Copying static assets..."
     mkdir -p public
-    cp -r apps/web/public/. ./public/ 2>/dev/null || echo "No public folder found in apps/web, skipping..."
+    mkdir -p apps/web/public
+    cp -r apps/web/public/. ./public/ 2>/dev/null
+    cp -r apps/web/public/. ./apps/web/public/ 2>/dev/null
     
     mkdir -p .next/static
-    cp -r apps/web/.next/static/. ./.next/static/ 2>/dev/null || echo "No static folder found, skipping..."
+    mkdir -p apps/web/.next/static
+    cp -r apps/web/.next/static/. ./.next/static/ 2>/dev/null
+    cp -r apps/web/.next/static/. ./apps/web/.next/static/ 2>/dev/null
 else
-    echo "ERROR: Standalone folder not found! Build might have failed or output path is different."
+    echo "ERROR: Standalone folder not found!"
 fi
 
 echo "5. Restarting the application..."
 mkdir -p tmp
+mkdir -p apps/web/tmp
 touch tmp/restart.txt
+touch apps/web/tmp/restart.txt
 
 echo "--- Repair Complete! ---"
 echo "Check: https://alshub.mioly.app/api/generate-drafts"

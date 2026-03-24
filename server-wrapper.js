@@ -21,4 +21,12 @@ if (fs.existsSync(envPath)) {
 }
 
 // Start the real Next.js server
-require('./server.js');
+try {
+  console.log('--- STARTING SERVER.JS ---');
+  require('./server.js');
+} catch (error) {
+  console.error('--- CRITICAL REFRESH ERROR ---');
+  console.error(error.message);
+  console.error(error.stack);
+  process.exit(1);
+}

@@ -50,33 +50,42 @@ class ContentFetcherService
 
                 $original_summary = (string) $item->description;
 
-                // Try to fetch full abstract from the link if it seems truncated
+                // Try to fetch full content from the link based on source type
                 try {
                     $pageResponse = \Illuminate\Support\Facades\Http::withHeaders([
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    ])->timeout(10)->get($source_url);
+                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    ])->timeout(15)->get($source_url);
 
-                    if ($pageResponse->successful()) {
+                    if ($pageResponse->successful() && class_exists('DOMDocument')) {
                         $html = $pageResponse->body();
-                        // Extract abstract content using simple regex or string manipulation
-                        if (class_exists('DOMDocument')) {
-                            $doc = new \DOMDocument();
-                            @$doc->loadHTML('<?xml encoding="UTF-8">' . $html);
-                            $xpath = new \DOMXPath($doc);
-                            $abstractNodes = $xpath->query('//div[contains(@class, "abstract-content")]/p');
-                            if ($abstractNodes->length > 0) {
-                                $fullAbstract = "";
-                                foreach ($abstractNodes as $node) {
-                                    $fullAbstract .= trim($node->textContent) . "\n\n";
+                        $doc = new \DOMDocument();
+                        @$doc->loadHTML('<?xml encoding="UTF-8">' . $html);
+                        $xpath = new \DOMXPath($doc);
+                        $fullText = "";
+
+                        if (str_contains($source->base_url, 'pubmed')) {
+                            $nodes = $xpath->query('//div[contains(@class, "abstract-content")]/p');
+                        } elseif (str_contains($source->base_url, 'alsnewstoday.com')) {
+                            // Target .pf-content and exclude ads/related blocks
+                            $nodes = $xpath->query('//div[contains(@class, "pf-content")]/*[not(self::div[contains(@class, "code-block")]) and not(self::div[contains(@class, "bio-post-preview-inline")]) and not(self::div[contains(@class, "printfriendly")])]');
+                        } else {
+                            $nodes = null;
+                        }
+
+                        if ($nodes && $nodes->length > 0) {
+                            foreach ($nodes as $node) {
+                                $text = trim($node->textContent);
+                                if (!empty($text)) {
+                                    $fullText .= $text . "\n\n";
                                 }
-                                if (!empty(trim($fullAbstract))) {
-                                    $original_summary = trim($fullAbstract);
-                                }
+                            }
+                            if (!empty(trim($fullText))) {
+                                $original_summary = trim($fullText);
                             }
                         }
                     }
                 } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::warning("Could not scrape full abstract for {$source_url}: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::warning("Could not scrape full content for {$source_url}: " . $e->getMessage());
                 }
 
                 $content = Content::create([

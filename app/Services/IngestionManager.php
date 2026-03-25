@@ -169,14 +169,23 @@ class IngestionManager
                     ]
                 );
 
+                $existingStatus = \App\Models\DrugRegionalStatus::where('drug_id', $drug->id)
+                    ->where('region', $data['region_status']['region'])
+                    ->first();
+
+                $changeDetected = false;
+                if ($existingStatus && $existingStatus->raw_payload_json != $data['region_status']['raw_payload_json']) {
+                    $changeDetected = true;
+                }
+
                 \App\Models\DrugRegionalStatus::updateOrCreate(
                     [
                         'drug_id' => $drug->id,
                         'region' => $data['region_status']['region']
                     ],
-                    $data['region_status']
+                    array_merge($data['region_status'], ['change_detected' => $changeDetected])
                 );
-
+                
                 if ($drug->wasRecentlyCreated) {
                     $inserted++;
                 } else {

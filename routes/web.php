@@ -69,6 +69,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
+    Route::get('/health', [HealthController::class, 'index'])->name('health.index');
 });
 
 require __DIR__.'/auth.php';

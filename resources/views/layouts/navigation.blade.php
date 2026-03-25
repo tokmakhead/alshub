@@ -39,9 +39,11 @@
                     
                     <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Legacy Arşiv</x-nav-link>
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">
-                        {{ __('Loglar') }}
+                        {{ __('İşlem Logları') }}
                     </x-nav-link>
-                </div>
+                    <x-nav-link :href="route('admin.health.index')" :active="request()->routeIs('admin.health.*')">
+                        {{ __('Sistem Sağlığı') }}
+                    </x-nav-link>               </div>
             </div>
 
             <!-- Settings Dropdown -->

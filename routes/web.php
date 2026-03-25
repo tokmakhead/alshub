@@ -21,6 +21,15 @@ Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');
 
+Route::get('/run-migrations-secret-7788', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Migration success: <pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "Migration failed: " . $e->getMessage();
+    }
+});
+
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

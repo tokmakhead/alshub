@@ -53,4 +53,10 @@ class ContentController extends Controller
         $content->delete();
         return redirect()->route('admin.contents.index')->with('success', 'Content deleted successfully.');
     }
+
+    public function translate(\App\Models\Content $content, \App\Services\TranslationService $translationService)
+    {
+        $translationService->translate($content);
+        return redirect()->back()->with('success', 'AI çevirisi tamamlandı. Lütfen kontrol edin.');
+    }
 }

@@ -38,6 +38,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('sources', SourceController::class);
     Route::post('sources/{source}/fetch', [SourceController::class, 'fetchNow'])->name('sources.fetch');
     Route::resource('contents', AdminContentController::class);
+    Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
 });
 

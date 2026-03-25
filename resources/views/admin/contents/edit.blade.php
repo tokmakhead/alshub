@@ -25,8 +25,14 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-blue-50 border-b">
+                <div class="p-6 bg-blue-50 border-b flex justify-between items-center">
                     <h3 class="text-lg font-bold">Türkçe Çeviri ve Yayın Ayarları</h3>
+                    <form action="{{ route('admin.contents.translate', $content) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-indigo-700 transition">
+                            ✨ AI ile Otomatik Çevir
+                        </button>
+                    </form>
                 </div>
                 <div class="p-6 text-gray-900">
                     <form action="{{ route('admin.contents.update', $content) }}" method="POST">

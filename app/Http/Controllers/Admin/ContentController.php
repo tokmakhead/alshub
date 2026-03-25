@@ -56,7 +56,12 @@ class ContentController extends Controller
 
     public function translate(\App\Models\Content $content, \App\Services\TranslationService $translationService)
     {
-        $translationService->translate($content);
-        return redirect()->back()->with('success', 'AI çevirisi tamamlandı. Lütfen kontrol edin.');
+        $result = $translationService->translate($content);
+        
+        if ($result->translated_title && $result->translated_title != "[TR] " . $result->original_title) {
+            return redirect()->back()->with('success', 'AI çevirisi başarıyla tamamlandı.');
+        }
+
+        return redirect()->back()->with('error', 'AI çevirisi yapılamadı. Lütfen API anahtarınızı ve internet bağlantınızı kontrol edin.');
     }
 }

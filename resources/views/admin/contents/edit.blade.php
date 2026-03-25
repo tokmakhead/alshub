@@ -29,7 +29,7 @@
                     <h3 class="text-lg font-bold">Türkçe Çeviri ve Yayın Ayarları</h3>
                     <form action="{{ route('admin.contents.translate', $content) }}" method="POST">
                         @csrf
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-indigo-700 transition">
+                        <button type="submit" style="background-color: #4f46e5; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer;">
                             ✨ AI ile Otomatik Çevir
                         </button>
                     </form>

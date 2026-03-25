@@ -22,7 +22,7 @@ class SourceSeeder extends Seeder
 
         // Drug News Source (ALS News Today)
         Source::updateOrCreate(
-            ['base_url' => 'https://alsnewstoday.com/category/als-drug-development/feed/'],
+            ['base_url' => 'https://alsnewstoday.com/tag/drug-development/feed/'],
             [
                 'name' => 'ALS İlaç Gelişmeleri (ALS News Today)',
                 'type' => 'drug',

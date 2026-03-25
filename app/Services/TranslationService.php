@@ -21,7 +21,8 @@ class TranslationService
         try {
             $prompt = "Aşağıdaki ALS ile ilgili tıbbi haber başlığını ve özetini Türkçeye çevir ve özetle. Yanıtında sadece Türkçe başlık ve Türkçe özeti aralarında '|' işareti koyarak döndür. \n\nBaşlık: {$content->original_title}\nÖzet: {$content->original_summary}";
 
-            $response = \Illuminate\Support\Facades\Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+            // Using gemini-pro which is more stable across versions
+            $response = \Illuminate\Support\Facades\Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={$apiKey}", [
                 'contents' => [
                     [
                         'parts' => [

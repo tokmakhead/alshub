@@ -35,6 +35,12 @@ class SyncScientificData extends Command
             $this->displayLog($log);
         }
 
+        if ($source === 'drugs' || $source === 'all') {
+            $this->info('Starting Drug sync (OpenFDA)...');
+            $log = $this->ingestionManager->syncDrugs();
+            $this->displayLog($log);
+        }
+
         $this->info('Sync process completed.');
     }
 

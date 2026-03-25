@@ -12,13 +12,15 @@ class ContentFetcherService
 {
     public function fetchFromSource(Source $source)
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        
         if ($source->fetch_method === 'rss') {
         $source->update([
             'is_importing' => true,
             'import_progress' => 5,
             'import_message' => 'RSS Akışı okunuyor...',
         ]);
-
         try {
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -125,9 +127,20 @@ class ContentFetcherService
                 'message' => "Successfully imported {$count} items.",
             ]);
 
+            $source->update([
+                'is_importing' => false,
+                'import_progress' => 100,
+                'import_message' => "Tamamlandı: {$importedCount} yeni içerik.",
+            ]);
+
             return true;
 
         } catch (\Exception $e) {
+            $source->update([
+                'is_importing' => false,
+                'import_message' => 'Hata: ' . Str::limit($e->getMessage(), 50),
+            ]);
+
             ImportLog::create([
                 'source_id' => $source->id,
                 'status' => 'failure',

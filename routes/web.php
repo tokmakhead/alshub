@@ -40,6 +40,15 @@ Route::get('/check-tables-secret-7788', function() {
     return "Tables: <pre>" . print_r($tables, true) . "</pre>";
 });
 
+Route::get('/mark-legacy-tier3-secret-7788', function() {
+    try {
+        $count = \DB::table('contents')->update(['verification_tier' => 3]);
+        return "Legacy Success: Marked $count contents as Tier 3.";
+    } catch (\Exception $e) {
+        return "Legacy Error: " . $e->getMessage();
+    }
+});
+
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

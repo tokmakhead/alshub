@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kaynak Yönetimi') }} <span class="text-red-500 font-bold underline text-2xl">[V-9999-STABLE]</span>
+            {{ __('Kaynak Yönetimi') }} <span class="text-red-500 font-bold underline text-2xl">[V-9999-LOG-TEST]</span>
         </h2>
     </x-slot>
 
@@ -85,12 +85,16 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
+            }).then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error || 'Server Error'); });
+                }
+                return response.json();
             }).catch(err => {
-                console.error('Fetch error:', err);
+                alert('Fetch Error: ' + err.message);
                 if (btnArea) btnArea.style.display = 'block';
                 if (progressArea) progressArea.style.display = 'none';
             });
-
             // Start polling
             let pollCount = 0;
             const interval = setInterval(() => {

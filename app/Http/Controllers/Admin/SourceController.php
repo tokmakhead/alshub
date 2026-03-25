@@ -74,14 +74,23 @@ class SourceController extends Controller
 
     public function fetchNow(\App\Models\Source $source, \App\Services\ContentFetcherService $fetcher)
     {
-        // Start process
-        $fetcher->fetchFromSource($source);
-        
-        if (request()->ajax()) {
-            return response()->json(['success' => true]);
-        }
+        try {
+            \Log::info("DEBUG: fetchNow manual trigger for Source " . $source->id);
+            // Start process
+            $fetcher->fetchFromSource($source);
+            
+            if (request()->ajax()) {
+                return response()->json(['success' => true]);
+            }
 
-        return redirect()->back()->with('success', 'Veri çekme işlemi tamamlandı.');
+            return redirect()->back()->with('success', 'Veri çekme işlemi tamamlandı.');
+        } catch (\Exception $e) {
+            \Log::error("DEBUG: fetchNow exception: " . $e->getMessage());
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+            }
+            throw $e;
+        }
     }
 
     public function checkProgress(\App\Models\Source $source)

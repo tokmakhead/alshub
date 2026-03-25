@@ -1,79 +1,130 @@
-Mevcut sistemi yeniden kurgula. Şu anda ALS içerikleri RSS üzerinden toplanıyor ancak bu yaklaşım yetersiz ve güvenilirlik açısından doğru değil. Sistemi RSS merkezli yapıdan çıkarıp, kaynak türüne göre ayrıştırılmış, doğrulanabilir ve kurumsal veri kaynaklarına dayalı bir mimariye çevir.
+Sistemin mimarisini şu ilkeye göre yeniden düzenle:
 
-TEMEL PRENSİP
-ALS gibi kritik bir konuda tek kaynak veya RSS mantığı yeterli değil.
-Sistem; araştırma, klinik çalışma, ilaç/onay, kılavuz ve uzman merkez/doktor verilerini ayrı katmanlar halinde toplamalı.
-Her veri tipi kendi resmi veya kurumsal kaynağından alınmalı.
-RSS sadece geçici bir toplama yöntemi değil, bu projede mümkünse tamamen kaldırılmalı. En azından ana veri kaynağı olmamalı.
+TEMEL İLKE
+Bu platformun önceliği “API kullanmak” değil, “doğru, güvenilir, globalde kabul görmüş ve doğrulanabilir ALS bilgisini” toplamaktır.
+Mimari karar teknik kolaylığa göre değil, kaynak güvenilirliğine göre verilsin.
+Yani sistem “API-first” değil, “source-trust-first” mantığıyla çalışsın.
+
+ANA KURAL
+- Resmi API varsa kullan.
+- Resmi API yoksa yalnızca resmi ve kurumsal web kaynaklarından kontrollü ingest yap.
+- Rastgele haber siteleri, bloglar, SEO içerikleri, “top doctor” tarzı listeleme siteleri, yorumlayıcı ikincil kaynaklar ana veri kaynağı olarak kullanılmasın.
+- RSS ana kaynak olmaktan çıkarılsın.
+- Mümkünse tamamen kaldır.
+- Geçici olarak tutulacaksa yalnızca düşük öncelikli yardımcı kaynak olsun; ana veri akışı RSS üzerinden kurulmasın.
 
 HEDEF
-Sistemi “haber toplar gibi içerik çeken RSS yapısı” olmaktan çıkar.
-Bunun yerine “kanıt düzeyi olan, kaynağı belli, doğrulanabilir tıbbi bilgi platformu” mantığına geçir.
+Bu sistemi RSS tabanlı içerik toplayıcı mantığından çıkar.
+Bunun yerine ALS konusunda:
+- bilimsel yayınları,
+- klinik çalışmaları,
+- ilaç/onay durumlarını,
+- klinik kılavuzları,
+- uzman merkezleri ve ilişkili doktorları
+ayrı veri katmanları halinde toplayan, doğrulayan, saklayan ve editör onayı sonrası yayımlayan güvenilir bir bilgi platformuna dönüştür.
 
-YENİ KAYNAK MANTIĞI
+KAYNAK STRATEJİSİ
 
-1. RESEARCH / BİLİMSEL YAYINLAR
-Kaynak:
-- PubMed API (NCBI E-utilities)
+1) RESEARCH / BİLİMSEL YAYINLAR
 Amaç:
-- ALS ile ilgili güncel ve globalde kabul gören bilimsel yayınları almak
-Not:
-- Araştırma makaleleri RSS ile değil PubMed API ile çekilsin
-- PMID unique kimlik olarak kullanılsın
-- Başlık, özet, yazarlar, dergi, yayın tarihi, DOI, PubMed linki saklansın
+ALS ile ilgili güncel ve global ölçekte kabul gören bilimsel yayınları toplamak.
+Kaynak mantığı:
+- Ana kaynak PubMed olsun.
+- Araştırma makaleleri RSS ile değil resmi veri kaynağı üzerinden alınsın.
+Kurallar:
+- PMID unique kimlik olarak kullanılsın.
+- Başlık, özet, yazarlar, dergi, yayın tarihi, DOI, kaynak linki saklansın.
+- Aynı kayıt ikinci kez eklenmesin.
 
-2. CLINICAL TRIALS / KLİNİK ÇALIŞMALAR
-Kaynak:
-- ClinicalTrials.gov API
-- WHO ICTRP (mümkünse entegrasyon veya ikincil kaynak olarak)
+2) CLINICAL TRIALS / KLİNİK ÇALIŞMALAR
 Amaç:
-- Devam eden, tamamlanan, sonuç açıklayan ALS klinik çalışmalarını toplamak
-Not:
-- Trial kayıtları research makalelerinden ayrı tutulmalı
-- NCT ID veya resmi trial ID unique alan olmalı
-- Faz, durum, sponsor, müdahale tipi, ülke, merkezler, sonuç özeti gibi alanlar saklanmalı
+ALS ile ilgili devam eden, tamamlanan veya sonuç açıklayan klinik çalışmaları toplamak.
+Kaynak mantığı:
+- ClinicalTrials.gov ana kaynak olsun.
+- Global kapsama için WHO ICTRP benzeri resmi trial kaynakları yardımcı katman olarak eklenebilsin.
+Kurallar:
+- Trial kayıtları research makaleleriyle karıştırılmasın.
+- NCT ID veya resmi external_id unique alan olsun.
+- Faz, durum, sponsor, müdahale tipi, ülke, merkez, sonuç özeti gibi alanlar saklansın.
 
-3. DRUGS / İLAÇLAR VE ONAY DURUMU
-Kaynak:
-- FDA
-- EMA
+3) DRUGS / İLAÇLAR VE RESMİ ONAY DURUMU
 Amaç:
-- ALS ile ilgili ilaçların gerçekten resmi onay alıp almadığını doğrulamak
-Not:
-- İlaç bilgisi makalelerden türetilmemeli
-- Her ilaç için bölgesel onay durumu tutulmalı
-- Örn: US approval, EU approval, orphan status, indication, label date
-- Her ilacın kaynağı resmi regülatör sayfası olmalı
+ALS ile ilişkili ilaçların gerçekten resmi düzeyde hangi bölgede hangi statüde olduğunu göstermek.
+Kaynak mantığı:
+- FDA ve EMA gibi resmi regülatör kaynaklar baz alınsın.
+Kurallar:
+- Bir ilacın “ALS için onaylı”, “belirli alt tip için onaylı”, “araştırma aşamasında”, “inceleme altında” gibi statüleri yalnızca resmi kaynaklardan doğrulansın.
+- İlaç bilgisi yalnızca makaleden türetilmesin.
+- Bölgesel statü tutulsun:
+  - US approval
+  - EU approval
+  - orphan / special designation
+  - indication / endikasyon
+  - label / approval tarihi
+- Her ilaç için resmi kaynak URL saklansın.
 
-4. GUIDELINES / KILAVUZLAR
-Kaynak:
-- NICE
-- AAN
-- EAN
+4) GUIDELINES / KILAVUZLAR
 Amaç:
-- Klinik uygulamada kabul gören rehberleri ayrı içerik tipi olarak sunmak
-Not:
-- Kılavuzlar research makalesi gibi gösterilmemeli
-- Ayrı kategori olmalı
-- Rehber adı, yayınlayan kurum, yayın tarihi, özet, hedef alan, kaynak linki tutulmalı
+Klinik uygulamada kabul gören ALS rehberlerini ayrı içerik tipi olarak sunmak.
+Kaynak mantığı:
+- NICE, AAN, EAN gibi resmi mesleki/kurumsal guideline kaynakları esas alınsın.
+Kurallar:
+- Guideline içerikleri research makaleleriyle aynı tabloda tutulmasın.
+- Ayrı content type veya ayrı tablo olsun.
+- Rehber adı, kurum, yayın tarihi, kapsam, kısa özet ve kaynak linki saklansın.
+- LLM özet üretebilir ama yayın öncesi editör onayı zorunlu olsun.
 
-5. EXPERT CENTERS / DOKTORLAR / MERKEZLER
-Kaynak:
-- ALS Association clinic/center listings
-- NEALS
-- ENCALS
-- MDA Care Center Network
+5) EXPERT CENTERS / UZMAN MERKEZLER
 Amaç:
-- Dünya çapında ALS konusunda çalışan kurumsal merkezleri ve ilişkili uzmanları göstermek
-Not:
-- Rastgele “top doctor” siteleri kullanılmasın
-- Doktor verisi yalnızca resmi merkez/profil sayfalarından türetilsin
-- Öncelik bireysel “en iyi doktor” listesi değil, resmi ALS merkezleri olsun
-- Doktorlar merkez ilişkisi ile tutulmalı
+Dünya çapında ALS alanında çalışan güvenilir merkezleri göstermek.
+Kaynak mantığı:
+- ALS Association, NEALS, ENCALS, MDA ve akademik ALS merkezleri gibi kurumsal yapılar baz alınsın.
+Kurallar:
+- Öncelik bireysel “en iyi doktor” listeleri değil, resmi ALS merkezleri olsun.
+- Merkez adı, kurum, ülke, şehir, iletişim bilgisi, resmi sayfa linki, merkez tipi gibi alanlar saklansın.
+- Merkez açıklaması gerekiyorsa mümkün olduğunca kurumsal kaynaktan türetilsin.
 
-SİSTEM TASARIM KARARI
-Bu projede tüm içerikler aynı tipte tutulmayacak.
-Ayrı veri modelleri veya en azından ayrı content types kurulmalı:
+6) DOCTORS / DOKTORLAR
+Amaç:
+ALS alanında çalışan doktorları ancak güvenli ve doğrulanabilir şekilde sunmak.
+Kaynak mantığı:
+- Doktor verisi yalnızca resmi merkez sayfaları, üniversite/hastane profilleri veya kurumsal profil sayfalarından alınsın.
+Kurallar:
+- Rastgele doktor listeleme siteleri kullanılmasın.
+- “Dünyanın en iyi doktorları” gibi subjektif ranking mantığı kurulmasın.
+- Doktor profili varsa merkezle ilişkili şekilde tutulsun.
+- Yalnızca resmi profilde açıkça doğrulanabilen alanlar gösterilsin:
+  - ad soyad
+  - unvan
+  - bağlı kurum
+  - uzmanlık alanı
+  - resmi profil linki
+- Doktor verileri otomatik yayınlanmasın; editör onayı zorunlu olsun.
+
+ERİŞİM MODELİ
+Kaynakları 3 modda yönet:
+
+1. API SOURCE
+Resmi veya uygun programatik erişimi olan kaynaklar.
+Buralarda mümkünse API kullan.
+
+2. WEB INGEST SOURCE
+Resmi API yoksa yalnızca resmi kurumsal sayfalardan kontrollü ingest yap.
+Serbest scraping mantığı kurulmasın.
+Parser logları ve hata takibi olsun.
+
+3. MANUAL / CURATED VERIFICATION
+Hassas içeriklerde editör doğrulaması zorunlu olsun.
+Özellikle:
+- doktor profilleri
+- ilaç statüleri
+- kılavuz özetleri
+- merkez açıklamaları
+doğrudan yayına çıkmasın.
+
+VERİ MODELİ
+Her şeyi tek tabloda toplama.
+Ayrı veri tipleri kur:
 
 - research_articles
 - clinical_trials
@@ -81,122 +132,142 @@ Ayrı veri modelleri veya en azından ayrı content types kurulmalı:
 - guidelines
 - expert_centers
 - doctors
-- sources
+- source_registry
+- ingestion_logs
 
-Her kayıt için aşağıdaki metadata zorunlu olsun:
+Her içerikte ortak alanlar bulunsun:
 - source_name
+- source_mode
 - source_type
 - source_url
 - external_id
-- verification_level
+- verification_tier
+- raw_payload_json
 - fetched_at
 - last_verified_at
-- raw_payload_json
-- status (draft / in_review / approved / rejected / published)
+- status
+- created_at
+- updated_at
 
-GÜVENİLİRLİK MODELİ
-Her içerik için evidence / trust tier sistemi kur:
+STATUS AKIŞI
+Tüm hassas içerikler için yayın akışı zorunlu olsun:
+- draft
+- in_review
+- approved
+- rejected
+- published
 
-Tier 1:
-- PubMed
-- ClinicalTrials.gov
-- WHO ICTRP
-- FDA
-- EMA
-- NICE
-- AAN
-- EAN
+Dedup kuralları:
+- research için PMID
+- trials için NCT ID veya resmi trial id
+- drugs için regulator-specific external key
+- guidelines için canonical source_url veya kurumsal id
+- centers/doctors için resmi profil URL veya kurumsal external id
 
-Tier 2:
-- NEALS
-- ENCALS
-- ALS Association
-- MDA
-- üniversite hastaneleri / akademik ALS merkezleri
+GÜVEN / KANIT MODELİ
+Her kayda verification_tier ver:
 
-Tier 3:
-- haber kaynakları
-- blog içerikleri
-- yorumlayıcı ikincil içerikler
+Tier 1
+- resmi bilimsel, regülatör veya resmi kayıt kaynakları
 
-UI’de kullanıcıya bunun kaynağı ve güven düzeyi açıkça gösterilsin.
+Tier 2
+- kurumsal ağlar, akademik merkezler, tanınmış ALS kuruluşları
 
-MEVCUT RSS YAPISI İÇİN KARAR
-Şu anda sistem RSS üzerinden ilerliyor.
-Bu yapıyı aşağıdaki şekilde dönüştür:
+Tier 3
+- haber, blog, yorumlayıcı ikincil içerikler
 
-SEÇENEK TERCİHİ:
-- Ana hedef: RSS’i tamamen kaldır
-- Geçici gerekiyorsa: RSS sadece düşük öncelikli yardımcı kaynak olsun, ana veri kaynağı olmasın
+Kurallar:
+- Varsayılan kullanıcı deneyiminde Tier 1 ve Tier 2 içerikler öne çıkarılsın.
+- Tier 3 ana bilgi kaynağı olmasın.
+- Hassas tıbbi bilgi Tier 3 kaynağa dayandırılmasın.
 
-Amaç:
-- Research verisi RSS’ten değil PubMed API’den gelsin
-- Trial verisi RSS’ten değil ClinicalTrials.gov API’den gelsin
-- Drug approval verisi RSS’ten değil FDA/EMA doğrulamasından gelsin
-- Guideline verisi RSS haberlerinden değil resmi guideline sayfalarından gelsin
-- Doctor/center verisi RSS’ten değil resmi kurum dizinlerinden gelsin
+RSS İLE İLGİLİ KESİN KARAR
+Mevcut sistem RSS üzerinden ilerliyor olabilir.
+Bu mimari artık ana çözüm olmayacak.
 
-YAPILACAK DÖNÜŞÜM
-1. RSS feed importer yapısını incele
-2. Hangi içeriklerin şu anda RSS ile toplandığını tespit et
-3. Her RSS akışını uygun resmi kaynağa map et
-4. PubMed API client ekle
-5. ClinicalTrials.gov API client ekle
-6. Drug verification source layer ekle
-7. Guidelines source layer ekle
-8. Expert centers source layer ekle
-9. Eski RSS parser/job bağımlılıklarını temizle veya devre dışı bırak
-10. Veri tekrarını önlemek için external_id bazlı dedup kur
+Yapılacaklar:
+1. Mevcut RSS importer yapısını incele.
+2. RSS ile gelen içerikleri kategori bazında ayır.
+3. Her kategoriyi uygun resmi kaynağa map et.
+4. Research verisini RSS’ten çıkar.
+5. Trial verisini RSS’ten çıkar.
+6. Drug approval mantığını RSS’ten çıkar.
+7. Guideline mantığını RSS’ten çıkar.
+8. Center/doctor mantığını RSS’ten çıkar.
+9. Eski RSS parser/job bağımlılıklarını kaldır veya devre dışı bırak.
+10. Yeni mimaride RSS ana kaynak olmasın.
 
-İÇERİK YAYIN AKIŞI
-Yeni sistem şu şekilde çalışsın:
-1. Scheduler / cron çalışır
-2. Resmi kaynaklardan veri çekilir
-3. Raw veri saklanır
-4. Normalize edilir
-5. Duplicate kontrolü yapılır
-6. Türkçe özet / kısa özet üretilir
-7. Admin review queue’ya düşer
-8. Onaydan sonra yayınlanır
+İŞ AKIŞI
+Yeni sistem şu akışla çalışsın:
+1. Scheduler / cron çalışır.
+2. Kaynak türüne göre uygun adaptör devreye girer.
+3. Veri resmi kaynaktan çekilir.
+4. Raw payload saklanır.
+5. Normalize edilir.
+6. external_id bazlı duplicate kontrolü yapılır.
+7. Türkçe özet / kısa özet gerekiyorsa üretilir.
+8. İçerik review queue’ya düşer.
+9. Editör onayı sonrası yayımlanır.
+10. Kullanıcıya her zaman kaynak ve doğrulama bilgisi gösterilir.
 
-ADMIN PANEL GEREKSİNİMLERİ
-Admin panelinde içerik tipi bazlı filtreleme olsun:
-- Research
-- Trials
-- Drugs
-- Guidelines
-- Centers
-- Doctors
+ADMIN PANEL
+Admin panelinde şu filtreler ve alanlar olsun:
+Filtreler:
+- content type
+- source_name
+- source_mode
+- verification_tier
+- status
+- date range
 
-Ayrıca:
-- Kaynak adı
-- Kaynak linki
-- Güven seviyesi
-- Son doğrulama tarihi
-- Orijinal veri
+Ekranlarda gösterilecek alanlar:
+- içerik başlığı
+- kaynak kurumu
+- kaynak linki
+- external_id
+- son çekilme tarihi
+- son doğrulama tarihi
+- ham veri
 - Türkçe özet
-- Yeniden çek
-- Yeniden özetle
-- Yayınla / reddet
+- kısa özet
+- yayın durumu
 
-KRİTİK KURAL
-ALS gibi hassas bir alanda sistem “haber toplayıcı” gibi davranmamalı.
-Her bilgi; kaynağı doğrulanabilir, resmi veya bilimsel temelli ve kategorik olarak ayrıştırılmış olmalı.
-Mimari buna göre revize edilsin.
+Aksiyonlar:
+- yeniden çek
+- yeniden özetle
+- onayla
+- reddet
+- yayımla
+- kaynağa git
+
+MİMARİ KURAL
+Bu platform “içerik toplayıcı” değil, “kaynak bazlı doğrulanmış ALS bilgi platformu” olarak davranmalı.
+Teknik kararlar kolaylığa göre değil, kaynak otoritesine göre verilmeli.
+Yani:
+- API varsa kullan
+- yoksa resmi kaynaktan kontrollü ingest yap
+- hassas alanlarda editör doğrulaması uygula
+- kullanıcıya kaynağı açıkça göster
 
 TESLİMDE İSTEDİKLERİM
-- Yeni kaynak mimarisi
-- Veri modelleri
-- API entegrasyon servisleri
-- Scheduler yapısı
-- Admin panel değişiklikleri
-- RSS’ten API tabanlı yapıya geçiş planı
-- Gerekli migration dosyaları
-- Dedup stratejisi
-- Örnek veri akışı
-- Hangi mevcut dosyaların kaldırıldığı / değiştiği
+Bana eksiksiz olarak şunları ver:
+- yeni source-trust-first mimari
+- hangi içerik tipinin hangi kaynaktan beslendiği
+- API source / web ingest source / manual curated source ayrımı
+- veri modelleri
+- migration dosyaları
+- adapter / service sınıfları
+- scheduler / cron yapısı
+- dedup stratejisi
+- review queue mantığı
+- admin panel değişiklikleri
+- mevcut RSS yapısından yeni mimariye geçiş planı
+- kaldırılan veya devre dışı bırakılan eski dosyalar
+- örnek uçtan uca veri akışı
+- riskler ve fallback stratejisi
 
-Not:
-Ben bu projeyi RSS tabanlı bir içerik toplayıcı olarak istemiyorum.
-ALS konusunda güvenilir, global, doğrulanabilir ve kaynak bazlı ayrıştırılmış bir bilgi platformu istiyorum.
-Bu yüzden mimari kararı buna göre ver ve sistemi bu mantıkla refactor et.
+SON TALİMAT
+Ben bu projeyi RSS tabanlı, her şeyi rastgele toplayan bir sistem olarak istemiyorum.
+Benim istediğim şey:
+doğru, güvenilir, globalde kabul görmüş, doğrulanabilir ve kaynak türüne göre ayrıştırılmış ALS bilgisini sunan bir platform.
+Tüm refactor, veri modeli, scheduler, admin paneli ve ingest mantığını bu karara göre yeniden kur.

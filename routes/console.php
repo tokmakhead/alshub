@@ -9,4 +9,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('als:fetch-content')->hourly();
+// Schedule::command('als:fetch-content')->hourly();企画制 (Kaldırıldı).

@@ -1,4 +1,4 @@
-Sistemin mimarisini şu ilkeye göre yeniden düzenle:
+Sistemin mimarisini şu ilkeye göre yeniden düzenle. Fakat işler yolunda gitmezse eski sisteme dönebileceğimizi unutma!
 
 TEMEL İLKE
 Bu platformun önceliği “API kullanmak” değil, “doğru, güvenilir, globalde kabul görmüş ve doğrulanabilir ALS bilgisini” toplamaktır.

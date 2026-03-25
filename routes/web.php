@@ -41,6 +41,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('contents/delete-all', [AdminContentController::class, 'deleteAll'])->name('contents.delete-all');
     Route::resource('contents', AdminContentController::class)->names('contents')->except(['create', 'store']);
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
+    Route::get('/migrate-source-trust', function() {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            return "Migration success: <pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+        } catch (\Exception $e) {
+            return "Migration failed: " . $e->getMessage();
+        }
+    });
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
     Route::get('/test-log', function() {
         \Log::info("MANUAL TEST LOG: Core system is working at " . now());

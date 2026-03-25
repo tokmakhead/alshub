@@ -12,6 +12,11 @@ class SourceController extends Controller
      */
     public function index()
     {
+        // Temizlik: Sıkışmış (stuck) import durumlarını bir kereliğine temizle
+        if (request()->has('reset_stuck')) {
+            \App\Models\Source::where('is_importing', true)->update(['is_importing' => false, 'import_progress' => 0]);
+        }
+        
         $sources = \App\Models\Source::latest()->paginate(10);
         return view('admin.sources.index', compact('sources'));
     }

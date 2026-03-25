@@ -52,8 +52,13 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $content->created_at->format('d.m.Y H:i') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm font-medium">
-                                        <a href="{{ route('admin.contents.edit', $content) }}" class="text-indigo-600 hover:text-indigo-900">Düzenle</a>
+                                    <td class="px-6 py-4 text-sm font-medium flex gap-3">
+                                        <a href="{{ route('admin.contents.edit', $content) }}" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded">Düzenle</a>
+                                        <form action="{{ route('admin.contents.destroy', $content) }}" method="POST" onsubmit="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 border border-red-600 px-2 py-1 rounded">Sil</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

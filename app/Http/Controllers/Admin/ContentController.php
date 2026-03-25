@@ -34,7 +34,7 @@ class ContentController extends Controller
     public function update(\Illuminate\Http\Request $request, \App\Models\Content $content)
     {
         $validated = $request->validate([
-            'translated_title' => 'required|string|max:255',
+            'translated_title' => 'required|string',
             'translated_summary' => 'required|string',
             'status' => 'required|in:draft,review,published,archived',
         ]);
@@ -45,13 +45,19 @@ class ContentController extends Controller
 
         $content->update($validated);
 
-        return redirect()->route('admin.contents.index')->with('success', 'Content updated successfully.');
+        return redirect()->route('admin.contents.index')->with('success', 'İçerik başarıyla güncellendi.');
     }
 
     public function destroy(\App\Models\Content $content)
     {
         $content->delete();
-        return redirect()->route('admin.contents.index')->with('success', 'Content deleted successfully.');
+        return redirect()->route('admin.contents.index')->with('success', 'İçerik silindi.');
+    }
+
+    public function deleteAll()
+    {
+        \App\Models\Content::query()->delete();
+        return redirect()->route('admin.contents.index')->with('success', 'Tüm içerikler başarıyla silindi.');
     }
 
     public function translate(\App\Models\Content $content, \App\Services\TranslationService $translationService)

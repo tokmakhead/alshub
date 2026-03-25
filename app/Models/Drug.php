@@ -22,4 +22,4 @@ class Drug extends Model
     {
         return $this->hasMany(DrugRegionalStatus::class);
     }
-}企画制 (Kaldırıldı).
+}

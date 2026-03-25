@@ -33,4 +33,4 @@ class ResearchArticle extends Model
         'fetched_at' => 'datetime',
         'last_verified_at' => 'datetime',
     ];
-}企画制 (Kaldırıldı).
+}

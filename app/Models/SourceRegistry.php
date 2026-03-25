@@ -27,4 +27,4 @@ class SourceRegistry extends Model
         'last_successful_sync' => 'datetime',
         'last_failed_sync' => 'datetime',
     ];
-}企画制 (Kaldırıldı).
+}

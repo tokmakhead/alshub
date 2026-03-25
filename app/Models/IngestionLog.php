@@ -27,4 +27,4 @@ class IngestionLog extends Model
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
-}企画制 (Kaldırıldı).
+}

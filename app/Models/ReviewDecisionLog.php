@@ -21,4 +21,4 @@ class ReviewDecisionLog extends Model
     {
         return $this->belongsTo(User::class, 'reviewer_id');
     }
-}企画制 (Kaldırıldı).
+}

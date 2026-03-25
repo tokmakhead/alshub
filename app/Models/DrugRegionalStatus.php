@@ -36,4 +36,4 @@ class DrugRegionalStatus extends Model
     {
         return $this->belongsTo(Drug::class);
     }
-}企画制 (Kaldırıldı).
+}

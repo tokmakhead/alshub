@@ -33,4 +33,19 @@ class ResearchArticle extends Model
         'fetched_at' => 'datetime',
         'last_verified_at' => 'datetime',
     ];
+
+    public function getDisplayTitleAttribute()
+    {
+        return $this->title;
+    }
+
+    public function getDisplaySummaryAttribute()
+    {
+        return $this->abstract_tr ?: $this->abstract_original;
+    }
+
+    public function getSourceLabelAttribute()
+    {
+        return $this->journal ?: 'PubMed';
+    }
 }

@@ -2,45 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ResearchArticle;
+use App\Models\ClinicalTrial;
+use App\Models\Drug;
+use App\Models\Guideline;
+use App\Models\Content;
 use Illuminate\Http\Request;
 
 class ContentController extends Controller
 {
     public function publications()
     {
-        $contents = \App\Models\Content::where('type', 'publication')->where('status', 'published')->latest()->paginate(12);
-        $title = "Araştırmalar / Yayınlar";
+        $contents = ResearchArticle::where('status', 'published')->latest()->paginate(12);
+        $title = "Bilimsel Araştırmalar";
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
     public function trials()
     {
-        $contents = \App\Models\Content::where('type', 'trial')->where('status', 'published')->latest()->paginate(12);
+        $contents = ClinicalTrial::where('status', 'published')->latest()->paginate(12);
         $title = "Klinik Çalışmalar";
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
     public function drugs()
     {
-        $contents = \App\Models\Content::where('type', 'drug')->where('status', 'published')->latest()->paginate(12);
-        $title = "İlaçlar / Tedavi Gelişmeleri";
+        $contents = Drug::where('status', 'published')->latest()->paginate(12);
+        $title = "İlaç ve Tedavi Gelişmeleri";
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
-    public function show($slug)
+    public function guidelines()
     {
-        $content = \App\Models\Content::where('slug', $slug)->firstOrFail();
+        $contents = Guideline::where('status', 'published')->latest()->paginate(12);
+        $title = "Klinik Rehberler";
+        return view('frontend.content.index', compact('contents', 'title'));
+    }
+
+    public function show($type, $slug)
+    {
+        $model = match($type) {
+            'research' => ResearchArticle::class,
+            'trial' => ClinicalTrial::class,
+            'drug' => Drug::class,
+            'guideline' => Guideline::class,
+            default => Content::class
+        };
+
+        $content = $model::where('slug', $slug)->firstOrFail();
         return view('frontend.content.show', compact('content'));
     }
 
-    public function search(\Illuminate\Http\Request $request)
+    public function search(Request $request)
     {
         $term = $request->input('q');
-        $contents = \App\Models\Content::where('status', 'published')
+        // Simple search on ResearchArticles for now, can be expanded to polymorphic search
+        $contents = ResearchArticle::where('status', 'published')
             ->where(function($query) use ($term) {
-                $query->where('translated_title', 'like', "%{$term}%")
-                      ->orWhere('translated_summary', 'like', "%{$term}%")
-                      ->orWhere('original_title', 'like', "%{$term}%");
+                $query->where('title', 'like', "%{$term}%")
+                      ->orWhere('abstract_tr', 'like', "%{$term}%");
             })
             ->latest()
             ->paginate(12);

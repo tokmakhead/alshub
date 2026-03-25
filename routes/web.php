@@ -21,8 +21,9 @@ Route::get('/als-nedir', [HomeController::class, 'aboutAls'])->name('about.als')
 Route::get('/arastirmalar', [ContentController::class, 'publications'])->name('publications');
 Route::get('/klinik-calismalar', [ContentController::class, 'trials'])->name('trials');
 Route::get('/ilaclar', [ContentController::class, 'drugs'])->name('drugs');
+Route::get('/rehberler', [ContentController::class, 'guidelines'])->name('guidelines');
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
-Route::get('/icerik/{slug}', [ContentController::class, 'show'])->name('content.show');
+Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('content.show');
 
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');

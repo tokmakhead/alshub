@@ -22,9 +22,18 @@ class ContentFetcherService
     protected function fetchFromRss(Source $source)
     {
         try {
-            $rss = simplexml_load_file($source->base_url);
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            ])->timeout(30)->get($source->base_url);
+
+            if (!$response->successful()) {
+                throw new \Exception("Could not fetch RSS. HTTP Status: " . $response->status());
+            }
+
+            $rss = simplexml_load_string($response->body());
+            
             if (!$rss) {
-                throw new \Exception("RSS URL could not be parsed: " . $source->base_url);
+                throw new \Exception("RSS content could not be parsed as valid XML.");
             }
 
             $count = 0;

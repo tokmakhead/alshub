@@ -87,7 +87,16 @@
                 }
             }).then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.error || 'Server Error'); });
+                    return response.text().then(text => {
+                        // Try to extract a human-readable error from Laravel HTML if possible
+                        try {
+                            const json = JSON.parse(text);
+                            throw new Error(json.error || 'Server Error');
+                        } catch(e) {
+                            // If not JSON, show the first 200 chars of HTML
+                            throw new Error("Server Error (HTML): " + text.substring(0, 300).replace(/<[^>]*>/g, ' '));
+                        }
+                    });
                 }
                 return response.json();
             }).catch(err => {

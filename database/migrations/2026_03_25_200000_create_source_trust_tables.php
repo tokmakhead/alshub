@@ -137,4 +137,4 @@ return new class extends Migration
         Schema::dropIfExists('ingestion_logs');
         Schema::dropIfExists('source_registry');
     }
-};企画制 (Kaldırıldı).
+};

@@ -12,7 +12,9 @@ class ContentController extends Controller
      */
     public function index(\Illuminate\Http\Request $request)
     {
-        $query = \App\Models\Content::with('source')->latest();
+        $query = \App\Models\Content::where('verification_tier', 3)
+            ->with('source')
+            ->latest();
 
         if ($request->has('status')) {
             $query->where('status', $request->status);
@@ -56,8 +58,8 @@ class ContentController extends Controller
 
     public function deleteAll()
     {
-        \App\Models\Content::query()->delete();
-        return redirect()->route('admin.contents.index')->with('success', 'Tüm içerikler başarıyla silindi.');
+        \App\Models\Content::where('verification_tier', 3)->delete();
+        return redirect()->route('admin.contents.index')->with('success', 'Tüm arşiv içerikleri silindi.');
     }
 
     public function translate(\App\Models\Content $content, \App\Services\TranslationService $translationService)

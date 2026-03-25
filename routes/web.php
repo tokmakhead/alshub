@@ -38,9 +38,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('sources', SourceController::class);
     Route::post('sources/{source}/fetch', [SourceController::class, 'fetchNow'])->name('sources.fetch');
     Route::get('sources/{source}/progress', [SourceController::class, 'checkProgress'])->name('sources.progress');
-    Route::delete('contents/delete-all', [AdminContentController::class, 'deleteAll'])->name('contents.delete-all');
-    Route::resource('contents', AdminContentController::class)->names('contents')->except(['create', 'store']);
-    Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
+
+    // New Scientific Content Routes
+    Route::resource('research', ResearchArticleController::class);
+    Route::resource('trials', ClinicalTrialController::class);
+    Route::resource('drugs', DrugController::class);
+
+    // Archive / Legacy
+    Route::get('legacy', [ContentController::class, 'index'])->name('contents.index');
+    Route::delete('contents/delete-all', [ContentController::class, 'deleteAll'])->name('contents.delete-all');
+    Route::resource('contents', ContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
+    Route::post('contents/{content}/translate', [ContentController::class, 'translate'])->name('contents.translate');
+    
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
 });
 

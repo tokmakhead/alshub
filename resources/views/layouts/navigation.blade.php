@@ -18,11 +18,20 @@
                     <x-nav-link :href="route('admin.sources.index')" :active="request()->routeIs('admin.sources.*')">
                         {{ __('Kaynaklar') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.research.index')" :active="request()->routeIs('admin.research.*')">
+                        {{ __('Araştırmalar') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.trials.index')" :active="request()->routeIs('admin.trials.*')">
+                        {{ __('Klinik Çalışmalar') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.drugs.index')" :active="request()->routeIs('admin.drugs.*')">
+                        {{ __('İlaçlar') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">
-                        {{ __('İçerikler') }}
+                        {{ __('Arşiv (RSS)') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">
-                        {{ __('İşlem Günlükleri') }}
+                        {{ __('Loglar') }}
                     </x-nav-link>
                 </div>
             </div>

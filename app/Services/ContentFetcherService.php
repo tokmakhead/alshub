@@ -15,13 +15,15 @@ class ContentFetcherService
         set_time_limit(0);
         ignore_user_abort(true);
         
-        if ($source->fetch_method === 'rss') {
+        \Log::info("Fetch started for Source {$source->id} ({$source->name})");
+        
         $source->update([
             'is_importing' => true,
             'import_progress' => 5,
-            'import_message' => 'RSS Akışı okunuyor...',
+            'import_message' => 'Bağlantı kuruluyor...',
         ]);
         try {
+            \Log::info("Fetching RSS from: " . $source->base_url);
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
                 'Accept' => 'application/rss+xml, application/xml;q=0.9, */*;q=0.8',

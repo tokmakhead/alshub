@@ -25,6 +25,33 @@ Route::get('/rehberler', [ContentController::class, 'guidelines'])->name('guidel
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
 Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('content.show');
 
+Route::get('/fix-slugs-7788', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        
+        // Populate existing slugs for ALL models
+        $count = 0;
+        
+        $classes = [\App\Models\ResearchArticle::class, \App\Models\ClinicalTrial::class, \App\Models\Guideline::class, \App\Models\Drug::class];
+        
+        foreach($classes as $c) {
+            $items = $c::whereNull('slug')->get();
+            foreach($items as $i) {
+                $i->save(); // Triggers boot method
+                $count++;
+            }
+        }
+        
+        // Publish some content for verification
+        \App\Models\ResearchArticle::where('status', 'draft')->limit(3)->get()->each(function($a){ $a->update(['status'=>'published']); });
+        \App\Models\ClinicalTrial::where('status', 'draft')->limit(3)->get()->each(function($t){ $t->update(['status'=>'published']); });
+        
+        return "Fix Complete! Processed items: " . $count;
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');

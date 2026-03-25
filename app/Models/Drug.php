@@ -13,9 +13,16 @@ class Drug extends Model
         'generic_name',
         'brand_name',
         'slug',
+        'description_original',
+        'description_tr',
+        'ai_summary',
+        'is_approved_fda',
+        'is_approved_ema',
+        'is_approved_titck',
         'source_name',
         'verification_tier',
         'status',
+        'last_verified_at',
     ];
 
     protected $casts = [
@@ -27,17 +34,17 @@ class Drug extends Model
 
     public function getDisplayTitleAttribute()
     {
-        return $this->name;
+        return $this->brand_name ? "{$this->generic_name} ({$this->brand_name})" : $this->generic_name;
     }
 
     public function getDisplaySummaryAttribute()
     {
-        return $this->description_tr ?: $this->description_original;
+        return $this->ai_summary ?: ($this->description_tr ?: $this->description_original);
     }
 
     public function getSourceLabelAttribute()
     {
-        return 'Therapeutic Update';
+        return $this->source_name ?: 'İlaç Gelişmeleri';
     }
 
     public function regionalStatuses()

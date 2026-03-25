@@ -17,15 +17,6 @@ Route::get('/klinik-calismalar', [ContentController::class, 'trials'])->name('tr
 Route::get('/ilaclar', [ContentController::class, 'drugs'])->name('drugs');
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
 Route::get('/icerik/{slug}', [ContentController::class, 'show'])->name('content.show');
-Route::get('/migrate-expert-secret-7788', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return "Migration Success: " . \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Exception $e) {
-        return "Migration Error: " . $e->getMessage();
-    }
-});
-
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');

@@ -19,11 +19,11 @@ class TranslationService
         }
 
         try {
-            $prompt = "Sen uzman bir tıp çevirmenisin. Aşağıdaki ALS ile ilgili bilimsel makalenin başlığını ve özetini (abstract) Türkçeye eksiksiz, profesyonel ve aslına sadık kalarak çevir. \n\n" .
-                      "ÖNEMLİ KURALLAR:\n" .
-                      "1. Özetleme YAPMA, her cümleyi çevir.\n" .
-                      "2. Varsa 'Objective', 'Methods', 'Results', 'Conclusion' başlıklarını 'AMAÇ', 'YÖNTEM', 'BULGULAR', 'SONUÇ' olarak koru.\n" .
-                      "3. Yanıtında SADECE çeviriyi şu formatta ver: [BASLIK]Çevrilmiş Başlık[OZET]Çevrilmiş Tam Metin\n\n" .
+            $prompt = "Sen uzman bir tıp çevirmenisin. Aşağıdaki ALS makalesini Türkçeye çevir.\n\n" .
+                      "KESİN KURALLAR:\n" .
+                      "1. ASLA açıklama yapma, ASLA 'İşte çeviri' deme.\n" .
+                      "2. SADECE şu formatı kullan: [BASLIK]...[OZET]...\n" .
+                      "3. Özetleme yapma, tam metni çevir.\n\n" .
                       "BAŞLIK: {$content->original_title}\n" .
                       "ÖZET: {$content->original_summary}";
 
@@ -42,12 +42,15 @@ class TranslationService
                 $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
                 
                 if ($text) {
+                    // Remove markdown bolding and other AI chatter if present
+                    $text = str_replace(['**Başlık:**', '**Özet:**', '**Yanıt:**'], '', $text);
+                    
                     // Improved parsing using markers
                     if (preg_match('/\[BASLIK\](.*?)\[OZET\](.*)/s', $text, $matches)) {
                         $content->translated_title = trim($matches[1]);
                         $content->translated_summary = trim($matches[2]);
                     } else {
-                        // Fallback to simpler split if markers fail
+                        // Fallback: If AI ignores markers but uses blocks
                         $content->translated_title = $content->original_title;
                         $content->translated_summary = trim($text);
                     }

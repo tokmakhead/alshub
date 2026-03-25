@@ -27,7 +27,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Base URL / Feed URL</label>
-                            <input type="url" name="base_url" value="{{ $source->base_url }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <textarea name="base_url" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>{{ $source->base_url }}</textarea>
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 text-sm">Durum</label>

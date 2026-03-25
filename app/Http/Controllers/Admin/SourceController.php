@@ -42,18 +42,18 @@ class SourceController extends Controller
 
     public function update(\Illuminate\Http\Request $request, \App\Models\Source $source)
     {
+        \Illuminate\Support\Facades\Log::info("RAW Request base_url arriving: '" . $request->input('base_url') . "'");
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string',
-            'base_url' => 'required|url',
+            'base_url' => 'required|string', // Changed from url to string for debugging
             'fetch_method' => 'required|string',
             'is_active' => 'boolean',
         ]);
 
         \Illuminate\Support\Facades\Log::info("Updating Source ID: " . $source->id);
-        \Illuminate\Support\Facades\Log::info("Base URL Length arriving: " . strlen($request->base_url));
-        \Illuminate\Support\Facades\Log::info("Base URL Start: " . substr($request->base_url, 0, 50));
-        \Illuminate\Support\Facades\Log::info("Base URL End: " . substr($request->base_url, -10));
+        \Illuminate\Support\Facades\Log::info("Base URL Length after validation: " . strlen($validated['base_url']));
 
         $source->update($validated);
 

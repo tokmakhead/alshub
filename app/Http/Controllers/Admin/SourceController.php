@@ -68,12 +68,22 @@ class SourceController extends Controller
 
     public function fetchNow(\App\Models\Source $source, \App\Services\ContentFetcherService $fetcher)
     {
-        $result = $fetcher->fetchFromSource($source);
+        // Start process
+        $fetcher->fetchFromSource($source);
         
-        if ($result) {
-            return redirect()->back()->with('success', 'İçerik başarıyla çekildi.');
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
         }
 
-        return redirect()->back()->with('error', 'İçerik çekilirken hata oluştu. Logları kontrol edin.');
+        return redirect()->back()->with('success', 'Veri çekme işlemi tamamlandı.');
+    }
+
+    public function checkProgress(\App\Models\Source $source)
+    {
+        return response()->json([
+            'is_importing' => $source->is_importing,
+            'progress' => $source->import_progress,
+            'message' => $source->import_message,
+        ]);
     }
 }

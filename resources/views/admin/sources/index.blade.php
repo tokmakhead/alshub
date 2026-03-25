@@ -33,17 +33,17 @@
                                     <td class="px-6 py-4 text-sm font-medium">
                                         @if($source->is_active)
                                             <div id="source-actions-{{ $source->id }}">
-                                                <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700">Şimdi Çek</button>
+                                                <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700 transition">Şimdi Çek</button>
                                             </div>
                                             <div id="source-progress-container-{{ $source->id }}" class="hidden mt-2">
                                                 <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                                    <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                                                 </div>
                                                 <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">Başlatılıyor...</p>
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">
                                         <a href="{{ route('admin.sources.edit', $source) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</a>
                                         <form action="{{ route('admin.sources.destroy', $source) }}" method="POST" class="inline-block" onsubmit="return confirm('Emin misiniz?')">
                                             @csrf
@@ -90,14 +90,18 @@
                         if (!data.is_importing && data.progress >= 100) {
                             clearInterval(interval);
                             progressText.innerText = 'Tamamlandı! Sayfa yenileniyor...';
-                            setTimeout(() => location.reload(), 1500);
-                        } else if (!data.is_importing && data.progress < 100 && data.message.includes('Hata')) {
+                            setTimeout(() => location.reload(), 2000);
+                        } else if (!data.is_importing && data.progress < 100 && data.message && data.message.includes('Hata')) {
                             clearInterval(interval);
+                            alert('Hata: ' + data.message);
                             btnContainer.classList.remove('hidden');
+                            progressContainer.classList.add('hidden');
                         }
+                    })
+                    .catch(err => {
+                        console.error('Polling error:', err);
                     });
             }, 2000);
         }
     </script>
 </x-app-layout>
-```

@@ -13,6 +13,9 @@ class Source extends Model
         'is_active',
         'fetch_method',
         'config_json',
+        'is_importing',
+        'import_progress',
+        'import_message',
     ];
 
     protected $casts = [

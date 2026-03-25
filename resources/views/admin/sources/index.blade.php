@@ -31,17 +31,15 @@
                                         {{ $source->is_active ? 'Aktif' : 'Pasif' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
-                                        @if($source->is_active)
-                                            <div id="source-actions-{{ $source->id }}">
-                                                <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700 transition">Şimdi Çek</button>
+                                        <div id="source-actions-{{ $source->id }}" class="{{ $source->is_importing ? 'hidden' : '' }}">
+                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700 transition">Şimdi Çek</button>
+                                        </div>
+                                        <div id="source-progress-container-{{ $source->id }}" class="{{ $source->is_importing ? '' : 'hidden' }} mt-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: {{ $source->import_progress }}%"></div>
                                             </div>
-                                            <div id="source-progress-container-{{ $source->id }}" class="hidden mt-2">
-                                                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                                                </div>
-                                                <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">Başlatılıyor...</p>
-                                            </div>
-                                        @endif
+                                            <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">{{ $source->import_message ?: 'İşleniyor...' }}</p>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">
                                         <a href="{{ route('admin.sources.edit', $source) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</a>
@@ -69,6 +67,8 @@
 
             btnContainer.classList.add('hidden');
             progressContainer.classList.remove('hidden');
+            progressBar.style.width = '5%';
+            progressText.innerText = 'RSS okunuyor...';
 
             // Start the fetch process via AJAX
             fetch(`{{ url('admin/sources') }}/${id}/fetch`, {
@@ -77,10 +77,16 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
+            }).catch(err => {
+                console.error('Fetch error:', err);
+                btnContainer.classList.remove('hidden');
+                progressContainer.classList.add('hidden');
             });
 
             // Start polling
+            let pollCount = 0;
             const interval = setInterval(() => {
+                pollCount++;
                 fetch(`{{ url('admin/sources') }}/${id}/progress`)
                     .then(res => res.json())
                     .then(data => {
@@ -96,6 +102,13 @@
                             alert('Hata: ' + data.message);
                             btnContainer.classList.remove('hidden');
                             progressContainer.classList.add('hidden');
+                        }
+                        
+                        // Safety timeout: if polling more than 120 times (4 mins) and still same state
+                        if (pollCount > 120) {
+                             clearInterval(interval);
+                             btnContainer.classList.remove('hidden');
+                             progressContainer.classList.add('hidden');
                         }
                     })
                     .catch(err => {

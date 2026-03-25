@@ -107,6 +107,8 @@ class SourceController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
     public function fetchNow(\App\Models\Source $source, \App\Services\ContentFetcherService $fetcher)
     {
         $result = $fetcher->fetchFromSource($source);

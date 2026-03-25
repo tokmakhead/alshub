@@ -37,11 +37,41 @@
 
                             <!-- Düzenlenebilir / Onay Verileri -->
                             <div class="space-y-4">
-                                <h3 class="font-bold border-b pb-2 text-green-600">Editör Onay Alanları</h3>
+                                <div class="flex justify-between items-center border-b pb-2">
+                                    <h3 class="font-bold text-green-600">Editör Çalışma Alanı (Türkçe Çeviri/Özet)</h3>
+                                    <button type="button" onclick="generateAISummary()" class="bg-purple-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-purple-700">🪄 AI ile Hazırla</button>
+                                </div>
                                 
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase">Abstract (Türkçe Çeviri)</label>
-                                    <textarea name="abstract_tr" rows="10" class="w-full rounded border-gray-300 text-sm" placeholder="AI tarafından hazırlanan veya manuel girilen çeviri...">{{ $article->abstract_tr }}</textarea>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase">Türkçe Abstract / Özet</label>
+                                    <textarea id="abstract_tr" name="abstract_tr" rows="15" class="w-full rounded border-gray-300 text-sm">{{ $article->abstract_tr }}</textarea>
+                                </div>
+
+                                <script>
+                                    function generateAISummary() {
+                                        const btn = event.target;
+                                        btn.disabled = true;
+                                        btn.innerText = 'Hazırlanıyor...';
+                                        
+                                        fetch('{{ route('admin.research.ai-summary', $article) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                'Accept': 'application/json'
+                                            }
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if(data.success) {
+                                                location.reload();
+                                            } else {
+                                                alert('Hata: ' + data.message);
+                                                btn.disabled = false;
+                                                btn.innerText = '🪄 AI ile Hazırla';
+                                            }
+                                        });
+                                    }
+                                </script>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">

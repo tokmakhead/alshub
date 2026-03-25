@@ -51,6 +51,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('expert-centers', \App\Http\Controllers\Admin\ExpertCenterController::class)->names('expert-centers');
     Route::resource('doctors', \App\Http\Controllers\Admin\DoctorController::class)->names('doctors');
     
+    // AI Summary Generation
+    Route::post('research/{researchArticle}/ai-summary', [\App\Http\Controllers\Admin\ResearchArticleController::class, 'generateAiSummary'])->name('research.ai-summary');
+    Route::post('trials/{clinicalTrial}/ai-summary', [\App\Http\Controllers\Admin\ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
+    Route::post('guidelines/{guideline}/ai-summary', [\App\Http\Controllers\Admin\GuidelineController::class, 'generateAiSummary'])->name('guidelines.ai-summary');
+    
     // Guidelines
     Route::resource('guidelines', \App\Http\Controllers\Admin\GuidelineController::class)->names('guidelines');
     Route::resource('contents', ContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);

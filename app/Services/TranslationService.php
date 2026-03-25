@@ -19,9 +19,14 @@ class TranslationService
         }
 
         try {
-            $prompt = "Aşağıdaki ALS ile ilgili tıbbi haber başlığını ve özetini Türkçeye çevir ve özetle. Yanıtında sadece Türkçe başlık ve Türkçe özeti aralarında '|' işareti koyarak döndür. \n\nBaşlık: {$content->original_title}\nÖzet: {$content->original_summary}";
+            $prompt = "Sen uzman bir tıp çevirmenisin. Aşağıdaki ALS ile ilgili bilimsel makalenin başlığını ve özetini (abstract) Türkçeye eksiksiz, profesyonel ve aslına sadık kalarak çevir. \n\n" .
+                      "ÖNEMLİ KURALLAR:\n" .
+                      "1. Özetleme YAPMA, her cümleyi çevir.\n" .
+                      "2. Varsa 'Objective', 'Methods', 'Results', 'Conclusion' başlıklarını 'AMAÇ', 'YÖNTEM', 'BULGULAR', 'SONUÇ' olarak koru.\n" .
+                      "3. Yanıtında SADECE çeviriyi şu formatta ver: [BASLIK]Çevrilmiş Başlık[OZET]Çevrilmiş Tam Metin\n\n" .
+                      "BAŞLIK: {$content->original_title}\n" .
+                      "ÖZET: {$content->original_summary}";
 
-            // Using gemini-2.0-flash which is confirmed available via models list
             $response = \Illuminate\Support\Facades\Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
                 'contents' => [
                     [
@@ -37,11 +42,13 @@ class TranslationService
                 $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
                 
                 if ($text) {
-                    $parts = explode('|', $text);
-                    $content->translated_title = trim($parts[0]);
-                    if (isset($parts[1])) {
-                        $content->translated_summary = trim($parts[1]);
+                    // Improved parsing using markers
+                    if (preg_match('/\[BASLIK\](.*?)\[OZET\](.*)/s', $text, $matches)) {
+                        $content->translated_title = trim($matches[1]);
+                        $content->translated_summary = trim($matches[2]);
                     } else {
+                        // Fallback to simpler split if markers fail
+                        $content->translated_title = $content->original_title;
                         $content->translated_summary = trim($text);
                     }
                     $content->status = 'review';

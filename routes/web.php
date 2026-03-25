@@ -19,6 +19,24 @@ Route::get('/arama', [ContentController::class, 'search'])->name('search');
 Route::get('/icerik/{slug}', [ContentController::class, 'show'])->name('content.show');
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
+Route::get('/mark-legacy-tier3-secret-7788', function() {
+    try {
+        $count = \DB::table('contents')->update(['verification_tier' => 3]);
+        return "Legacy Success: Marked $count contents as Tier 3.";
+    } catch (\Exception $e) {
+        return "Legacy Error: " . $e->getMessage();
+    }
+});
+
+Route::get('/sync-test-secret-7788', function(\App\Services\IngestionManager $manager) {
+    try {
+        $log1 = $manager->syncPubMed('Amyotrophic Lateral Sclerosis', 5);
+        $log2 = $manager->syncTrials('Amyotrophic Lateral Sclerosis', 5);
+        return "Sync Result: <br>PubMed: Status {$log1->status}, Fetched {$log1->fetched_count}<br>Trials: Status {$log2->status}, Fetched {$log2->fetched_count}";
+    } catch (\Exception $e) {
+        return "Sync Error: " . $e->getMessage();
+    }
+});
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');
 
 // Auth Routes (Breeze)

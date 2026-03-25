@@ -22,7 +22,9 @@ class ContentNormalizer
             $article = $medline->Article;
             
             $pmid = (string) $medline->PMID;
-            $doi = (string) $item->PubmedData->ArticleIdList->ArticleId[@IdType='doi'] ?? null;
+            
+            $doiArr = $item->xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]');
+            $doi = (count($doiArr) > 0) ? (string) $doiArr[0] : null;
             
             $articles[] = [
                 'pmid' => $pmid,

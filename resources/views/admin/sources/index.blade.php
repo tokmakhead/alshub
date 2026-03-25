@@ -31,12 +31,14 @@
                                         {{ $source->is_active ? 'Aktif' : 'Pasif' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
-                                        <!-- BUTON BURADA! -->
-                                        <button onclick="fetchSource({{ $source->id }})" class="bg-blue-600 text-white px-4 py-2 rounded text-xs">
-                                            ŞİMDİ ÇEK (TEST)
-                                        </button>
-                                        <div id="source-progress-container-{{ $source->id }}" style="display:none" class="mt-2">
-                                            <p class="text-[10px] text-red-500">İşleniyor...</p>
+                                        <div id="source-actions-{{ $source->id }}" style="{{ $source->is_importing ? 'display:none' : 'display:block' }}">
+                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700 transition">Şimdi Çek</button>
+                                        </div>
+                                        <div id="source-progress-container-{{ $source->id }}" style="{{ $source->is_importing ? 'display:block' : 'display:none' }}" class="mt-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: {{ $source->import_progress }}%"></div>
+                                            </div>
+                                            <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">{{ $source->import_message ?: 'İşleniyor...' }}</p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">
@@ -63,10 +65,10 @@
             const progressBar = document.getElementById(`source-progress-bar-${id}`);
             const progressText = document.getElementById(`source-progress-text-${id}`);
 
-            btnContainer.classList.add('hidden');
-            progressContainer.classList.remove('hidden');
-            progressBar.style.width = '5%';
-            progressText.innerText = 'RSS okunuyor...';
+            if (btnContainer) btnContainer.style.display = 'none';
+            if (progressContainer) progressContainer.style.display = 'block';
+            if (progressBar) progressBar.style.width = '5%';
+            if (progressText) progressText.innerText = 'RSS okunuyor...';
 
             // Start the fetch process via AJAX
             fetch(`{{ url('admin/sources') }}/${id}/fetch`, {
@@ -77,8 +79,8 @@
                 }
             }).catch(err => {
                 console.error('Fetch error:', err);
-                btnContainer.classList.remove('hidden');
-                progressContainer.classList.add('hidden');
+                btnContainer.style.display = 'block';
+                progressContainer.style.display = 'none';
             });
 
             // Start polling
@@ -98,15 +100,15 @@
                         } else if (!data.is_importing && data.progress < 100 && data.message && data.message.includes('Hata')) {
                             clearInterval(interval);
                             alert('Hata: ' + data.message);
-                            btnContainer.classList.remove('hidden');
-                            progressContainer.classList.add('hidden');
+                            btnContainer.style.display = 'block';
+                            progressContainer.style.display = 'none';
                         }
                         
                         // Safety timeout: if polling more than 120 times (4 mins) and still same state
                         if (pollCount > 120) {
                              clearInterval(interval);
-                             btnContainer.classList.remove('hidden');
-                             progressContainer.classList.add('hidden');
+                             btnContainer.style.display = 'block';
+                             progressContainer.style.display = 'none';
                         }
                     })
                     .catch(err => {

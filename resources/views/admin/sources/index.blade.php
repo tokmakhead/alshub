@@ -29,12 +29,23 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $source->type }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $source->is_active ? 'Aktif' : 'Pasif' }}
-                                        <div class="mt-1">
-                                            <button onclick="fetchSource({{ $source->id }})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">ÇEK TEST</button>
-                                        </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm font-medium text-red-600">
-                                        BURADAYIM!
+                                    <td class="px-6 py-4 text-sm font-medium">
+                                        <div id="fetch-area-{{ $source->id }}">
+                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700">Şimdi Çek</button>
+                                            
+                                            @if($source->is_importing)
+                                                <div class="mt-2 text-[10px] text-gray-500">
+                                                    <a href="{{ url('admin/sources?reset_stuck=1') }}" class="text-red-500 hover:underline">Statü Sıfırla</a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div id="progress-area-{{ $source->id }}" style="display:none" class="mt-2">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div id="progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <p id="progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">İşleniyor...</p>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">
                                         <a href="{{ route('admin.sources.edit', $source) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</a>
@@ -55,13 +66,13 @@
 
     <script>
         function fetchSource(id) {
-            const btnContainer = document.getElementById(`source-actions-${id}`);
-            const progressContainer = document.getElementById(`source-progress-container-${id}`);
-            const progressBar = document.getElementById(`source-progress-bar-${id}`);
-            const progressText = document.getElementById(`source-progress-text-${id}`);
+            const btnArea = document.getElementById(`fetch-area-${id}`);
+            const progressArea = document.getElementById(`progress-area-${id}`);
+            const progressBar = document.getElementById(`progress-bar-${id}`);
+            const progressText = document.getElementById(`progress-text-${id}`);
 
-            if (btnContainer) btnContainer.style.display = 'none';
-            if (progressContainer) progressContainer.style.display = 'block';
+            if (btnArea) btnArea.style.display = 'none';
+            if (progressArea) progressArea.style.display = 'block';
             if (progressBar) progressBar.style.width = '5%';
             if (progressText) progressText.innerText = 'RSS okunuyor...';
 
@@ -74,8 +85,8 @@
                 }
             }).catch(err => {
                 console.error('Fetch error:', err);
-                btnContainer.style.display = 'block';
-                progressContainer.style.display = 'none';
+                if (btnArea) btnArea.style.display = 'block';
+                if (progressArea) progressArea.style.display = 'none';
             });
 
             // Start polling
@@ -85,25 +96,25 @@
                 fetch(`{{ url('admin/sources') }}/${id}/progress`)
                     .then(res => res.json())
                     .then(data => {
-                        progressBar.style.width = `${data.progress}%`;
-                        progressText.innerText = data.message || 'İşleniyor...';
+                        if (progressBar) progressBar.style.width = `${data.progress}%`;
+                        if (progressText) progressText.innerText = data.message || 'İşleniyor...';
 
                         if (!data.is_importing && data.progress >= 100) {
                             clearInterval(interval);
-                            progressText.innerText = 'Tamamlandı! Sayfa yenileniyor...';
+                            if (progressText) progressText.innerText = 'Tamamlandı! Sayfa yenileniyor...';
                             setTimeout(() => location.reload(), 2000);
                         } else if (!data.is_importing && data.progress < 100 && data.message && data.message.includes('Hata')) {
                             clearInterval(interval);
                             alert('Hata: ' + data.message);
-                            btnContainer.style.display = 'block';
-                            progressContainer.style.display = 'none';
+                            if (btnArea) btnArea.style.display = 'block';
+                            if (progressArea) progressArea.style.display = 'none';
                         }
                         
-                        // Safety timeout: if polling more than 120 times (4 mins) and still same state
-                        if (pollCount > 120) {
+                        // Safety timeout
+                        if (pollCount > 150) {
                              clearInterval(interval);
-                             btnContainer.style.display = 'block';
-                             progressContainer.style.display = 'none';
+                             if (btnArea) btnArea.style.display = 'block';
+                             if (progressArea) progressArea.style.display = 'none';
                         }
                     })
                     .catch(err => {

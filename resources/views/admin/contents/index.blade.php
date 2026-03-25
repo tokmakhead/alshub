@@ -4,15 +4,22 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('İçerik Yönetimi') }}
             </h2>
-            <form action="{{ route('admin.contents.index') }}" method="GET" class="flex gap-2">
-                <select name="status" class="rounded border-gray-300 text-sm">
-                    <option value="">Tüm Durumlar</option>
-                    <option value="draft">Taslak</option>
-                    <option value="review">Onay Bekleyen</option>
-                    <option value="published">Yayınlandı</option>
-                </select>
-                <button type="submit" class="bg-gray-200 px-3 py-1 rounded text-sm">Filtrele</button>
-            </form>
+            <div class="flex items-center gap-4">
+                <form action="{{ route('admin.contents.delete-all') }}" method="POST" onsubmit="return confirm('DİKKAT! Tüm içerikler silinecektir. Bu işlemin geri dönüşü yoktur. Emin misiniz?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded text-sm font-bold hover:bg-red-700 transition">Tümünü Sil</button>
+                </form>
+                <form action="{{ route('admin.contents.index') }}" method="GET" class="flex gap-2">
+                    <select name="status" class="rounded border-gray-300 text-sm">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="draft">Taslak</option>
+                        <option value="review">Onay Bekleyen</option>
+                        <option value="published">Yayınlandı</option>
+                    </select>
+                    <button type="submit" class="bg-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-300">Filtrele</button>
+                </form>
+            </div>
         </div>
     </x-slot>
 

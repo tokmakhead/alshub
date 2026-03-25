@@ -15,15 +15,18 @@ class IngestionManager
 {
     protected $pubMed;
     protected $trials;
+    protected $drugAdapter;
     protected $normalizer;
 
     public function __construct(
         PubMedAdapter $pubMed,
         ClinicalTrialsAdapter $trials,
+        \App\Services\Adapters\DrugAdapter $drugAdapter,
         ContentNormalizer $normalizer
     ) {
         $this->pubMed = $pubMed;
         $this->trials = $trials;
+        $this->drugAdapter = $drugAdapter;
         $this->normalizer = $normalizer;
     }
 
@@ -131,6 +134,73 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
             Log::error('ClinicalTrials Sync Job Failed', ['error' => $e->getMessage()]);
+            return $log;
+        }
+    }
+
+    /**
+     * Run ingestion for Drugs (FDA).
+     */
+    public function syncDrugs()
+    {
+        $log = IngestionLog::create([
+            'source_name' => 'OpenFDA',
+            'content_type' => 'drug',
+            'status' => 'started',
+            'started_at' => now(),
+        ]);
+
+        try {
+            $results = $this->drugAdapter->searchALS();
+            
+            $inserted = 0;
+            $updated = 0;
+
+            foreach ($results as $item) {
+                $data = $this->normalizer->normalizeDrug($item);
+                
+                $drug = \App\Models\Drug::updateOrCreate(
+                    ['generic_name' => $data['generic_name']],
+                    [
+                        'brand_name' => $data['brand_name'],
+                        'slug' => $data['slug'],
+                        'status' => 'draft',
+                        'verification_tier' => 1
+                    ]
+                );
+
+                \App\Models\DrugRegionalStatus::updateOrCreate(
+                    [
+                        'drug_id' => $drug->id,
+                        'region' => $data['region_status']['region']
+                    ],
+                    $data['region_status']
+                );
+
+                if ($drug->wasRecentlyCreated) {
+                    $inserted++;
+                } else {
+                    $updated++;
+                }
+            }
+
+            $log->update([
+                'status' => 'success',
+                'fetched_count' => count($results),
+                'inserted_count' => $inserted,
+                'updated_count' => $updated,
+                'finished_at' => now(),
+            ]);
+
+            return $log;
+
+        } catch (\Exception $e) {
+            $log->update([
+                'status' => 'failed',
+                'error_message' => $e->getMessage(),
+                'finished_at' => now(),
+            ]);
+            Log::error('Drug Sync Job Failed', ['error' => $e->getMessage()]);
             return $log;
         }
     }

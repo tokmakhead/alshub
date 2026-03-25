@@ -35,6 +35,11 @@ Route::get('/git-pull-secret-7788', function() {
     return "Git Pull Result: <pre>$output</pre>";
 });
 
+Route::get('/check-tables-secret-7788', function() {
+    $tables = \DB::select('SHOW TABLES');
+    return "Tables: <pre>" . print_r($tables, true) . "</pre>";
+});
+
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kaynak Yönetimi') }} <span class="text-red-500 font-bold underline text-2xl">[V-9999-LOG-TEST]</span>
+            {{ __('Kaynak Yönetimi') }} <span class="text-green-500 font-bold underline text-2xl">[V-9999-STABLE-V2]</span>
         </h2>
     </x-slot>
 

@@ -62,6 +62,14 @@ class ContentFetcherService
                 ]);
 
                 $count++;
+
+                // Trigger AI translation immediately
+                try {
+                    $translationService = app(\App\Services\TranslationService::class);
+                    $translationService->translate($content);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Auto-translation failed for content {$content->id}: " . $e->getMessage());
+                }
             }
 
             ImportLog::create([

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kaynak Yönetimi') }} <span class="text-red-500">[V-8822]</span>
+            {{ __('Kaynak Yönetimi') }} <span class="text-red-500">[V-8823]</span>
         </h2>
     </x-slot>
 
@@ -31,14 +31,18 @@
                                         {{ $source->is_active ? 'Aktif' : 'Pasif' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
-                                        <div id="source-actions-{{ $source->id }}" style="{{ $source->is_importing ? 'display:none' : 'display:block' }}">
-                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700 transition">Şimdi Çek</button>
+                                        <div id="source-actions-{{ $source->id }}" class="flex flex-col space-y-2">
+                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700">Şimdi Çek</button>
+                                            
+                                            @if($source->is_importing)
+                                                <a href="{{ url('admin/sources?reset_stuck=1') }}" class="text-[10px] text-red-500 hover:underline">Statü Sıfırla</a>
+                                            @endif
                                         </div>
-                                        <div id="source-progress-container-{{ $source->id }}" style="{{ $source->is_importing ? 'display:block' : 'display:none' }}" class="mt-2">
+                                        <div id="source-progress-container-{{ $source->id }}" style="display:none" class="mt-2">
                                             <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: {{ $source->import_progress }}%"></div>
+                                                <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
                                             </div>
-                                            <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">{{ $source->import_message ?: 'İşleniyor...' }}</p>
+                                            <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">İşleniyor...</p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">

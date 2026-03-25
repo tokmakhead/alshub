@@ -9,10 +9,21 @@ class ResearchArticle extends Model
 {
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::saving(function ($article) {
+            if (empty($article->slug)) {
+                $article->slug = \Illuminate\Support\Str::slug($article->title) . '-' . ($article->pmid ?: uniqid());
+            }
+        });
+    }
+
     protected $fillable = [
         'pmid',
         'doi',
         'title',
+        'slug',
         'abstract_original',
         'abstract_tr',
         'journal',

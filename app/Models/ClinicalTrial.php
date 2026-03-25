@@ -12,6 +12,7 @@ class ClinicalTrial extends Model
     protected $fillable = [
         'nct_id',
         'title',
+        'slug',
         'summary',
         'phase',
         'recruitment_status',

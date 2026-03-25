@@ -25,6 +25,24 @@ Route::get('/rehberler', [ContentController::class, 'guidelines'])->name('guidel
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
 Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('content.show');
 
+Route::get('/migrate-slugs-7788', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        
+        // Populate existing slugs
+        $articles = \App\Models\ResearchArticle::all();
+        foreach($articles as $a) { $a->save(); } // Triggers the boot/saving logic
+        
+        $trials = \App\Models\ClinicalTrial::all();
+        foreach($trials as $t) { $t->save(); }
+        
+        return "Migration & Slug Population Success!";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+企画制 (Kaldırıldı).
+
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');

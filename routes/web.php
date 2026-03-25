@@ -37,6 +37,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('sources', SourceController::class);
     Route::post('sources/{source}/fetch', [SourceController::class, 'fetchNow'])->name('sources.fetch');
+    Route::get('sources/{source}/progress', [SourceController::class, 'checkProgress'])->name('sources.progress');
     Route::delete('contents/delete-all', [AdminContentController::class, 'deleteAll'])->name('contents.delete-all');
     Route::resource('contents', AdminContentController::class)->names('contents')->except(['create', 'store']);
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');

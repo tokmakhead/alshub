@@ -13,14 +13,12 @@ class ContentFetcherService
     public function fetchFromSource(Source $source)
     {
         if ($source->fetch_method === 'rss') {
-            return $this->fetchFromRss($source);
-        }
+        $source->update([
+            'is_importing' => true,
+            'import_progress' => 5,
+            'import_message' => 'RSS Akışı okunuyor...',
+        ]);
 
-        return false;
-    }
-
-    protected function fetchFromRss(Source $source)
-    {
         try {
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -28,25 +26,34 @@ class ContentFetcherService
             ])->timeout(30)->get($source->base_url);
 
             if (!$response->successful()) {
-                throw new \Exception("Could not fetch RSS. HTTP Status: " . $response->status());
+                $source->update(['is_importing' => false, 'import_message' => 'Hata: RSS çekilemedi.']);
+                \Illuminate\Support\Facades\Log::error("Import Error for Source {$source->id}: Could not fetch RSS. HTTP Status: " . $response->status());
+                return;
             }
 
             $rss = simplexml_load_string($response->body());
+            $items = $rss->channel->item;
+            $count = count($items);
             
-            if (!$rss) {
-                \Illuminate\Support\Facades\Log::error("RSS Parse Error Body: " . substr($response->body(), 0, 1000));
-                throw new \Exception("RSS content could not be parsed as valid XML. Check Laravel logs for raw response.");
-            }
+            $source->update([
+                'import_progress' => 10,
+                'import_message' => "{$count} adet potansiyel içerik bulundu. İşleniyor...",
+            ]);
 
-            $count = 0;
-            foreach ($rss->channel->item as $item) {
-                $external_id = (string) $item->guid ?: (string) $item->link;
+            $importedCount = 0;
+            foreach ($items as $index => $item) {
                 $source_url = (string) $item->link;
+                $external_id = md5($source_url);
 
-                // Duplicate check
-                if (Content::where('external_id', $external_id)->orWhere('source_url', $source_url)->exists()) {
+                // Check if already exists
+                if (Content::where('external_id', $external_id)->exists()) {
                     continue;
                 }
+
+                $source->update([
+                    'import_progress' => 10 + round((($index + 1) / $count) * 80),
+                    'import_message' => "İşleniyor (" . ($index + 1) . "/{$count}): " . Str::limit((string)$item->title, 30),
+                ]);
 
                 $original_summary = (string) $item->description;
 
@@ -101,8 +108,7 @@ class ContentFetcherService
                     'source_published_at' => date('Y-m-d H:i:s', strtotime((string) $item->pubDate)),
                     'slug' => Str::slug((string) $item->title) . '-' . Str::random(5),
                 ]);
-
-                $count++;
+                $importedCount++;
 
                 // Trigger AI translation immediately
                 try {

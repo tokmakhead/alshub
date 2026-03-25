@@ -45,20 +45,24 @@ class ContentFetcherService
             ]);
 
             $importedCount = 0;
-            foreach ($items as $index => $item) {
+            $i = 0;
+            foreach ($items as $item) {
+                $i++;
                 $source_url = (string) $item->link;
                 $external_id = md5($source_url);
 
+                \Log::info("Processing item {$i}/{$count}: " . $source_url);
+
                 // Check if already exists
                 if (Content::where('external_id', $external_id)->exists()) {
+                    \Log::info("Item exists, skipping: " . $source_url);
                     continue;
                 }
 
                 $source->update([
-                    'import_progress' => 10 + round((($index + 1) / $count) * 80),
-                    'import_message' => "İşleniyor (" . ($index + 1) . "/{$count}): " . Str::limit((string)$item->title, 30),
+                    'import_progress' => 10 + round(($i / $count) * 80),
+                    'import_message' => "İşleniyor ({$i}/{$count}): " . Str::limit((string)$item->title, 30),
                 ]);
-
                 $original_summary = (string) $item->description;
 
                 // Try to fetch full content from the link based on source type

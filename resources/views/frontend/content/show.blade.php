@@ -1,19 +1,39 @@
 @extends('frontend.layout')
 
-@section('title', $content->translated_title . ' - ALSHub')
+@section('title', $content->display_title . ' - ALSHub')
 
 @section('content')
+    @php
+        $modelType = strtolower(class_basename($content));
+        $typeLabel = match($modelType) {
+            'researcharticle' => 'Bilimsel Araştırma',
+            'clinicaltrial' => 'Klinik Çalışma',
+            'drug' => 'İlaç Gelişmesi',
+            'guideline' => 'Klinik Rehber',
+            default => 'Haber'
+        };
+        $typeColor = match($modelType) {
+            'researcharticle' => 'bg-emerald-600',
+            'clinicaltrial' => 'bg-blue-600',
+            'drug' => 'bg-purple-600',
+            'guideline' => 'bg-orange-600',
+            default => 'bg-gray-600'
+        };
+    @endphp
+
     <article class="max-w-4xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
         <!-- Header -->
         <header class="mb-12">
             <div class="flex items-center gap-3 mb-6">
-                <span class="bg-blue-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                    {{ $content->type === 'publication' ? 'Araştırma' : ($content->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
+                <span class="{{ $typeColor }} text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                    {{ $typeLabel }}
                 </span>
-                <span class="text-gray-400 text-sm font-medium">{{ $content->created_at->translatedFormat('d F Y') }}</span>
+                <span class="text-gray-400 text-sm font-medium">
+                    {{ ($content->publication_date ?? $content->created_at)->translatedFormat('d F Y') }}
+                </span>
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight mb-8">
-                {{ $content->translated_title }}
+                {{ $content->display_title }}
             </h1>
             
             <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
@@ -21,53 +41,114 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                 </div>
                 <div>
-                    <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider">İçerik Kaynağı</span>
-                    <span class="text-sm font-bold text-gray-700">{{ $content->source->name ?? $content->source_name }}</span>
+                    <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider">Doğrulanmış Kaynak</span>
+                    <span class="text-sm font-bold text-gray-700">{{ $content->source_label }}</span>
                     @if($content->source_url)
-                        <a href="{{ $content->source_url }}" target="_blank" class="text-primary text-xs ml-2 underline hover:text-blue-800 transition">Orijinal İçeriğe Git &rarr;</a>
+                        <a href="{{ $content->source_url }}" target="_blank" class="text-primary text-xs ml-2 underline hover:text-blue-800 transition">Orijinal Kaynak &rarr;</a>
                     @endif
+                </div>
+                <div class="ml-auto">
+                    <span class="px-3 py-1 text-xs font-bold rounded-lg bg-blue-50 text-blue-700 border border-blue-200">Tier {{ $content->verification_tier ?? 1 }}</span>
                 </div>
             </div>
         </header>
 
-        <!-- Content Body -->
+        <!-- Content Body (AI Unified Summary) -->
         <div class="prose prose-blue max-w-none text-gray-600 leading-relaxed mb-16">
-            <p class="text-lg text-gray-900 font-medium mb-8 leading-relaxed">
-                {!! nl2br(e($content->translated_summary)) !!}
-            </p>
-            
-            @if($content->translated_content)
-                <div class="mt-10">
-                    {!! $content->translated_content !!}
+            @php
+                $summary = $content->display_summary;
+                $hasSections = str_contains($summary, '---');
+                if($hasSections) {
+                    $sections = explode('---', $summary);
+                    $patientSummary = trim($sections[0]);
+                    $technicalSummary = trim($sections[1] ?? '');
+                } else {
+                    $patientSummary = $summary;
+                    $technicalSummary = null;
+                }
+            @endphp
+
+            @if($technicalSummary)
+                <div class="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 mb-8">
+                    <h3 class="text-blue-900 text-lg font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04kM12 21.48l.342-6.657L12 14.823l-.342.342L12 21.48z"></path></svg>
+                        Hasta ve Yakınları İçin Anlatım
+                    </h3>
+                    <div class="text-gray-800 leading-relaxed">
+                        {!! nl2br(e($patientSummary)) !!}
+                    </div>
                 </div>
+
+                <div class="mt-12">
+                    <h3 class="text-gray-900 text-lg font-bold mb-4 border-b pb-2">Teknik Özet (Uzmanlar İçin)</h3>
+                    <div class="text-sm text-gray-600 leading-relaxed">
+                        {!! nl2br($technicalSummary) !!}
+                    </div>
+                </div>
+            @else
+                <p class="text-lg text-gray-900 font-medium mb-8 leading-relaxed">
+                    {!! nl2br(e($patientSummary)) !!}
+                </p>
             @endif
         </div>
 
-        <!-- Meta Info -->
+        <!-- Type Specific Details -->
         <div class="border-t border-gray-100 pt-10">
-            <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
-                <h4 class="text-blue-900 font-bold mb-3 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Orijinal Bilgiler
+            <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+                <h4 class="text-gray-800 font-bold mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Kayıt Bilgileri
                 </h4>
-                <div class="space-y-4">
-                    <div>
-                        <span class="text-xs font-bold text-blue-900/60 uppercase block">Orijinal Başlık</span>
-                        <p class="text-sm text-blue-900 font-medium italic">{{ $content->original_title }}</p>
-                    </div>
-                    @if($content->author)
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if($modelType === 'researcharticle')
                         <div>
-                            <span class="text-xs font-bold text-blue-900/60 uppercase block">Yazar / Organizasyon</span>
-                            <p class="text-sm text-blue-900 font-medium">{{ $content->author }}</p>
+                            <span class="text-xs font-bold text-gray-400 uppercase block">PMID / DOI</span>
+                            <p class="text-sm text-gray-700 font-medium">
+                                {{ $content->pmid }} 
+                                @if($content->doi) | {{ $content->doi }} @endif
+                            </p>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase block">Dergi</span>
+                            <p class="text-sm text-gray-700 font-medium">{{ $content->journal }}</p>
                         </div>
                     @endif
+
+                    @if($modelType === 'clinicaltrial')
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase block">NCT ID</span>
+                            <p class="text-sm text-gray-700 font-medium">{{ $content->nct_id }}</p>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase block">Çalışma Durumu</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase">
+                                {{ $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? 'Bilinmiyor' }}
+                            </span>
+                        </div>
+                    @endif
+
+                    @if($modelType === 'drug')
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 uppercase block">Onay Durumları</span>
+                            <div class="flex gap-2 mt-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_fda ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">FDA</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_ema ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">EMA</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_titck ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">TİTCK</span>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase block">Son Güncelleme</span>
+                        <p class="text-sm text-gray-700 font-medium italic">{{ $content->updated_at->translatedFormat('d F Y') }}</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Content Disclaimer -->
         <div class="mt-12 p-6 bg-red-50 rounded-2xl border border-red-100 italic text-sm text-red-900/70">
-            <strong>Tıbbi Uyarı:</strong> Bu içerik, yabancı dildeki orijinal kaynağından Türkçe'ye özetlenerek çevrilmiştir. Hatalar veya eksik bilgiler içerebilir. Tedavi süreçlerinizde karar vermeden önce mutlaka doktorunuza danışınız ve mümkünse orijinal kaynağı inceleyiniz.
+            <strong>Tıbbi Uyarı:</strong> Bu içerik bilimsel kaynaklardan derlenmiştir. Hatalar veya eksik bilgiler içerebilir. Tedavi süreçlerinizde karar vermeden önce mutlaka doktorunuza danışınız.
         </div>
     </article>
 @endsection

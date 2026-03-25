@@ -34,6 +34,17 @@
                         <a href="{{ route('admin.contents.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">İçerikleri Yönet</a>
                         <a href="{{ route('admin.sources.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Kaynakları Yönet</a>
                     </div>
+                    <div class="mt-6 flex flex-wrap gap-4">
+                        <a href="{{ route('admin.sources.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition">
+                            Kaynakları Yönet
+                        </a>
+                        <a href="{{ route('admin.contents.index') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
+                            İçerikleri İncele
+                        </a>
+                        <a href="{{ route('admin.logs.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-900 transition">
+                            Sistem Logları
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

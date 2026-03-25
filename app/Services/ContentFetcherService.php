@@ -58,7 +58,7 @@ class ContentFetcherService
                     if ($pageResponse->successful()) {
                         $html = $pageResponse->body();
                         // Extract abstract content using simple regex or string manipulation
-                        if (preg_class_exists('DOMDocument')) {
+                        if (class_exists('DOMDocument')) {
                             $doc = new \DOMDocument();
                             @$doc->loadHTML('<?xml encoding="UTF-8">' . $html);
                             $xpath = new \DOMXPath($doc);

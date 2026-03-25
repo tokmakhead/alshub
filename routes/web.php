@@ -47,6 +47,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Archive / Legacy
     Route::get('legacy', [ContentController::class, 'index'])->name('contents.index');
     Route::delete('contents/delete-all', [ContentController::class, 'deleteAll'])->name('contents.delete-all');
+    // Expert Profiles
+    Route::resource('expert-centers', \App\Http\Controllers\Admin\ExpertCenterController::class)->names('admin.expert-centers');
+    Route::resource('doctors', \App\Http\Controllers\Admin\DoctorController::class)->names('admin.doctors');
     Route::resource('contents', ContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
     Route::post('contents/{content}/translate', [ContentController::class, 'translate'])->name('contents.translate');
     

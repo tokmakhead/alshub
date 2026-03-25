@@ -24,12 +24,16 @@
                     <x-nav-link :href="route('admin.trials.index')" :active="request()->routeIs('admin.trials.*')">
                         {{ __('Klinik Çalışmalar') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.drugs.index')" :active="request()->routeIs('admin.drugs.*')">
-                        {{ __('İlaçlar') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">
-                        {{ __('Arşiv (RSS)') }}
-                    </x-nav-link>
+                    <x-nav-link :href="route('admin.drugs.index')" :active="request()->routeIs('admin.drugs.*')">İlaç Tracker</x-nav-link>
+
+                    <div class="border-l border-gray-200 h-6 mx-2"></div>
+                    
+                    <x-nav-link :href="route('admin.expert-centers.index')" :active="request()->routeIs('admin.expert-centers.*')">Uzman Merkezler</x-nav-link>
+                    <x-nav-link :href="route('admin.doctors.index')" :active="request()->routeIs('admin.doctors.*')">Doktorlar/Uzmanlar</x-nav-link>
+                    
+                    <div class="border-l border-gray-200 h-6 mx-2"></div>
+                    
+                    <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Legacy Arşiv</x-nav-link>
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">
                         {{ __('Loglar') }}
                     </x-nav-link>

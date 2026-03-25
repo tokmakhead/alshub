@@ -50,6 +50,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Expert Profiles
     Route::resource('expert-centers', \App\Http\Controllers\Admin\ExpertCenterController::class)->names('expert-centers');
     Route::resource('doctors', \App\Http\Controllers\Admin\DoctorController::class)->names('doctors');
+    
+    // Guidelines
+    Route::resource('guidelines', \App\Http\Controllers\Admin\GuidelineController::class)->names('guidelines');
     Route::resource('contents', ContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
     Route::post('contents/{content}/translate', [ContentController::class, 'translate'])->name('contents.translate');
     

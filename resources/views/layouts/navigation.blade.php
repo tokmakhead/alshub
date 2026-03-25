@@ -32,6 +32,10 @@
                     <x-nav-link :href="route('admin.doctors.index')" :active="request()->routeIs('admin.doctors.*')">Doktorlar/Uzmanlar</x-nav-link>
                     
                     <div class="border-l border-gray-200 h-6 mx-2"></div>
+
+                    <x-nav-link :href="route('admin.guidelines.index')" :active="request()->routeIs('admin.guidelines.*')">Klinik Rehberler</x-nav-link>
+                    
+                    <div class="border-l border-gray-200 h-6 mx-2"></div>
                     
                     <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Legacy Arşiv</x-nav-link>
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">

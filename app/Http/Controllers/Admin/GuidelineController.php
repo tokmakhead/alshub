@@ -14,6 +14,11 @@ class GuidelineController extends Controller
         return view('admin.guidelines.index', compact('guidelines'));
     }
 
+    public function create()
+    {
+        return view('admin.guidelines.edit'); // Use same edit view for create
+    }
+
     public function edit(Guideline $guideline)
     {
         return view('admin.guidelines.edit', compact('guideline'));

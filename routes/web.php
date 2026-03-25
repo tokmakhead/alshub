@@ -7,6 +7,12 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SourceController;
 use App\Http\Controllers\Admin\ContentController as AdminContentController;
 use App\Http\Controllers\Admin\ImportLogController;
+use App\Http\Controllers\Admin\ResearchArticleController;
+use App\Http\Controllers\Admin\ClinicalTrialController;
+use App\Http\Controllers\Admin\DrugController;
+use App\Http\Controllers\Admin\ExpertCenterController;
+use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\GuidelineController;
 use Illuminate\Support\Facades\Route;
 
 // Frontend Routes
@@ -57,18 +63,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('legacy', [ContentController::class, 'index'])->name('contents.index');
     Route::delete('contents/delete-all', [ContentController::class, 'deleteAll'])->name('contents.delete-all');
     // Expert Profiles
-    Route::resource('expert-centers', \App\Http\Controllers\Admin\ExpertCenterController::class)->names('expert-centers');
-    Route::resource('doctors', \App\Http\Controllers\Admin\DoctorController::class)->names('doctors');
+    Route::resource('expert-centers', ExpertCenterController::class)->names('expert-centers');
+    Route::resource('doctors', DoctorController::class)->names('doctors');
     
     // AI Summary Generation
-    Route::post('research/{researchArticle}/ai-summary', [\App\Http\Controllers\Admin\ResearchArticleController::class, 'generateAiSummary'])->name('research.ai-summary');
-    Route::post('trials/{clinicalTrial}/ai-summary', [\App\Http\Controllers\Admin\ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
-    Route::post('guidelines/{guideline}/ai-summary', [\App\Http\Controllers\Admin\GuidelineController::class, 'generateAiSummary'])->name('guidelines.ai-summary');
+    Route::post('research/{researchArticle}/ai-summary', [ResearchArticleController::class, 'generateAiSummary'])->name('research.ai-summary');
+    Route::post('trials/{clinicalTrial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
+    Route::post('guidelines/{guideline}/ai-summary', [GuidelineController::class, 'generateAiSummary'])->name('guidelines.ai-summary');
     
     // Guidelines
-    Route::resource('guidelines', \App\Http\Controllers\Admin\GuidelineController::class)->names('guidelines');
-    Route::resource('contents', ContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
-    Route::post('contents/{content}/translate', [ContentController::class, 'translate'])->name('contents.translate');
+    Route::resource('guidelines', GuidelineController::class)->names('guidelines');
+    Route::resource('contents', AdminContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
+    Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
 });

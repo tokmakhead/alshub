@@ -43,14 +43,41 @@
 
                             <!-- Düzenlenebilir / Onay Verileri -->
                             <div class="space-y-4">
-                                <h3 class="font-bold border-b pb-2 text-green-600">İnceleme ve Yayın Ayarları</h3>
+                                <div class="flex justify-between items-center border-b pb-2">
+                                    <h3 class="font-bold text-green-600">Editör Çalışma Alanı (Türkçe Çeviri/Özet)</h3>
+                                    <button type="button" onclick="generateAISummary()" class="bg-purple-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-purple-700">🪄 AI ile Hazırla</button>
+                                </div>
                                 
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase">Müdahale (Intervention) Detayları</label>
-                                    <textarea name="intervention" rows="5" class="w-full rounded border-gray-300 text-sm">{{ $trial->intervention }}</textarea>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase">Özet ve Detaylar</label>
+                                    <textarea id="summary_tr" name="summary" rows="15" class="w-full rounded border-gray-300 text-sm">{{ $trial->summary }}</textarea>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-4">
+                                <script>
+                                    function generateAISummary() {
+                                        const btn = event.target;
+                                        btn.disabled = true;
+                                        btn.innerText = 'Hazırlanıyor...';
+                                        
+                                        fetch('{{ route('admin.trials.ai-summary', $trial) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                'Accept': 'application/json'
+                                            }
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if(data.success) {
+                                                location.reload();
+                                            } else {
+                                                alert('Hata: ' + data.message);
+                                                btn.disabled = false;
+                                                btn.innerText = '🪄 AI ile Hazırla';
+                                            }
+                                        });
+                                    }
+                                </script>                               <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-500 uppercase">Doğrulama Katmanı (Tier)</label>
                                         <select name="verification_tier" class="w-full rounded border-gray-300 text-sm">

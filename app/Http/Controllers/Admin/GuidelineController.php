@@ -32,6 +32,18 @@ class GuidelineController extends Controller
         return redirect()->route('admin.guidelines.index')->with('success', 'Rehber başarıyla güncellendi.');
     }
 
+    public function generateAiSummary(Guideline $guideline, ClinicalSummaryService $ai)
+    {
+        $result = $ai->summarize($guideline->title, $guideline->summary_original, 'clinical guideline');
+        if ($result && !isset($result['error'])) {
+            $guideline->update([
+                'summary_tr' => $result['summary_patient'] . "\n\n---\n\n**Technical Summary:**\n" . $result['summary_doctor'] . "\n\n**Key Takeaways:**\n" . implode("\n", $result['key_takeaways'])
+            ]);
+            return response()->json(['success' => true, 'data' => $result]);
+        }
+        return response()->json(['success' => false, 'message' => $result['error'] ?? 'AI Error'], 500);
+    }
+
     public function destroy(Guideline $guideline)
     {
         $guideline->delete();

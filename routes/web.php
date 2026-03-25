@@ -30,6 +30,11 @@ Route::get('/run-migrations-secret-7788', function() {
     }
 });
 
+Route::get('/git-pull-secret-7788', function() {
+    $output = shell_exec('git pull origin main 2>&1');
+    return "Git Pull Result: <pre>$output</pre>";
+});
+
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

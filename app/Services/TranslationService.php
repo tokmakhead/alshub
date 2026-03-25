@@ -24,9 +24,10 @@ class TranslationService
             
             $prompt = "Sen uzman bir tıp çevirmenisin. Aşağıdaki ALS makalesini Türkçeye çevir.\n\n" .
                       "KESİN KURALLAR:\n" .
-                      "1. ASLA açıklama yapma, ASLA 'İşte çeviri' deme.\n" .
-                      "2. SADECE şu formatı kullan: [BASLIK]...[OZET]...\n" .
-                      "3. Özetleme yapma, tam metni çevir.\n\n" .
+                      "1. Yanıtını SADECE geçerli bir JSON formatında ver.\n" .
+                      "2. JSON şeması: {\"baslik\": \"...\", \"ozet\": \"...\"}\n" .
+                      "3. ASLA başka açıklama yapma.\n" .
+                      "4. Özetleme yapma, tam metni çevir.\n\n" .
                       "BAŞLIK: {$content->original_title}\n" .
                       "ÖZET: {$cleanSummary}";
 
@@ -45,16 +46,24 @@ class TranslationService
                 $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
                 
                 if ($text) {
-                    // Remove common AI prefixes if they ignore "no talk" rule
-                    $text = preg_replace('/^(İşte çeviri|Çeviri:|Burada|Sure|As an AI).*?:/si', '', trim($text));
-                    $text = str_replace(['**Başlık:**', '**Özet:**', '**Yanıt:**'], '', $text);
-                    
-                    // Improved parsing using markers (case-insensitive and allowing spaces/newlines)
+                    // Try to extract JSON if AI adds markdown code blocks
+                    if (preg_match('/\{.*\}/s', $text, $matches)) {
+                        $jsonData = json_decode($matches[0], true);
+                        if ($jsonData && isset($jsonData['baslik'], $jsonData['ozet'])) {
+                            $content->translated_title = trim($jsonData['baslik']);
+                            $content->translated_summary = trim($jsonData['ozet']);
+                            $content->status = 'review';
+                            $content->save();
+                            return $content;
+                        }
+                    }
+
+                    // Fallback to old regex just in case
                     if (preg_match('/\[BASLIK\]\s*(.*?)\s*\[OZET\]\s*(.*)/si', $text, $matches)) {
                         $content->translated_title = trim($matches[1]);
                         $content->translated_summary = trim($matches[2]);
                     } else {
-                        // Better fallback: If markers fail, try to split by first newline or just assign all to summary
+                        // Extreme fallback
                         $content->translated_title = $content->original_title;
                         $content->translated_summary = trim($text);
                     }

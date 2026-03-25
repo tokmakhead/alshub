@@ -47,13 +47,44 @@ class ContentFetcherService
                     continue;
                 }
 
+                $original_summary = (string) $item->description;
+
+                // Try to fetch full abstract from the link if it seems truncated
+                try {
+                    $pageResponse = \Illuminate\Support\Facades\Http::withHeaders([
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    ])->timeout(10)->get($source_url);
+
+                    if ($pageResponse->successful()) {
+                        $html = $pageResponse->body();
+                        // Extract abstract content using simple regex or string manipulation
+                        if (preg_class_exists('DOMDocument')) {
+                            $doc = new \DOMDocument();
+                            @$doc->loadHTML('<?xml encoding="UTF-8">' . $html);
+                            $xpath = new \DOMXPath($doc);
+                            $abstractNodes = $xpath->query('//div[contains(@class, "abstract-content")]/p');
+                            if ($abstractNodes->length > 0) {
+                                $fullAbstract = "";
+                                foreach ($abstractNodes as $node) {
+                                    $fullAbstract .= trim($node->textContent) . "\n\n";
+                                }
+                                if (!empty(trim($fullAbstract))) {
+                                    $original_summary = trim($fullAbstract);
+                                }
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning("Could not scrape full abstract for {$source_url}: " . $e->getMessage());
+                }
+
                 $content = Content::create([
                     'type' => $source->type,
                     'source_id' => $source->id,
                     'source_name' => $source->name,
                     'source_url' => $source_url,
                     'original_title' => (string) $item->title,
-                    'original_summary' => (string) $item->description,
+                    'original_summary' => $original_summary,
                     'external_id' => $external_id,
                     'language' => 'en',
                     'status' => 'draft',

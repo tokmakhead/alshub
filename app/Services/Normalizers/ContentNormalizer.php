@@ -63,6 +63,29 @@ class ContentNormalizer
         ];
     }
 
+    /**
+     * Normalize OpenFDA drug JSON to Drug and Regional Status data.
+     */
+    public function normalizeDrug($rawData)
+    {
+        $openfda = $rawData['openfda'] ?? [];
+        
+        return [
+            'generic_name' => $openfda['generic_name'][0] ?? (string) \Illuminate\Support\Str::limit($rawData['indications_and_usage'][0] ?? 'Unknown Drug', 100),
+            'brand_name' => $openfda['brand_name'][0] ?? null,
+            'slug' => \Illuminate\Support\Str::slug($openfda['generic_name'][0] ?? \Illuminate\Support\Str::random(10)),
+            'region_status' => [
+                'region' => 'US',
+                'regulator_name' => 'FDA',
+                'external_id' => $rawData['id'] ?? null,
+                'indication' => $rawData['indications_and_usage'][0] ?? null,
+                'approval_status' => 'Approved',
+                'label_url' => "https://labels.fda.gov/preview.cfm?id=" . ($rawData['id'] ?? ''),
+                'raw_payload_json' => $rawData,
+            ]
+        ];
+    }
+
     private function parsePubMedDate($pubDate)
     {
         $year = (string) $pubDate->Year ?? date('Y');

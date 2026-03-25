@@ -31,15 +31,12 @@
                                         {{ $source->is_active ? 'Aktif' : 'Pasif' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
-                                        <!-- DEBUG: BUTON BURADA OLMALI -->
-                                        <div id="source-actions-{{ $source->id }}">
-                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700">Şimdi Çek</button>
-                                        </div>
-                                        <div id="source-progress-container-{{ $source->id }}" class="mt-2" style="display:none">
-                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div id="source-progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-                                            </div>
-                                            <p id="source-progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">İşleniyor...</p>
+                                        <!-- BUTON BURADA! -->
+                                        <button onclick="fetchSource({{ $source->id }})" class="bg-blue-600 text-white px-4 py-2 rounded text-xs">
+                                            ŞİMDİ ÇEK (TEST)
+                                        </button>
+                                        <div id="source-progress-container-{{ $source->id }}" style="display:none" class="mt-2">
+                                            <p class="text-[10px] text-red-500">İşleniyor...</p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">

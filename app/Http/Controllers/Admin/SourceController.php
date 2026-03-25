@@ -14,7 +14,8 @@ class SourceController extends Controller
     {
         // Temizlik: Sıkışmış (stuck) import durumlarını bir kereliğine temizle
         if (request()->has('reset_stuck')) {
-            \App\Models\Source::where('is_importing', true)->update(['is_importing' => false, 'import_progress' => 0]);
+            $updated = \App\Models\Source::where('is_importing', true)->update(['is_importing' => false, 'import_progress' => 0]);
+            \Illuminate\Support\Facades\Log::info("DEBUG: Sources reset by request. Updated count: " . $updated);
         }
         
         $sources = \App\Models\Source::latest()->paginate(10);

@@ -33,7 +33,8 @@ class ContentFetcherService
             $rss = simplexml_load_string($response->body());
             
             if (!$rss) {
-                throw new \Exception("RSS content could not be parsed as valid XML.");
+                \Illuminate\Support\Facades\Log::error("RSS Parse Error Body: " . substr($response->body(), 0, 1000));
+                throw new \Exception("RSS content could not be parsed as valid XML. Check Laravel logs for raw response.");
             }
 
             $count = 0;

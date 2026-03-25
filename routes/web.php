@@ -42,6 +42,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('contents', AdminContentController::class)->names('contents')->except(['create', 'store']);
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
+    Route::get('/test-log', function() {
+        \Log::info("MANUAL TEST LOG: Core system is working at " . now());
+        return "Log written. Please check storage/logs/laravel.log";
+    });
 });
 
 require __DIR__.'/auth.php';

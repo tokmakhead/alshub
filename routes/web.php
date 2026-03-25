@@ -21,34 +21,6 @@ Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');
 
-Route::get('/run-migrations-secret-7788', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return "Migration success: <pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
-    } catch (\Exception $e) {
-        return "Migration failed: " . $e->getMessage();
-    }
-});
-
-Route::get('/git-pull-secret-7788', function() {
-    $output = shell_exec('git pull origin main 2>&1');
-    return "Git Pull Result: <pre>$output</pre>";
-});
-
-Route::get('/check-tables-secret-7788', function() {
-    $tables = \DB::select('SHOW TABLES');
-    return "Tables: <pre>" . print_r($tables, true) . "</pre>";
-});
-
-Route::get('/mark-legacy-tier3-secret-7788', function() {
-    try {
-        $count = \DB::table('contents')->update(['verification_tier' => 3]);
-        return "Legacy Success: Marked $count contents as Tier 3.";
-    } catch (\Exception $e) {
-        return "Legacy Error: " . $e->getMessage();
-    }
-});
-
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');

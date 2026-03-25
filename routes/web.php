@@ -41,8 +41,11 @@ Route::get('/migrate-slugs-7788', function() {
         return "Error: " . $e->getMessage();
     }
 });
-企画制 (Kaldırıldı).
 
+Route::get('/git-pull-secret-7788', function() {
+    exec('git pull origin main 2>&1', $output);
+    return "<pre>" . implode("\n", $output) . "</pre>";
+});
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');

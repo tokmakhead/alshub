@@ -32,19 +32,21 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
                                         <div id="fetch-area-{{ $source->id }}">
-                                            <button onclick="fetchSource({{ $source->id }})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-indigo-700">Şimdi Çek</button>
+                                            <button onclick="fetchSource({{ $source->id }})" style="background-color: #4f46e5; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer; border: none;">
+                                                Şimdi Çek
+                                            </button>
                                             
                                             @if($source->is_importing)
                                                 <div class="mt-2 text-[10px] text-gray-500">
-                                                    <a href="{{ url('admin/sources?reset_stuck=1') }}" class="text-red-500 hover:underline">Statü Sıfırla</a>
+                                                    <a href="{{ url('admin/sources?reset_stuck=1') }}" style="color: #ef4444; text-decoration: underline;">Statü Sıfırla</a>
                                                 </div>
                                             @endif
                                         </div>
                                         <div id="progress-area-{{ $source->id }}" style="display:none" class="mt-2">
                                             <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div id="progress-bar-{{ $source->id }}" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                                <div id="progress-bar-{{ $source->id }}" style="background-color: #2563eb; width: 0%; height: 10px; border-radius: 10px;"></div>
                                             </div>
-                                            <p id="progress-text-{{ $source->id }}" class="text-[10px] text-gray-600 mt-1">İşleniyor...</p>
+                                            <p id="progress-text-{{ $source->id }}" style="font-size: 10px; color: #4b5563; margin-top: 4px;">İşleniyor...</p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-l">

@@ -36,7 +36,7 @@ class ResearchArticleController extends Controller
         $data = $adapter->fetch($validated['pmid']);
 
         if (!$data) {
-            return redirect()->back()->with('error', 'PubMed üzerinden veri çekilemedi.');
+            return redirect()->back()->with('error', 'PubMed üzerinden veri çekilemedi. Lütfen PMID numarasını kontrol edin.');
         }
 
         $article = ResearchArticle::create([
@@ -51,7 +51,7 @@ class ResearchArticleController extends Controller
             'verification_tier' => 1,
         ]);
 
-        return redirect()->route('admin.research.edit', $article->id)->with('success', 'Veri çekildi.');
+        return redirect()->route('admin.research.edit', $article->id)->with('success', 'Makale başarıyla çekildi. Şimdi AI özeti oluşturabilirsiniz.');
     }
 
     public function edit(ResearchArticle $research)
@@ -72,11 +72,6 @@ class ResearchArticleController extends Controller
             'verification_tier' => 'required|integer',
         ]);
 
-        // Strip ** markdown bolding
-        if (isset($data['abstract_tr'])) {
-            $data['abstract_tr'] = str_replace('**', '', $data['abstract_tr']);
-        }
-
         $research->update($data);
         return redirect()->route('admin.research.index')->with('success', 'Araştırma güncellendi.');
     }
@@ -91,16 +86,13 @@ class ResearchArticleController extends Controller
     {
         $result = $ai->summarize($researchArticle->title, $researchArticle->abstract_original, 'research article');
         if ($result && !isset($result['error'])) {
-            $summary = ($result['summary_patient'] ?? '') . "\n\n---\n\nDoktor Özeti:\n" . ($result['summary_doctor'] ?? '') . "\n\nÖnemli Bulgular:\n" . implode("\n", $result['key_takeaways'] ?? []);
+            $summary = $result['summary_patient'] . "\n\n---\n\n**Doktor Özeti:**\n" . $result['summary_doctor'] . "\n\n**Önemli Bulgular:**\n" . implode("\n", $result['key_takeaways']);
             
-            // Strip ** from the title as well if needed
-            $titleTr = isset($result['title_tr']) ? str_replace('**', '', $result['title_tr']) : $researchArticle->turkish_title;
-
             $researchArticle->update([
-                'turkish_title' => $titleTr,
-                'abstract_tr' => str_replace('**', '', $summary)
+                'turkish_title' => $result['title_tr'] ?? $researchArticle->turkish_title,
+                'abstract_tr' => $summary
             ]);
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'data' => $result]);
         }
         return response()->json(['success' => false, 'message' => $result['error'] ?? 'AI Error'], 500);
     }

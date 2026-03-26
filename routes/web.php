@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\DrugController;
 use App\Http\Controllers\Admin\ExpertCenterController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\GuidelineController;
+use App\Http\Controllers\Admin\HealthController;
 use Illuminate\Support\Facades\Route;
 
 // Frontend Routes

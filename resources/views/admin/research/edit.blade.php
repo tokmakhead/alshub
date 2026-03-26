@@ -78,11 +78,21 @@
 
                                 <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 border rounded-lg">
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 uppercase">Katman (Tier)</label>
-                                        <select name="verification_tier" class="w-full rounded border-gray-300 text-xs mt-1">
-                                            <option value="1" {{ $article->verification_tier == 1 ? 'selected' : '' }}>Tier 1 - Verified (PubMed)</option>
-                                            <option value="2" {{ $article->verification_tier == 2 ? 'selected' : '' }}>Tier 2 - Institution</option>
-                                            <option value="3" {{ $article->verification_tier == 3 ? 'selected' : '' }}>Tier 3 - News</option>
+                                        <div class="flex items-center gap-1 mb-1">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase">Katman (Tier)</label>
+                                            <div class="group relative">
+                                                <svg class="w-3 h-3 text-gray-300 cursor-help" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                                <div class="hidden group-hover:block absolute z-50 w-64 p-3 bg-gray-900 text-white text-[10px] rounded-lg shadow-xl -left-20 bottom-5 leading-relaxed">
+                                                    <strong>Tier 1:</strong> Resmi Kaynaklar (PubMed, FDA vb.)<br>
+                                                    <strong>Tier 2:</strong> Kurumsal (Dernekler, Hastaneler vb.)<br>
+                                                    <strong>Tier 3:</strong> Bilimsel Haberler (ScienceDaily vb.)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <select name="verification_tier" class="w-full rounded border-gray-300 text-xs shadow-sm focus:ring-blue-500">
+                                            <option value="1" {{ $article->verification_tier == 1 ? 'selected' : '' }}>Tier 1 - Resmi/Akademik Kaynak (En Yüksek Güven)</option>
+                                            <option value="2" {{ $article->verification_tier == 2 ? 'selected' : '' }}>Tier 2 - Kurumsal/Vakıf (Yüksek Güven)</option>
+                                            <option value="3" {{ $article->verification_tier == 3 ? 'selected' : '' }}>Tier 3 - Bilimsel Haber/Basın (Doğrulanması Önemli)</option>
                                         </select>
                                     </div>
                                     <div>

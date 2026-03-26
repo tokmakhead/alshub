@@ -36,7 +36,7 @@ class ResearchArticleController extends Controller
         $data = $adapter->fetch($validated['pmid']);
 
         if (!$data) {
-            return redirect()->back()->with('error', 'PubMed üzerinden veri çekilemedi. Lütfen PMID numarasını kontrol edin.');
+            return redirect()->back()->with('error', 'PubMed üzerinden veri çekilemedi.');
         }
 
         $article = ResearchArticle::create([
@@ -45,13 +45,13 @@ class ResearchArticleController extends Controller
             'title' => $data['title'],
             'abstract_original' => $data['abstract'],
             'authors_json' => $data['authors'] ?? [],
-            'journal_name' => $data['journal'] ?? null,
+            'journal' => $data['journal'] ?? null,
             'publication_date' => $data['published_at'] ?? null,
             'status' => 'draft',
             'verification_tier' => 1,
         ]);
 
-        return redirect()->route('admin.research.edit', $article->id)->with('success', 'Makale başarıyla çekildi. Şimdi AI özeti oluşturabilirsiniz.');
+        return redirect()->route('admin.research.edit', $article->id)->with('success', 'Veri çekildi.');
     }
 
     public function edit(ResearchArticle $research)
@@ -66,11 +66,16 @@ class ResearchArticleController extends Controller
             'turkish_title' => 'nullable|string|max:500',
             'abstract_tr' => 'nullable|string',
             'doi' => 'nullable|string|max:255',
-            'journal_name' => 'nullable|string|max:255',
+            'journal' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
             'status' => 'required|in:draft,in_review,approved,published,rejected',
             'verification_tier' => 'required|integer',
         ]);
+
+        // Strip ** markdown bolding
+        if (isset($data['abstract_tr'])) {
+            $data['abstract_tr'] = str_replace('**', '', $data['abstract_tr']);
+        }
 
         $research->update($data);
         return redirect()->route('admin.research.index')->with('success', 'Araştırma güncellendi.');
@@ -86,13 +91,16 @@ class ResearchArticleController extends Controller
     {
         $result = $ai->summarize($researchArticle->title, $researchArticle->abstract_original, 'research article');
         if ($result && !isset($result['error'])) {
-            $summary = $result['summary_patient'] . "\n\n---\n\n**Doktor Özeti:**\n" . $result['summary_doctor'] . "\n\n**Önemli Bulgular:**\n" . implode("\n", $result['key_takeaways']);
+            $summary = ($result['summary_patient'] ?? '') . "\n\n---\n\nDoktor Özeti:\n" . ($result['summary_doctor'] ?? '') . "\n\nÖnemli Bulgular:\n" . implode("\n", $result['key_takeaways'] ?? []);
             
+            // Strip ** from the title as well if needed
+            $titleTr = isset($result['title_tr']) ? str_replace('**', '', $result['title_tr']) : $researchArticle->turkish_title;
+
             $researchArticle->update([
-                'turkish_title' => $result['title_tr'] ?? $researchArticle->turkish_title,
-                'abstract_tr' => $summary
+                'turkish_title' => $titleTr,
+                'abstract_tr' => str_replace('**', '', $summary)
             ]);
-            return response()->json(['success' => true, 'data' => $result]);
+            return response()->json(['success' => true]);
         }
         return response()->json(['success' => false, 'message' => $result['error'] ?? 'AI Error'], 500);
     }

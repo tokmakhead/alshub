@@ -35,7 +35,26 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($allUpdates as $item)
-                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full relative">
+                    @if(get_class($item) === 'App\Models\ClinicalTrial')
+                        @php
+                            $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
+                            $statusConfig = match(strtolower($rawStatus)) {
+                                'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
+                                'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-500 text-white'],
+                                'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-500 text-white'],
+                                'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-500 text-white'],
+                                'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-500 text-white'],
+                                'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-600 text-white'],
+                                'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
+                                default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
+                            };
+                        @endphp
+                        <div class="{{ $statusConfig['color'] }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+                            {{ $statusConfig['label'] }}
+                        </div>
+                    @endif
+
                     <div class="p-8 flex flex-col flex-grow">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-xs font-bold uppercase tracking-widest text-primary bg-blue-50 px-3 py-1 rounded-full">
@@ -47,25 +66,6 @@
                                     {{ $item->type === 'publication' ? 'Araştırma' : ($item->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
                                 @endif
                             </span>
-                            
-                            @if(get_class($item) === 'App\Models\ClinicalTrial')
-                                @php
-                                    $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
-                                    $statusConfig = match(strtolower($rawStatus)) {
-                                        'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-100 text-green-700'],
-                                        'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-100 text-blue-700'],
-                                        'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-100 text-indigo-700'],
-                                        'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-100 text-gray-600'],
-                                        'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-50 text-red-600'],
-                                        'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-50 text-red-600'],
-                                        'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-50 text-yellow-700'],
-                                        default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-100 text-gray-500']
-                                    };
-                                @endphp
-                                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded {{ $statusConfig['color'] }} border border-current opacity-80">
-                                    {{ $statusConfig['label'] }}
-                                </span>
-                            @endif
 
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ $item->created_at->translatedFormat('d F Y') }}</span>
                         </div>

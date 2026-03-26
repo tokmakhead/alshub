@@ -22,31 +22,31 @@
     @endphp
 
     <article class="max-w-4xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+        @if($modelType === 'clinicaltrial')
+            @php
+                $rawStatus = $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
+                $statusConfig = match(strtolower($rawStatus)) {
+                    'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
+                    'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-500 text-white'],
+                    'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-500 text-white'],
+                    'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-500 text-white'],
+                    'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-500 text-white'],
+                    'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-600 text-white'],
+                    'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
+                    default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
+                };
+            @endphp
+            <div class="mb-4 inline-block {{ $statusConfig['color'] }} text-[10px] font-black uppercase px-3 py-1 rounded-md tracking-widest shadow-sm">
+                {{ $statusConfig['label'] }}
+            </div>
+        @endif
+
         <!-- Header -->
         <header class="mb-12">
             <div class="flex items-center gap-3 mb-6">
                 <span class="{{ $typeColor }} text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
                     {{ $typeLabel }}
                 </span>
-                
-                @if($modelType === 'clinicaltrial')
-                    @php
-                        $rawStatus = $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
-                        $statusConfig = match(strtolower($rawStatus)) {
-                            'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-100 text-green-700 border-green-200'],
-                            'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-100 text-blue-700 border-blue-200'],
-                            'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-100 text-indigo-700 border-indigo-200'],
-                            'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-100 text-gray-600 border-gray-200'],
-                            'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-50 text-red-600 border-red-100'],
-                            'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-50 text-red-600 border-red-100'],
-                            'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-50 text-yellow-700 border-yellow-200'],
-                            default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-100 text-gray-500 border-gray-200']
-                        };
-                    @endphp
-                    <span class="text-[10px] font-black uppercase px-2 py-1 rounded-lg border {{ $statusConfig['color'] }}">
-                        {{ $statusConfig['label'] }}
-                    </span>
-                @endif
 
                 <span class="text-gray-400 text-sm font-medium">
                     {{ ($content->publication_date ?? $content->created_at)->translatedFormat('d F Y') }}

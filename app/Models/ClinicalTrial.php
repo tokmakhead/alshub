@@ -56,4 +56,19 @@ class ClinicalTrial extends Model
     {
         return $this->summary_tr ?: $this->summary;
     }
+
+    public function getSourceLabelAttribute()
+    {
+        return $this->sponsor ?: 'ClinicalTrials.gov';
+    }
+
+    public function getSourceNameAttribute()
+    {
+        return $this->sponsor ?: 'ClinicalTrials.gov';
+    }
+
+    public function getTypeAttribute()
+    {
+        return 'clinical-trial';
+    }
 }

@@ -91,13 +91,6 @@ class ResearchArticleController extends Controller
         return redirect()->route('admin.research.index')->with('success', 'Araştırma silindi.');
     }
 
-    public function toggleStatus(ResearchArticle $research)
-    {
-        $newStatus = $research->status === 'published' ? 'draft' : 'published';
-        $research->update(['status' => $newStatus]);
-        return response()->json(['success' => true, 'status' => $newStatus]);
-    }
-
     public function generateAiSummary(ResearchArticle $researchArticle, ClinicalSummaryService $ai)
     {
         $result = $ai->summarize($researchArticle->title, $researchArticle->abstract_original, 'research article');

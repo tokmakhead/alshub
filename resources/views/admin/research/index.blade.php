@@ -23,101 +23,57 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PMID / Başlık</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dergi / Tarih</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Güven Katmanı</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($articles as $article)
                                 <tr>
-                                    <th class="px-6 py-4 bg-gray-50 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest text-nowrap">PMID / Bilimsel Başlık</th>
-                                    <th class="px-6 py-4 bg-gray-50 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest text-nowrap">Dergi & Tarih</th>
-                                    <th class="px-6 py-4 bg-gray-50 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest text-nowrap">Güven Katmanı</th>
-                                    <th class="px-6 py-4 bg-gray-50 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest text-nowrap">Yayın Durumu</th>
-                                    <th class="px-6 py-4 bg-gray-50 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest text-nowrap">Aksiyon</th>
+                                    <td class="px-6 py-4">
+                                        <div class="text-xs font-bold text-gray-400">PMID: {{ $article->pmid }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $article->title }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        <div>{{ $article->journal }}</div>
+                                        <div class="text-xs text-gray-400">{{ $article->publication_date ? $article->publication_date->format('d.m.Y') : 'Tarih Yok' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 text-xs font-bold rounded bg-blue-50 text-blue-700 border border-blue-200">Tier {{ $article->verification_tier }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            {{ $article->status === 'published' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $article->status === 'approved' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $article->status === 'in_review' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $article->status === 'draft' ? 'bg-gray-100 text-gray-800' : '' }}
+                                            {{ $article->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
+                                        ">
+                                            {{ strtoupper(str_replace('_', ' ', $article->status)) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            <a href="{{ route('admin.research.edit', $article) }}" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded">Düzenle</a>
+                                            <form action="{{ route('admin.research.destroy', $article) }}" method="POST" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 border border-red-600 px-2 py-1 rounded">Sil</button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-100">
-                                @forelse($articles as $article)
-                                    <tr class="hover:bg-gray-50/50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <div class="flex flex-col">
-                                                <span class="text-[9px] font-black text-gray-400 mb-1 uppercase tracking-tighter">PMID: {{ $article->pmid }}</span>
-                                                <span class="text-sm font-black text-gray-900 leading-tight group-hover:text-primary transition line-clamp-2">{{ $article->title }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <div class="flex flex-col items-center">
-                                                <span class="text-xs font-bold text-gray-700 leading-none">{{ $article->journal }}</span>
-                                                <span class="text-[10px] text-gray-400 mt-1 font-medium italic">{{ $article->publication_date ? $article->publication_date->format('d F Y') : 'Tarih Yok' }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <span class="px-3 py-1 text-[10px] font-black rounded-lg border border-blue-200 bg-blue-50 text-blue-700 uppercase tracking-widest">
-                                                Tier {{ $article->verification_tier }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-center">
-                                            <button onclick="togglePublic('{{ $article->id }}')" id="status-badge-{{ $article->id }}" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all
-                                                {{ $article->status === 'published' ? 'bg-green-500 text-white border-green-500 shadow-sm shadow-green-200' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200' }}">
-                                                {{ $article->status === 'published' ? 'CANLI' : 'TASLAK' }}
-                                            </button>
-                                        </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <a href="{{ route('admin.research.edit', $article) }}" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors border border-indigo-100" title="Düzenle">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                                </a>
-                                                <form action="{{ route('admin.research.destroy', $article) }}" method="POST" onsubmit="return confirm('Silmek istediğinize emin misiniz?')" class="inline">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors border border-red-100" title="Sil">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 font-bold italic">Araştırma kaydı bulunmuyor.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-8">
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="mt-4">
                         {{ $articles->links() }}
                     </div>
-
-                    <script>
-                    function togglePublic(id) {
-                        const btn = document.getElementById('status-badge-' + id);
-                        btn.disabled = true;
-                        btn.style.opacity = '0.5';
-
-                        fetch(`/admin/research/${id}/toggle-status`, { // Bu rota eklenmeli
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                if (data.status === 'published') {
-                                    btn.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all bg-green-500 text-white border-green-500 shadow-sm shadow-green-200';
-                                    btn.innerText = 'CANLI';
-                                } else {
-                                    btn.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200';
-                                    btn.innerText = 'TASLAK';
-                                }
-                            }
-                        })
-                        .catch(error => alert('Hata: ' + error))
-                        .finally(() => {
-                            btn.disabled = false;
-                            btn.style.opacity = '1';
-                        });
-                    }
-                    </script>
                 </div>
             </div>
         </div>

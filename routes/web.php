@@ -75,9 +75,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('drugs/{drug}/ai-summary', [DrugController::class, 'generateAiSummary'])->name('drugs.ai-summary');
     Route::post('guidelines/{guideline}/ai-summary', [GuidelineController::class, 'generateAiSummary'])->name('guidelines.ai-summary');
     
-    // Additional Actions
-    Route::post('research/{researchArticle}/toggle-status', [ResearchArticleController::class, 'toggleStatus'])->name('research.toggle-status');
-    Route::post('trials/{clinicalTrial}/toggle-status', [ClinicalTrialController::class, 'toggleStatus'])->name('trials.toggle-status');
+    // Additional Drug Actions
     Route::post('drugs/{drug}/toggle-status', [DrugController::class, 'toggleStatus'])->name('drugs.toggle-status');
     
     // Guidelines

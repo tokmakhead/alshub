@@ -73,7 +73,7 @@
                             @php
                                 $route = match(get_class($item)) {
                                     'App\Models\ResearchArticle' => route('publications'),
-                                    'App\Models\ClinicalTrial' => route('content.show', ['type' => 'clinical-trial', 'slug' => $item->slug]),
+                                    'App\Models\ClinicalTrial' => route('content.show', ['type' => 'trial', 'slug' => $item->slug]),
                                     default => route('content.show', ['type' => $item->type, 'slug' => $item->slug])
                                 };
                             @endphp

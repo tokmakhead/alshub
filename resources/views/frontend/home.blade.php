@@ -28,29 +28,50 @@
             </a>
         </div>
 
+        @php
+            // Güvenli birleştirme (Blade seviyesinde)
+            $allUpdates = collect($latestContents)->concat($latestResearch ?? [])->sortByDesc('created_at')->take(6);
+        @endphp
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach($latestContents as $content)
+            @forelse($allUpdates as $content)
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
                     <div class="p-8 flex flex-col flex-grow">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-xs font-bold uppercase tracking-widest text-primary bg-blue-50 px-3 py-1 rounded-full">
-                                {{ $content->type === 'publication' ? 'Araştırma' : ($content->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
+                                @if(get_class($content) === 'App\Models\ResearchArticle')
+                                    Araştırma
+                                @else
+                                    {{ $content->type === 'publication' ? 'Araştırma' : ($content->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
+                                @endif
                             </span>
                             <span class="text-xs text-gray-400 font-medium">{{ $content->created_at->translatedFormat('d F Y') }}</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-primary transition">
-                            <a href="{{ route('content.show', $content->slug) }}">{{ $content->translated_title }}</a>
+                            @if(get_class($content) === 'App\Models\ResearchArticle')
+                                <a href="{{ route('publications') }}">{{ $content->translated_title }}</a>
+                            @else
+                                <a href="{{ route('content.show', ['type' => $content->type, 'slug' => $content->slug]) }}">{{ $content->translated_title }}</a>
+                            @endif
                         </h3>
                         <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
-                            {{ $content->translated_summary }}
+                            {{ Str::limit($content->translated_summary, 150) }}
                         </p>
                         <div class="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                            <span class="text-xs text-gray-400">Kaynak: <span class="font-bold text-gray-600">{{ $content->source->name ?? $content->source_name }}</span></span>
-                            <a href="{{ route('content.show', $content->slug) }}" class="text-primary font-bold text-sm">Detaylar</a>
+                            <span class="text-xs text-gray-400">Kaynak: <span class="font-bold text-gray-600">{{ $content->source->name ?? ($content->source_name ?? 'PubMed') }}</span></span>
+                            @if(get_class($content) === 'App\Models\ResearchArticle')
+                                <a href="{{ route('publications') }}" class="text-primary font-bold text-sm">Detaylar</a>
+                            @else
+                                <a href="{{ route('content.show', ['type' => $content->type, 'slug' => $content->slug]) }}" class="text-primary font-bold text-sm">Detaylar</a>
+                            @endif
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-full text-center py-10 text-gray-400 font-bold italic">
+                    Henüz yeni bir güncelleme bulunmuyor.
+                </div>
+            @endforelse
         </div>
     </div>
 

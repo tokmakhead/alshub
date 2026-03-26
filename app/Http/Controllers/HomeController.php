@@ -8,8 +8,13 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // Standart haberleri çek
         $latestContents = \App\Models\Content::where('status', 'published')->latest()->take(6)->get();
-        return view('frontend.home', compact('latestContents'));
+        
+        // Araştırmaları ayrı bir değişken olarak çek (Risk yok)
+        $latestResearch = \App\Models\ResearchArticle::where('status', 'published')->latest()->take(6)->get();
+
+        return view('frontend.home', compact('latestContents', 'latestResearch'));
     }
 
     public function aboutAls()

@@ -61,6 +61,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('trials/{trial}/fetch', [ClinicalTrialController::class, 'fetchSingle'])->name('trials.fetch');
     Route::post('trials/{trial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
     Route::get('/cleanup-drugs', [DrugController::class, 'cleanupTitles'])->name('drugs.cleanup');
+    Route::get('/run-migrations', function() {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Migrations run: " . \Illuminate\Support\Facades\Artisan::output();
+    });
     Route::resource('drugs', DrugController::class);
 
     // Archive / Legacy

@@ -31,10 +31,36 @@ class IngestionManager
     }
 
     /**
-     * Run ingestion for PubMed.
+     * Run all active API sources.
      */
-    public function syncPubMed($query = 'Amyotrophic Lateral Sclerosis', $limit = 20)
+    public function syncAll()
     {
+        $sources = SourceRegistry::where('is_enabled', true)
+            ->where('source_mode', 'api')
+            ->get();
+
+        foreach ($sources as $source) {
+            switch ($source->source_name) {
+                case 'PubMed':
+                    $this->syncPubMed($source);
+                    break;
+                case 'ClinicalTrials.gov':
+                    $this->syncTrials($source);
+                    break;
+                case 'OpenFDA':
+                    $this->syncDrugs($source);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Run ingestion for PubMed using search API + Details fetch.
+     */
+    public function syncPubMed(SourceRegistry $source = null)
+    {
+        $query = $source->config_json['default_query'] ?? 'Amyotrophic Lateral Sclerosis';
+        
         $log = IngestionLog::create([
             'source_name' => 'PubMed',
             'content_type' => 'research',
@@ -43,8 +69,13 @@ class IngestionManager
         ]);
 
         try {
-            $ids = $this->pubMed->search($query, $limit);
+            // Step 1: Search for IDs (Official API)
+            $ids = $this->pubMed->search($query, 15);
+            
+            // Step 2: Fetch Details (Official API)
             $xml = $this->pubMed->fetchDetails($ids);
+            
+            // Step 3: Normalize & Insert
             $normalizedItems = $this->normalizer->normalizePubMed($xml);
 
             $inserted = 0;
@@ -53,7 +84,11 @@ class IngestionManager
             foreach ($normalizedItems as $data) {
                 $article = ResearchArticle::updateOrCreate(
                     ['pmid' => $data['pmid']],
-                    array_merge($data, ['status' => 'draft'])
+                    array_merge($data, [
+                        'status' => 'draft',
+                        'verification_tier' => 1,
+                        'fetched_at' => now()
+                    ])
                 );
 
                 if ($article->wasRecentlyCreated) {
@@ -71,6 +106,8 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
 
+            if ($source) $source->update(['last_successful_sync' => now()]);
+
             return $log;
 
         } catch (\Exception $e) {
@@ -79,16 +116,19 @@ class IngestionManager
                 'error_message' => $e->getMessage(),
                 'finished_at' => now(),
             ]);
-            Log::error('PubMed Sync Job Failed', ['error' => $e->getMessage()]);
+            if ($source) $source->update(['last_failed_sync' => now()]);
+            Log::error('PubMed Official Sync Failed', ['error' => $e->getMessage()]);
             return $log;
         }
     }
 
     /**
-     * Run ingestion for ClinicalTrials.
+     * Run ingestion for ClinicalTrials (Official API v2).
      */
-    public function syncTrials($query = 'Amyotrophic Lateral Sclerosis', $limit = 20)
+    public function syncTrials(SourceRegistry $source = null)
     {
+        $query = $source->config_json['default_query'] ?? 'Amyotrophic Lateral Sclerosis';
+
         $log = IngestionLog::create([
             'source_name' => 'ClinicalTrials.gov',
             'content_type' => 'trial',
@@ -97,7 +137,8 @@ class IngestionManager
         ]);
 
         try {
-            $studies = $this->trials->fetchTrials($query, $limit);
+            // Official API v2 fetch
+            $studies = $this->trials->fetchTrials($query, 15);
             
             $inserted = 0;
             $updated = 0;
@@ -107,7 +148,11 @@ class IngestionManager
                 
                 $trial = ClinicalTrial::updateOrCreate(
                     ['nct_id' => $data['nct_id']],
-                    array_merge($data, ['status' => 'draft'])
+                    array_merge($data, [
+                        'status' => 'draft',
+                        'verification_tier' => 1,
+                        'fetched_at' => now()
+                    ])
                 );
 
                 if ($trial->wasRecentlyCreated) {
@@ -125,6 +170,8 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
 
+            if ($source) $source->update(['last_successful_sync' => now()]);
+
             return $log;
 
         } catch (\Exception $e) {
@@ -133,15 +180,16 @@ class IngestionManager
                 'error_message' => $e->getMessage(),
                 'finished_at' => now(),
             ]);
-            Log::error('ClinicalTrials Sync Job Failed', ['error' => $e->getMessage()]);
+            if ($source) $source->update(['last_failed_sync' => now()]);
+            Log::error('ClinicalTrials Official Sync Failed', ['error' => $e->getMessage()]);
             return $log;
         }
     }
 
     /**
-     * Run ingestion for Drugs (FDA).
+     * Run ingestion for Drugs (OpenFDA Official API).
      */
-    public function syncDrugs()
+    public function syncDrugs(SourceRegistry $source = null)
     {
         $log = IngestionLog::create([
             'source_name' => 'OpenFDA',
@@ -169,21 +217,12 @@ class IngestionManager
                     ]
                 );
 
-                $existingStatus = \App\Models\DrugRegionalStatus::where('drug_id', $drug->id)
-                    ->where('region', $data['region_status']['region'])
-                    ->first();
-
-                $changeDetected = false;
-                if ($existingStatus && $existingStatus->raw_payload_json != $data['region_status']['raw_payload_json']) {
-                    $changeDetected = true;
-                }
-
                 \App\Models\DrugRegionalStatus::updateOrCreate(
                     [
                         'drug_id' => $drug->id,
                         'region' => $data['region_status']['region']
                     ],
-                    array_merge($data['region_status'], ['change_detected' => $changeDetected])
+                    array_merge($data['region_status'], ['fetched_at' => now()])
                 );
                 
                 if ($drug->wasRecentlyCreated) {
@@ -201,6 +240,8 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
 
+            if ($source) $source->update(['last_successful_sync' => now()]);
+
             return $log;
 
         } catch (\Exception $e) {
@@ -209,7 +250,8 @@ class IngestionManager
                 'error_message' => $e->getMessage(),
                 'finished_at' => now(),
             ]);
-            Log::error('Drug Sync Job Failed', ['error' => $e->getMessage()]);
+            if ($source) $source->update(['last_failed_sync' => now()]);
+            Log::error('Drug Official Sync Failed', ['error' => $e->getMessage()]);
             return $log;
         }
     }

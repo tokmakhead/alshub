@@ -44,9 +44,21 @@ Route::middleware('auth')->group(function () {
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('sources', SourceController::class);
-    Route::post('sources/{source}/fetch', [SourceController::class, 'fetchNow'])->name('sources.fetch');
-    Route::get('sources/{source}/progress', [SourceController::class, 'checkProgress'])->name('sources.progress');
+    // Source Registry Management (api.md Alignment)
+    Route::get('/sources', [SourceController::class, 'index'])->name('sources.index');
+    Route::get('/sources/create', [SourceController::class, 'create'])->name('sources.create');
+    Route::post('/sources', [SourceController::class, 'store'])->name('sources.store');
+    Route::get('/sources/{source}/edit', [SourceController::class, 'edit'])->name('sources.edit');
+    Route::put('/sources/{source}', [SourceController::class, 'update'])->name('sources.update');
+    Route::delete('/sources/{source}', [SourceController::class, 'destroy'])->name('sources.destroy');
+    Route::post('/sources/{source}/fetch', [SourceController::class, 'fetchNow']);
+    Route::get('/sources/{source}/progress', [SourceController::class, 'checkProgress']);
+
+    // Temporary Source Repair (Execute then delete)
+    Route::get('/source-repair', function() {
+        (new \Database\Seeders\SourceRegistrySeeder())->run();
+        return "Source Registry Repaired Successfully! Go to /admin/sources to check.";
+    });
 
     // New Scientific Content Routes
     Route::resource('research', ResearchArticleController::class);

@@ -14,6 +14,7 @@ class SourceRegistry extends Model
     protected $fillable = [
         'source_name',
         'source_mode',
+        'verification_tier',
         'is_enabled',
         'config_json',
         'last_successful_sync',

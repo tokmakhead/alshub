@@ -58,11 +58,94 @@ class SourceRegistrySeeder extends Seeder
             ['source_name' => 'Guidelines (NICE/EAN)'],
             [
                 'source_mode' => 'manual',
+                'verification_tier' => 1,
+                'is_enabled' => true,
+                'config_json' => [],
+                'notes' => 'Manual entry for official clinical guidelines.'
+            ]
+        );
+
+        // 5. CLINICAL TRIALS / WHO ICTRP (API Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'WHO ICTRP'],
+            [
+                'source_mode' => 'api',
+                'verification_tier' => 1,
                 'is_enabled' => true,
                 'config_json' => [
-                    'verification_tier' => 1
+                    'endpoint' => 'https://apps.who.int/trialsearch/'
                 ],
-                'notes' => 'Manual entry for official clinical guidelines.'
+                'notes' => 'World Health Organization International Clinical Trials Registry Platform.'
+            ]
+        );
+
+        // 6. REGULATORY / EMA (API Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'EMA'],
+            [
+                'source_mode' => 'api',
+                'verification_tier' => 1,
+                'is_enabled' => true,
+                'config_json' => [
+                    'endpoint' => 'https://www.ema.europa.eu/en/medicines'
+                ],
+                'notes' => 'European Medicines Agency official medicine data.'
+            ]
+        );
+
+        // 7. NETWORK / NEALS (Web Ingest Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'NEALS'],
+            [
+                'source_mode' => 'web_ingest',
+                'verification_tier' => 2,
+                'is_enabled' => true,
+                'config_json' => [
+                    'url' => 'https://neals.org/als-clinics/find-a-clinic/'
+                ],
+                'notes' => 'Northeast ALS Consortium clinic network.'
+            ]
+        );
+
+        // 8. NETWORK / ENCALS (Web Ingest Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'ENCALS'],
+            [
+                'source_mode' => 'web_ingest',
+                'verification_tier' => 2,
+                'is_enabled' => true,
+                'config_json' => [
+                    'url' => 'https://www.encals.eu/centres/'
+                ],
+                'notes' => 'European Network to Cure ALS centres.'
+            ]
+        );
+
+        // 9. NETWORK / ALS Association (Web Ingest Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'ALS Association'],
+            [
+                'source_mode' => 'web_ingest',
+                'verification_tier' => 2,
+                'is_enabled' => true,
+                'config_json' => [
+                    'url' => 'https://www.als.org/local-support/certified-centers-clinics'
+                ],
+                'notes' => 'ALS Association Certified Treatment Centers of Excellence.'
+            ]
+        );
+
+        // 10. NETWORK / MDA Care Center Network (Web Ingest Mode)
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'MDA Care Center Network'],
+            [
+                'source_mode' => 'web_ingest',
+                'verification_tier' => 2,
+                'is_enabled' => true,
+                'config_json' => [
+                    'url' => 'https://www.mda.org/care/care-center-network'
+                ],
+                'notes' => 'Muscular Dystrophy Association specialized ALS care centers.'
             ]
         );
     }

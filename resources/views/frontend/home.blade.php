@@ -53,9 +53,12 @@
                                     $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
                                     $statusConfig = match(strtolower($rawStatus)) {
                                         'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-100 text-green-700'],
-                                        'active, not recruiting', 'not yet recruiting' => ['label' => 'Aktif / Yakında', 'color' => 'bg-blue-100 text-blue-700'],
+                                        'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-100 text-blue-700'],
+                                        'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-100 text-indigo-700'],
                                         'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-100 text-gray-600'],
-                                        'withdrawn', 'terminated', 'suspended' => ['label' => 'Durduruldu', 'color' => 'bg-red-100 text-red-700'],
+                                        'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-50 text-red-600'],
+                                        'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-50 text-red-600'],
+                                        'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-50 text-yellow-700'],
                                         default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-100 text-gray-500']
                                     };
                                 @endphp

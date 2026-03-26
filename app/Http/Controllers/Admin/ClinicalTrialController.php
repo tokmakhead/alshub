@@ -45,4 +45,10 @@ class ClinicalTrialController extends Controller
 
         return redirect()->route('admin.trials.index')->with('success', 'Klinik çalışma güncellendi.');
     }
+
+    public function destroy(ClinicalTrial $trial)
+    {
+        $trial->delete();
+        return redirect()->route('admin.trials.index')->with('success', 'Klinik çalışma silindi.');
+    }
 }

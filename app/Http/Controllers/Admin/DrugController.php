@@ -37,4 +37,10 @@ class DrugController extends Controller
 
         return redirect()->route('admin.drugs.index')->with('success', 'İlaç güncellendi.');
     }
+
+    public function destroy(Drug $drug)
+    {
+        $drug->delete();
+        return redirect()->route('admin.drugs.index')->with('success', 'İlaç kaydı silindi.');
+    }
 }

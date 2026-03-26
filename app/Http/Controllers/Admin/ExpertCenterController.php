@@ -53,4 +53,10 @@ class ExpertCenterController extends Controller
         $expertCenter->update($data);
         return redirect()->route('admin.expert-centers.index')->with('success', 'Merkez başarıyla güncellendi.');
     }
+
+    public function destroy(ExpertCenter $expertCenter)
+    {
+        $expertCenter->delete();
+        return redirect()->route('admin.expert-centers.index')->with('success', 'Merkez silindi.');
+    }
 }

@@ -15,4 +15,10 @@ class ImportLogController extends Controller
         $logs = \App\Models\ImportLog::with('source')->latest()->paginate(20);
         return view('admin.logs.index', compact('logs'));
     }
+
+    public function destroy(\App\Models\ImportLog $log)
+    {
+        $log->delete();
+        return redirect()->route('admin.logs.index')->with('success', 'İşlem günlüğü silindi.');
+    }
 }

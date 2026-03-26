@@ -59,4 +59,10 @@ class DoctorController extends Controller
         $doctor->update($data);
         return redirect()->route('admin.doctors.index')->with('success', 'Doktor başarıyla güncellendi.');
     }
+
+    public function destroy(Doctor $doctor)
+    {
+        $doctor->delete();
+        return redirect()->route('admin.doctors.index')->with('success', 'Doktor kaydı silindi.');
+    }
 }

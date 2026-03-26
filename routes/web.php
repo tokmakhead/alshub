@@ -26,6 +26,13 @@ Route::get('/rehberler', [ContentController::class, 'guidelines'])->name('guidel
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
 Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('content.show');
 
+// Temporary execution routes for automated scripts
+Route::get('/run-migrations-tmp', function() {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return "Migrations run: " . \Illuminate\Support\Facades\Artisan::output();
+});
+Route::get('/cleanup-drugs-tmp', [App\Http\Controllers\Admin\DrugController::class, 'cleanupTitles']);
+
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');

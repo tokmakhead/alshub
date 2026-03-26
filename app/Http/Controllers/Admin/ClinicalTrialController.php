@@ -46,6 +46,25 @@ class ClinicalTrialController extends Controller
         return redirect()->route('admin.trials.index')->with('success', 'Klinik çalışma güncellendi.');
     }
 
+    public function toggleStatus(ClinicalTrial $trial)
+    {
+        $newStatus = $trial->status === 'published' ? 'draft' : 'published';
+        $trial->update(['status' => $newStatus]);
+        
+        return response()->json(['success' => true, 'new_status' => $newStatus]);
+    }
+
+    public function fetchSingle(ClinicalTrial $trial, IngestionManager $manager)
+    {
+        $updatedTrial = $manager->syncSingleTrial($trial->nct_id);
+        
+        if ($updatedTrial) {
+            return response()->json(['success' => true, 'message' => 'Veri güncellendi.']);
+        }
+        
+        return response()->json(['success' => false, 'message' => 'API hata verdi.'], 500);
+    }
+
     public function destroy(ClinicalTrial $trial)
     {
         $trial->delete();

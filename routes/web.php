@@ -57,6 +57,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // New Scientific Content Routes
     Route::resource('research', ResearchArticleController::class);
     Route::resource('trials', ClinicalTrialController::class);
+    Route::post('trials/{trial}/toggle-status', [ClinicalTrialController::class, 'toggleStatus'])->name('trials.toggle-status');
+    Route::post('trials/{trial}/fetch', [ClinicalTrialController::class, 'fetchSingle'])->name('trials.fetch');
     Route::resource('drugs', DrugController::class);
 
     // Archive / Legacy

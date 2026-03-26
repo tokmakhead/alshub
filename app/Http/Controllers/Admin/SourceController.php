@@ -3,22 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SourceRegistry;
+use App\Models\IngestionLog;
+use App\Services\IngestionManager;
 use Illuminate\Http\Request;
 
 class SourceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // Temizlik: Sıkışmış (stuck) import durumlarını bir kereliğine temizle
-        if (request()->has('reset_stuck')) {
-            $updated = \App\Models\Source::where('is_importing', true)->update(['is_importing' => false, 'import_progress' => 0]);
-            \Illuminate\Support\Facades\Log::info("DEBUG: Sources reset by request. Updated count: " . $updated);
-        }
-        
-        $sources = \App\Models\Source::latest()->paginate(10);
+        $sources = SourceRegistry::latest()->get();
         return view('admin.sources.index', compact('sources'));
     }
 
@@ -27,78 +21,77 @@ class SourceController extends Controller
         return view('admin.sources.create');
     }
 
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string',
-            'base_url' => 'required|url',
-            'fetch_method' => 'required|string',
+            'source_name' => 'required|string|max:255',
+            'source_mode' => 'required|in:api,web_ingest,manual',
+            'notes' => 'nullable|string',
         ]);
 
-        \App\Models\Source::create($validated);
-
-        return redirect()->route('admin.sources.index')->with('success', 'Source created successfully.');
+        SourceRegistry::create($validated);
+        return redirect()->route('admin.sources.index')->with('success', 'Kaynak başarıyla eklendi.');
     }
 
-    public function edit(\App\Models\Source $source)
+    public function edit(SourceRegistry $source)
     {
         return view('admin.sources.edit', compact('source'));
     }
 
-    public function update(\Illuminate\Http\Request $request, \App\Models\Source $source)
+    public function update(Request $request, SourceRegistry $source)
     {
-        \Illuminate\Support\Facades\Log::info("RAW Request base_url arriving: '" . $request->input('base_url') . "'");
-        
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string',
-            'base_url' => 'required|string', // Changed from url to string for debugging
-            'fetch_method' => 'required|string',
-            'is_active' => 'boolean',
+            'source_name' => 'required|string|max:255',
+            'source_mode' => 'required|in:api,web_ingest,manual',
+            'is_enabled' => 'boolean',
+            'notes' => 'nullable|string',
         ]);
-
-        \Illuminate\Support\Facades\Log::info("Updating Source ID: " . $source->id);
-        \Illuminate\Support\Facades\Log::info("Base URL Length after validation: " . strlen($validated['base_url']));
 
         $source->update($validated);
-
-        return redirect()->route('admin.sources.index')->with('success', 'Source updated successfully.');
+        return redirect()->route('admin.sources.index')->with('success', 'Kaynak durum güncellendi.');
     }
 
-    public function destroy(\App\Models\Source $source)
+    public function fetchNow(SourceRegistry $source, IngestionManager $manager)
+    {
+        // Check mode and trigger proper sync
+        if ($source->source_mode === 'manual') {
+            return response()->json(['error' => 'Bu kaynak manuel veri girişi gerektirir.'], 400);
+        }
+
+        switch($source->source_name) {
+            case 'PubMed':
+                $log = $manager->syncPubMed();
+                break;
+            case 'ClinicalTrials.gov':
+                $log = $manager->syncTrials();
+                break;
+            case 'OpenFDA':
+                $log = $manager->syncDrugs();
+                break;
+            default:
+                return response()->json(['error' => 'Bu kaynak için otomatik senkronizasyon henüz yapılandırılmadı.'], 400);
+        }
+
+        return response()->json([
+            'success' => true, 
+            'message' => $log->status === 'success' ? 'Senkronizasyon tamamlandı.' : 'Hata: ' . $log->error_message,
+            'log_id' => $log->id
+        ]);
+    }
+
+    public function checkProgress(SourceRegistry $source)
+    {
+        // Simple mock for UI compatibility, real progress would need job tracking
+        return response()->json([
+            'is_importing' => false,
+            'progress' => 100,
+            'message' => 'Tamamlandı'
+        ]);
+    }
+
+    public function destroy(SourceRegistry $source)
     {
         $source->delete();
-        return redirect()->route('admin.sources.index')->with('success', 'Source deleted successfully.');
-    }
-
-    public function fetchNow(\App\Models\Source $source, \App\Services\ContentFetcherService $fetcher)
-    {
-        try {
-            \Log::info("DEBUG: fetchNow manual trigger for Source " . $source->id);
-            // Start process
-            $fetcher->fetchFromSource($source);
-            
-            if (request()->ajax()) {
-                return response()->json(['success' => true]);
-            }
-
-            return redirect()->back()->with('success', 'Veri çekme işlemi tamamlandı.');
-        } catch (\Exception $e) {
-            \Log::error("DEBUG: fetchNow exception: " . $e->getMessage());
-            if (request()->ajax()) {
-                return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
-            }
-            throw $e;
-        }
-    }
-
-    public function checkProgress(\App\Models\Source $source)
-    {
-        return response()->json([
-            'is_importing' => $source->is_importing,
-            'progress' => $source->import_progress,
-            'message' => $source->import_message,
-        ]);
+        return redirect()->route('admin.sources.index')->with('success', 'Kaynak kaldırıldı.');
     }
 }

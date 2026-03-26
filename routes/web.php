@@ -53,8 +53,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('drugs', DrugController::class);
 
     // Archive / Legacy
-    Route::get('legacy', [ContentController::class, 'index'])->name('contents.index');
-    Route::delete('contents/delete-all', [ContentController::class, 'deleteAll'])->name('contents.delete-all');
+    Route::get('legacy', [AdminContentController::class, 'index'])->name('contents.index');
+    Route::delete('contents/delete-all', [AdminContentController::class, 'deleteAll'])->name('contents.delete-all');
     // Expert Profiles
     Route::resource('expert-centers', ExpertCenterController::class)->names('expert-centers');
     Route::resource('doctors', DoctorController::class)->names('doctors');

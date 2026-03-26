@@ -71,16 +71,21 @@ class ClinicalTrialController extends Controller
         $result = $ai->summarize($trial->title, $trial->summary, 'clinical trial');
         
         if ($result && !isset($result['error'])) {
-            // Format the composite summary
-            $formatted = "### Hasta Özeti\n" . ($result['summary_patient'] ?? '') . "\n\n";
-            $formatted .= "### Teknik Özet (Hekim)\n" . ($result['summary_doctor'] ?? '') . "\n\n";
+            // Composite summary without markdown signs
+            $formatted = "Hasta Özeti\n" . ($result['summary_patient'] ?? '') . "\n\n";
+            $formatted .= "Teknik Özet (Hekim)\n" . ($result['summary_doctor'] ?? '') . "\n\n";
             
             if (!empty($result['key_takeaways'])) {
-                $formatted .= "### Önemli Notlar\n- " . implode("\n- ", $result['key_takeaways']);
+                $formatted .= "Önemli Notlar\n- " . implode("\n- ", $result['key_takeaways']);
             }
 
+            // Strip any remaining markdown like ### or **
+            $cleanSummary = str_replace(['###', '**'], '', $formatted);
+            $cleanTitle = str_replace(['###', '**'], '', $result['title_tr'] ?? $trial->title);
+
             $trial->update([
-                'summary' => $formatted,
+                'title_tr' => $cleanTitle,
+                'summary_tr' => $cleanSummary,
             ]);
             
             return response()->json(['success' => true]);

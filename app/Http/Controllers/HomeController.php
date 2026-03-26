@@ -17,7 +17,10 @@ class HomeController extends Controller
         // Klinik Çalışmaları çek
         $latestTrials = \App\Models\ClinicalTrial::where('status', 'published')->latest()->take(6)->get();
 
-        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials'));
+        // İlaçları çek
+        $latestDrugs = \App\Models\Drug::where('status', 'published')->latest()->take(6)->get();
+
+        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs'));
     }
 
     public function aboutAls()

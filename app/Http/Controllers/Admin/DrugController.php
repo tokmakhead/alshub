@@ -21,6 +21,31 @@ class DrugController extends Controller
         return view('admin.drugs.index', compact('drugs'));
     }
 
+    public function create()
+    {
+        return view('admin.drugs.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'generic_name' => 'required|string|max:255',
+            'brand_name' => 'nullable|string|max:255',
+            'indication' => 'nullable|string',
+            'is_approved_fda' => 'boolean',
+            'is_approved_ema' => 'boolean',
+            'is_approved_titck' => 'boolean',
+            'verification_tier' => 'required|integer|min:1|max:3',
+            'status' => 'required|in:draft,published',
+        ]);
+
+        $validated['slug'] = \Illuminate\Support\Str::slug($validated['generic_name']);
+        
+        $drug = Drug::create($validated);
+
+        return redirect()->route('admin.drugs.edit', $drug)->with('success', 'İlaç oluşturuldu, detayları düzenleyebilirsiniz.');
+    }
+
     public function edit(Drug $drug)
     {
         $drug->load('regionalStatuses');

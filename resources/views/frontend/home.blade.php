@@ -25,10 +25,11 @@
         </div>
 
         @php
-            // Tüm içerik tiplerini (Haber, Araştırma, Klinik Çalışma) birleştir ve son 6'sını al
+            // Tüm içerik tiplerini (Haber, Araştırma, Klinik Çalışma, İlaç) birleştir ve son 6'sını al
             $allUpdates = collect($latestContents)
                 ->concat($latestResearch ?? [])
                 ->concat($latestTrials ?? [])
+                ->concat($latestDrugs ?? [])
                 ->sortByDesc('created_at')
                 ->take(6);
         @endphp
@@ -38,20 +39,20 @@
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full relative">
                     @php
                         $modelClass = get_class($item);
-                        $topLabel = null;
-                        $topColor = null;
+                        $topLabel = 'GÜNCEL HABER';
+                        $topColor = 'bg-blue-600 text-white';
 
                         if ($modelClass === 'App\Models\ClinicalTrial') {
                             $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
                             $statusConfig = match(strtolower($rawStatus)) {
                                 'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
-                                'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-500 text-white'],
+                                'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-sky-500 text-white'],
                                 'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-500 text-white'],
-                                'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-500 text-white'],
+                                'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-600 text-white'],
                                 'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-500 text-white'],
-                                'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-600 text-white'],
-                                'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
-                                default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
+                                'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-700 text-white'],
+                                'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-amber-500 text-white'],
+                                default => ['label' => 'Klinik Çalışma', 'color' => 'bg-primary text-white']
                             };
                             $topLabel = $statusConfig['label'];
                             $topColor = $statusConfig['color'];
@@ -59,16 +60,14 @@
                             $topLabel = 'Bilimsel Araştırma';
                             $topColor = 'bg-emerald-600 text-white';
                         } elseif (str_contains(strtolower($modelClass), 'drug')) {
-                            $topLabel = 'İlaç Gelişimi';
+                            $topLabel = 'İlaç Takibi (Tracker)';
                             $topColor = 'bg-purple-600 text-white';
                         }
                     @endphp
 
-                    @if($topLabel)
-                        <div class="{{ $topColor }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
-                            {{ $topLabel }}
-                        </div>
-                    @endif
+                    <div class="{{ $topColor }} text-[10px] font-black uppercase py-1.5 px-4 text-center tracking-widest shadow-sm">
+                        {{ $topLabel }}
+                    </div>
 
                     <div class="p-8 flex flex-col flex-grow">
                         <div class="flex items-center gap-2 mb-4">

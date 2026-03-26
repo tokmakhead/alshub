@@ -37,8 +37,12 @@
                         };
                     @endphp
                     <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full relative">
-                        @if(strtolower(class_basename($content)) === 'clinicaltrial')
-                            @php
+                        @php
+                            $modelType = strtolower(class_basename($content));
+                            $topLabel = null;
+                            $topColor = null;
+
+                            if ($modelType === 'clinicaltrial') {
                                 $rawStatus = $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
                                 $statusConfig = match(strtolower($rawStatus)) {
                                     'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
@@ -50,9 +54,20 @@
                                     'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
                                     default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
                                 };
-                            @endphp
-                            <div class="{{ $statusConfig['color'] }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
-                                {{ $statusConfig['label'] }}
+                                $topLabel = $statusConfig['label'];
+                                $topColor = $statusConfig['color'];
+                            } elseif ($modelType === 'researcharticle') {
+                                $topLabel = 'Bilimsel Araştırma';
+                                $topColor = 'bg-emerald-600 text-white';
+                            } elseif (str_contains($modelType, 'drug')) {
+                                $topLabel = 'İlaç Gelişimi';
+                                $topColor = 'bg-purple-600 text-white';
+                            }
+                        @endphp
+
+                        @if($topLabel)
+                            <div class="{{ $topColor }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+                                {{ $topLabel }}
                             </div>
                         @endif
 

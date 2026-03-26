@@ -32,8 +32,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($allUpdates as $item)
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full relative">
-                    @if(get_class($item) === 'App\Models\ClinicalTrial')
-                        @php
+                    @php
+                        $modelClass = get_class($item);
+                        $topLabel = null;
+                        $topColor = null;
+
+                        if ($modelClass === 'App\Models\ClinicalTrial') {
                             $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
                             $statusConfig = match(strtolower($rawStatus)) {
                                 'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
@@ -45,9 +49,20 @@
                                 'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
                                 default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
                             };
-                        @endphp
-                        <div class="{{ $statusConfig['color'] }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
-                            {{ $statusConfig['label'] }}
+                            $topLabel = $statusConfig['label'];
+                            $topColor = $statusConfig['color'];
+                        } elseif ($modelClass === 'App\Models\ResearchArticle') {
+                            $topLabel = 'Bilimsel Araştırma';
+                            $topColor = 'bg-emerald-600 text-white';
+                        } elseif (str_contains(strtolower($modelClass), 'drug')) {
+                            $topLabel = 'İlaç Gelişimi';
+                            $topColor = 'bg-purple-600 text-white';
+                        }
+                    @endphp
+
+                    @if($topLabel)
+                        <div class="{{ $topColor }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+                            {{ $topLabel }}
                         </div>
                     @endif
 

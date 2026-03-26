@@ -70,10 +70,19 @@ class ContentNormalizer
     {
         $openfda = $rawData['openfda'] ?? [];
         
+        $genericName = $openfda['generic_name'][0] ?? null;
+        
+        // Fallback with cleaning
+        if (!$genericName && isset($rawData['indications_and_usage'][0])) {
+            $rawIndication = $rawData['indications_and_usage'][0];
+            $genericName = $this->cleanIndicationsPrefix($rawIndication);
+            $genericName = \Illuminate\Support\Str::limit($genericName, 100);
+        }
+
         return [
-            'generic_name' => $openfda['generic_name'][0] ?? (string) \Illuminate\Support\Str::limit($rawData['indications_and_usage'][0] ?? 'Unknown Drug', 100),
+            'generic_name' => $genericName ?: 'Unknown Drug',
             'brand_name' => $openfda['brand_name'][0] ?? null,
-            'slug' => \Illuminate\Support\Str::slug($openfda['generic_name'][0] ?? \Illuminate\Support\Str::random(10)),
+            'slug' => \Illuminate\Support\Str::slug($genericName ?: \Illuminate\Support\Str::random(10)),
             'region_status' => [
                 'region' => 'US',
                 'regulator_name' => 'FDA',
@@ -84,6 +93,15 @@ class ContentNormalizer
                 'raw_payload_json' => $rawData,
             ]
         ];
+    }
+
+    private function cleanIndicationsPrefix($text)
+    {
+        // Remove "1 INDICATIONS AND USAGE ", "INDICATIONS AND USAGE ", etc.
+        $text = preg_replace('/^(\d+\.?\s+)?INDICATIONS\s+AND\s+USAGE\s+/i', '', $text);
+        
+        // If it starts with "[DRUG] is indicated for...", try to keep it brief
+        return trim($text);
     }
 
     private function parsePubMedDate($pubDate)

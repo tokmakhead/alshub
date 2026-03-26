@@ -82,6 +82,24 @@ class DrugController extends Controller
         return response()->json(['success' => false, 'message' => $result['error'] ?? 'AI Error'], 500);
     }
 
+    public function cleanupTitles()
+    {
+        $drugs = Drug::where('generic_name', 'like', '%INDICATIONS%')->get();
+        $count = 0;
+        foreach ($drugs as $drug) {
+            $current = $drug->generic_name;
+            // Remove "1. INDICATIONS AND USAGE" prefixes
+            $clean = preg_replace('/^(\d+\.?\s+)?INDICATIONS\s+AND\s+USAGE\s+/i', '', $current);
+            
+            if ($current !== $clean) {
+                $drug->generic_name = trim($clean);
+                $drug->save();
+                $count++;
+            }
+        }
+        return "Cleaned $count drugs. You can now delete this route.";
+    }
+
     public function destroy(Drug $drug)
     {
         $drug->delete();

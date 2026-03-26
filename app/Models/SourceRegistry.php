@@ -28,4 +28,19 @@ class SourceRegistry extends Model
         'last_successful_sync' => 'datetime',
         'last_failed_sync' => 'datetime',
     ];
+
+    public function getTargetModuleAttribute()
+    {
+        $name = strtolower($this->source_name);
+        
+        if (str_contains($name, 'pubmed')) return 'Bilimsel Araştırmalar';
+        if (str_contains($name, 'clinicaltrials.gov')) return 'Klinik Çalışmalar';
+        if (str_contains($name, 'who ictrp')) return 'Klinik Çalışmalar';
+        if (str_contains($name, 'fda') || str_contains($name, 'ema')) return 'İlaç Onayları & Durumları';
+        if (str_contains($name, 'guidelines')) return 'Klinik Rehberler';
+        if (str_contains($name, 'neals') || str_contains($name, 'encals') || str_contains($name, 'mda')) return 'Uzmanlık Merkezleri & Ağlar';
+        if (str_contains($name, 'association')) return 'Haberler & Destek';
+        
+        return 'Genel İçerik';
+    }
 }

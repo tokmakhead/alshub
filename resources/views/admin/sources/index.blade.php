@@ -29,7 +29,12 @@
                             @foreach($sources as $source)
                                 <tr>
                                     <td class="px-6 py-4">
-                                        <div class="text-sm font-bold text-gray-900">{{ $source->source_name }}</div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <div class="text-sm font-bold text-gray-900">{{ $source->source_name }}</div>
+                                            <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                                                {{ $source->target_module }}
+                                            </span>
+                                        </div>
                                         <div class="text-xs text-gray-500">{{ $source->notes }}</div>
                                     </td>
                                     <td class="px-6 py-4">

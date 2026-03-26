@@ -122,7 +122,19 @@
                         <div>
                             <span class="text-xs font-bold text-gray-400 uppercase block">Çalışma Durumu</span>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase">
-                                {{ $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? 'Bilinmiyor' }}
+                                @php
+                                    $rawStatus = $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
+                                    echo match(strtolower($rawStatus)) {
+                                        'recruiting' => 'Kayıt Devam Ediyor',
+                                        'active, not recruiting' => 'Aktif, Kayıt Kapalı',
+                                        'completed' => 'Tamamlandı',
+                                        'withdrawn' => 'Geri Çekildi',
+                                        'suspended' => 'Askıya Alındı',
+                                        'terminated' => 'Durduruldu',
+                                        'not yet recruiting' => 'Henüz Başlamadı',
+                                        default => $rawStatus ?: 'Bilinmiyor'
+                                    };
+                                @endphp
                             </span>
                         </div>
                     @endif

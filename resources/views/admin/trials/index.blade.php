@@ -55,7 +55,13 @@
                                             {{ $trial->status === 'draft' ? 'bg-gray-100 text-gray-800' : '' }}
                                             {{ $trial->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
                                         ">
-                                            {{ strtoupper(str_replace('_', ' ', $trial->status)) }}
+                                            @if($trial->status === 'published') Yayınlandı
+                                            @elseif($trial->status === 'approved') Onaylandı
+                                            @elseif($trial->status === 'in_review') İncelemede
+                                            @elseif($trial->status === 'draft') Taslak
+                                            @elseif($trial->status === 'rejected') Reddedildi
+                                            @else {{ strtoupper($trial->status) }}
+                                            @endif
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">

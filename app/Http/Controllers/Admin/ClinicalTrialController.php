@@ -71,12 +71,12 @@ class ClinicalTrialController extends Controller
         $result = $ai->summarize($trial->title, $trial->summary, 'clinical trial');
         
         if ($result && !isset($result['error'])) {
-            // Composite summary without markdown signs
-            $formatted = "Hasta Özeti\n" . ($result['summary_patient'] ?? '') . "\n\n";
-            $formatted .= "Teknik Özet (Hekim)\n" . ($result['summary_doctor'] ?? '') . "\n\n";
+            // Composite summary with --- separator for frontend splitting
+            $formatted = ($result['summary_patient'] ?? '') . "\n\n---\n\n";
+            $formatted .= ($result['summary_doctor'] ?? '');
             
             if (!empty($result['key_takeaways'])) {
-                $formatted .= "Önemli Notlar\n- " . implode("\n- ", $result['key_takeaways']);
+                $formatted .= "\n\nÖnemli Takib Edilecek Noktalar:\n- " . implode("\n- ", $result['key_takeaways']);
             }
 
             // Strip any remaining markdown like ### or **

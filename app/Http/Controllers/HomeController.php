@@ -14,7 +14,10 @@ class HomeController extends Controller
         // Araştırmaları ayrı bir değişken olarak çek (Risk yok)
         $latestResearch = \App\Models\ResearchArticle::where('status', 'published')->latest()->take(6)->get();
 
-        return view('frontend.home', compact('latestContents', 'latestResearch'));
+        // Klinik Çalışmaları çek
+        $latestTrials = \App\Models\ClinicalTrial::where('status', 'published')->latest()->take(6)->get();
+
+        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials'));
     }
 
     public function aboutAls()

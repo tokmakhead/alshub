@@ -29,12 +29,8 @@
         </div>
 
         @php
-            // Güvenli birleştirme (Blade seviyesinde)
-            $allUpdates = collect($latestContents)
-                ->concat($latestResearch ?? [])
-                ->concat($latestTrials ?? [])
-                ->sortByDesc('created_at')
-                ->take(6);
+            // Geçici olarak sadece son 6 klinik çalışmayı göster
+            $allUpdates = collect($latestTrials ?? [])->sortByDesc('created_at')->take(6);
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

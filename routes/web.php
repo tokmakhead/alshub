@@ -54,6 +54,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/sources/{source}/fetch', [SourceController::class, 'fetchNow']);
     Route::get('/sources/{source}/progress', [SourceController::class, 'checkProgress']);
 
+    // Temporary Source Repair (Execute then delete)
+    Route::get('/source-repair', function() {
+        if (request()->has('optimize')) {
+            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+            return "System Optimized and Cleared Successfully!";
+        }
+        (new \Database\Seeders\SourceRegistrySeeder())->run();
+        return "Source Registry Repaired Successfully! Go to /admin/sources to check.";
+    });
+
     // New Scientific Content Routes
     Route::resource('research', ResearchArticleController::class);
     Route::resource('trials', ClinicalTrialController::class);

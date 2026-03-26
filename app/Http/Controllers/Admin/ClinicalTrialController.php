@@ -65,6 +65,21 @@ class ClinicalTrialController extends Controller
         return response()->json(['success' => false, 'message' => 'API hata verdi.'], 500);
     }
 
+    public function generateAiSummary(ClinicalTrial $trial, \App\Services\ClinicalSummaryService $ai)
+    {
+        $result = $ai->summarize($trial->title, $trial->summary, 'clinical trial');
+        
+        if ($result && !isset($result['error'])) {
+            $summaryTr = ($result['summary_patient'] ?? '') . "\n\n---\n\n" . ($result['summary_doctor'] ?? '');
+            $trial->update([
+                'summary' => $summaryTr, 
+            ]);
+            return response()->json(['success' => true]);
+        }
+        
+        return response()->json(['success' => false, 'message' => 'AI özeti oluşturulamadı.'], 500);
+    }
+
     public function destroy(ClinicalTrial $trial)
     {
         $trial->delete();

@@ -56,6 +56,22 @@ class ResearchArticle extends Model
         return $this->abstract_tr ?: $this->abstract_original;
     }
 
+    // Compatibility accessors for Home Page (Duck-typing with Content model)
+    public function getTranslatedTitleAttribute()
+    {
+        return $this->turkish_title ?: $this->title;
+    }
+
+    public function getTranslatedSummaryAttribute()
+    {
+        return $this->abstract_tr ?: $this->abstract_original;
+    }
+
+    public function getTypeAttribute()
+    {
+        return 'publication';
+    }
+
     public function getSourceLabelAttribute()
     {
         return $this->journal ?: 'PubMed';

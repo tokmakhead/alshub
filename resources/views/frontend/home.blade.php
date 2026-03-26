@@ -51,7 +51,7 @@
                                     {{ $item->type === 'publication' ? 'Araştırma' : ($item->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
                                 @endif
                             </span>
-                            <span class="text-xs text-gray-400 font-medium">{{ $content->created_at->translatedFormat('d F Y') }}</span>
+                            <span class="text-xs text-gray-400 font-medium">{{ $item->created_at->translatedFormat('d F Y') }}</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-primary transition">
                             @php

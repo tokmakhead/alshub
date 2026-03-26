@@ -59,6 +59,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('trials', ClinicalTrialController::class);
     Route::post('trials/{trial}/toggle-status', [ClinicalTrialController::class, 'toggleStatus'])->name('trials.toggle-status');
     Route::post('trials/{trial}/fetch', [ClinicalTrialController::class, 'fetchSingle'])->name('trials.fetch');
+    Route::post('trials/{trial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
     Route::resource('drugs', DrugController::class);
 
     // Archive / Legacy

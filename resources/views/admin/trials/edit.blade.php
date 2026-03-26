@@ -45,39 +45,52 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center border-b pb-2">
                                     <h3 class="font-bold text-green-600">Editör Çalışma Alanı (Türkçe Çeviri/Özet)</h3>
-                                    <button type="button" onclick="generateAISummary()" class="bg-purple-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-purple-700">🪄 AI ile Hazırla</button>
+                                    <button type="button" 
+                                            id="ai-btn"
+                                            onclick="generateAISummary()" 
+                                            style="background-color: #9333ea; color: white; padding: 6px 14px; border-radius: 6px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                                        🪄 AI İLE HAZIRLA
+                                    </button>
                                 </div>
                                 
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase">Özet ve Detaylar</label>
-                                    <textarea id="summary_tr" name="summary" rows="15" class="w-full rounded border-gray-300 text-sm">{{ $trial->summary }}</textarea>
+                                    <textarea id="summary_tr" name="summary" rows="15" class="w-full rounded border-gray-300 text-sm p-3 leading-relaxed">{{ $trial->summary }}</textarea>
                                 </div>
 
                                 <script>
                                     function generateAISummary() {
-                                        const btn = event.target;
+                                        const btn = document.getElementById('ai-btn');
+                                        if (!btn) return;
+                                        
+                                        const oldHtml = btn.innerHTML;
                                         btn.disabled = true;
-                                        btn.innerText = 'Hazırlanıyor...';
+                                        btn.innerText = 'HAZIRLANIYOR...';
                                         
                                         fetch('{{ route('admin.trials.ai-summary', $trial) }}', {
                                             method: 'POST',
                                             headers: {
                                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                'Accept': 'application/json'
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
                                             }
                                         })
-                                        .then(response => response.json())
-                                        .then(data => {
+                                        .then(async response => {
+                                            const data = await response.json();
                                             if(data.success) {
                                                 location.reload();
                                             } else {
-                                                alert('Hata: ' + data.message);
-                                                btn.disabled = false;
-                                                btn.innerText = '🪄 AI ile Hazırla';
+                                                throw new Error(data.message || 'Bilinmeyen hata');
                                             }
+                                        })
+                                        .catch(err => {
+                                            alert('Hata: ' + err.message);
+                                            btn.disabled = false;
+                                            btn.innerHTML = oldHtml;
                                         });
                                     }
-                                </script>                               <div class="grid grid-cols-2 gap-4">
+                                </script>
+                               <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-500 uppercase">Doğrulama Katmanı (Tier)</label>
                                         <select name="verification_tier" class="w-full rounded border-gray-300 text-sm">

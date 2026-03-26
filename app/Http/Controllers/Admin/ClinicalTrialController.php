@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ClinicalTrial;
 use Illuminate\Http\Request;
+use App\Services\IngestionManager;
 
 class ClinicalTrialController extends Controller
 {
@@ -70,14 +71,22 @@ class ClinicalTrialController extends Controller
         $result = $ai->summarize($trial->title, $trial->summary, 'clinical trial');
         
         if ($result && !isset($result['error'])) {
-            $summaryTr = ($result['summary_patient'] ?? '') . "\n\n---\n\n" . ($result['summary_doctor'] ?? '');
+            // Format the composite summary
+            $formatted = "### Hasta Özeti\n" . ($result['summary_patient'] ?? '') . "\n\n";
+            $formatted .= "### Teknik Özet (Hekim)\n" . ($result['summary_doctor'] ?? '') . "\n\n";
+            
+            if (!empty($result['key_takeaways'])) {
+                $formatted .= "### Önemli Notlar\n- " . implode("\n- ", $result['key_takeaways']);
+            }
+
             $trial->update([
-                'summary' => $summaryTr, 
+                'summary' => $formatted,
             ]);
+            
             return response()->json(['success' => true]);
         }
         
-        return response()->json(['success' => false, 'message' => 'AI özeti oluşturulamadı.'], 500);
+        return response()->json(['success' => false, 'message' => 'AI özeti oluşturulamadı veya servis yanıt vermedi.'], 500);
     }
 
     public function destroy(ClinicalTrial $trial)

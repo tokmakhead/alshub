@@ -8,15 +8,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Get contents
-        $contents = \App\Models\Content::where('status', 'published')->latest()->take(6)->get();
-        // Get research
-        $research = \App\Models\ResearchArticle::where('status', 'published')->latest()->take(6)->get();
-        
-        // Merge them. Since ResearchArticle now has 'translated_title' etc. accessors, 
-        // it will work perfectly in the generic home page loop.
-        $latestContents = $contents->concat($research)->sortByDesc('created_at')->take(6);
-
+        $latestContents = \App\Models\Content::where('status', 'published')->latest()->take(6)->get();
         return view('frontend.home', compact('latestContents'));
     }
 

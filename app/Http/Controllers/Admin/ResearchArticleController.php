@@ -63,7 +63,11 @@ class ResearchArticleController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:500',
+            'turkish_title' => 'nullable|string|max:500',
             'abstract_tr' => 'nullable|string',
+            'doi' => 'nullable|string|max:255',
+            'journal_name' => 'nullable|string|max:255',
+            'publication_date' => 'nullable|date',
             'status' => 'required|in:draft,in_review,approved,published,rejected',
             'verification_tier' => 'required|integer',
         ]);
@@ -85,6 +89,7 @@ class ResearchArticleController extends Controller
             $summary = $result['summary_patient'] . "\n\n---\n\n**Doktor Özeti:**\n" . $result['summary_doctor'] . "\n\n**Önemli Bulgular:**\n" . implode("\n", $result['key_takeaways']);
             
             $researchArticle->update([
+                'turkish_title' => $result['title_tr'] ?? $researchArticle->turkish_title,
                 'abstract_tr' => $summary
             ]);
             return response()->json(['success' => true, 'data' => $result]);

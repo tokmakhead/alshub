@@ -23,6 +23,7 @@ class ResearchArticle extends Model
         'pmid',
         'doi',
         'title',
+        'turkish_title',
         'slug',
         'abstract_original',
         'abstract_tr',
@@ -47,7 +48,7 @@ class ResearchArticle extends Model
 
     public function getDisplayTitleAttribute()
     {
-        return $this->title;
+        return $this->turkish_title ?: $this->title;
     }
 
     public function getDisplaySummaryAttribute()

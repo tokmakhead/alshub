@@ -47,7 +47,24 @@
                                     {{ $item->type === 'publication' ? 'Araştırma' : ($item->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
                                 @endif
                             </span>
-                            <span class="text-xs text-gray-400 font-medium">{{ $item->created_at->translatedFormat('d F Y') }}</span>
+                            
+                            @if(get_class($item) === 'App\Models\ClinicalTrial')
+                                @php
+                                    $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
+                                    $statusConfig = match(strtolower($rawStatus)) {
+                                        'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-100 text-green-700'],
+                                        'active, not recruiting', 'not yet recruiting' => ['label' => 'Aktif / Yakında', 'color' => 'bg-blue-100 text-blue-700'],
+                                        'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-100 text-gray-600'],
+                                        'withdrawn', 'terminated', 'suspended' => ['label' => 'Durduruldu', 'color' => 'bg-red-100 text-red-700'],
+                                        default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-100 text-gray-500']
+                                    };
+                                @endphp
+                                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded {{ $statusConfig['color'] }} border border-current opacity-80">
+                                    {{ $statusConfig['label'] }}
+                                </span>
+                            @endif
+
+                            <span class="text-xs text-gray-400 font-medium ml-auto">{{ $item->created_at->translatedFormat('d F Y') }}</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-primary transition">
                             @php

@@ -28,6 +28,23 @@
                 <span class="{{ $typeColor }} text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
                     {{ $typeLabel }}
                 </span>
+                
+                @if($modelType === 'clinicaltrial')
+                    @php
+                        $rawStatus = $content->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
+                        $statusConfig = match(strtolower($rawStatus)) {
+                            'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-100 text-green-700 border-green-200'],
+                            'active, not recruiting', 'not yet recruiting' => ['label' => 'Aktif / Yakında', 'color' => 'bg-blue-100 text-blue-700 border-blue-200'],
+                            'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-100 text-gray-600 border-gray-200'],
+                            'withdrawn', 'terminated', 'suspended' => ['label' => 'Durduruldu', 'color' => 'bg-red-100 text-red-700 border-red-200'],
+                            default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-100 text-gray-500 border-gray-200']
+                        };
+                    @endphp
+                    <span class="text-[10px] font-black uppercase px-2 py-1 rounded-lg border {{ $statusConfig['color'] }}">
+                        {{ $statusConfig['label'] }}
+                    </span>
+                @endif
+
                 <span class="text-gray-400 text-sm font-medium">
                     {{ ($content->publication_date ?? $content->created_at)->translatedFormat('d F Y') }}
                 </span>

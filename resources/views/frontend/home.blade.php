@@ -30,40 +30,45 @@
 
         @php
             // Güvenli birleştirme (Blade seviyesinde)
-            $allUpdates = collect($latestContents)->concat($latestResearch ?? [])->sortByDesc('created_at')->take(6);
+            $allUpdates = collect($latestContents)
+                ->concat($latestResearch ?? [])
+                ->concat($latestTrials ?? [])
+                ->sortByDesc('created_at')
+                ->take(6);
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @forelse($allUpdates as $content)
+            @forelse($allUpdates as $item)
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
                     <div class="p-8 flex flex-col flex-grow">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-xs font-bold uppercase tracking-widest text-primary bg-blue-50 px-3 py-1 rounded-full">
-                                @if(get_class($content) === 'App\Models\ResearchArticle')
+                                @if(get_class($item) === 'App\Models\ResearchArticle')
                                     Araştırma
+                                @elseif(get_class($item) === 'App\Models\ClinicalTrial')
+                                    Klinik Çalışma
                                 @else
-                                    {{ $content->type === 'publication' ? 'Araştırma' : ($content->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
+                                    {{ $item->type === 'publication' ? 'Araştırma' : ($item->type === 'trial' ? 'Klinik Çalışma' : 'İlaç') }}
                                 @endif
                             </span>
                             <span class="text-xs text-gray-400 font-medium">{{ $content->created_at->translatedFormat('d F Y') }}</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-primary transition">
-                            @if(get_class($content) === 'App\Models\ResearchArticle')
-                                <a href="{{ route('publications') }}">{{ $content->translated_title }}</a>
-                            @else
-                                <a href="{{ route('content.show', ['type' => $content->type, 'slug' => $content->slug]) }}">{{ $content->translated_title }}</a>
-                            @endif
+                            @php
+                                $route = match(get_class($item)) {
+                                    'App\Models\ResearchArticle' => route('publications'),
+                                    'App\Models\ClinicalTrial' => route('content.show', ['type' => 'clinical-trial', 'slug' => $item->slug]),
+                                    default => route('content.show', ['type' => $item->type, 'slug' => $item->slug])
+                                };
+                            @endphp
+                            <a href="{{ $route }}">{{ $item->display_title }}</a>
                         </h3>
                         <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
-                            {{ Str::limit($content->translated_summary, 150) }}
+                            {{ Str::limit(strip_tags($item->display_summary), 150) }}
                         </p>
                         <div class="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                            <span class="text-xs text-gray-400">Kaynak: <span class="font-bold text-gray-600">{{ $content->source->name ?? ($content->source_name ?? 'PubMed') }}</span></span>
-                            @if(get_class($content) === 'App\Models\ResearchArticle')
-                                <a href="{{ route('publications') }}" class="text-primary font-bold text-sm">Detaylar</a>
-                            @else
-                                <a href="{{ route('content.show', ['type' => $content->type, 'slug' => $content->slug]) }}" class="text-primary font-bold text-sm">Detaylar</a>
-                            @endif
+                            <span class="text-xs text-gray-400">Kaynak: <span class="font-bold text-gray-600">{{ $item->source_label ?? 'ALSHub' }}</span></span>
+                            <a href="{{ $route }}" class="text-primary font-bold text-sm">Detaylar</a>
                         </div>
                     </div>
                 </div>

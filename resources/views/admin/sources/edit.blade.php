@@ -24,33 +24,25 @@
                         @method('PUT')
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Kaynak Adı</label>
-                            <input type="text" name="name" value="{{ old('name', $source->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <input type="text" name="source_name" value="{{ old('source_name', $source->source_name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Tip</label>
-                            <select name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                                <option value="publication" {{ old('type', $source->type) === 'publication' ? 'selected' : '' }}>Research / Publication</option>
-                                <option value="trial" {{ old('type', $source->type) === 'trial' ? 'selected' : '' }}>Clinical Trial</option>
-                                <option value="drug" {{ old('type', $source->type) === 'drug' ? 'selected' : '' }}>Drug / Treatment</option>
-                                <option value="article" {{ old('type', $source->type) === 'article' ? 'selected' : '' }}>General ALS Article</option>
+                            <label class="block text-sm font-medium text-gray-700">Notlar / Açıklama</label>
+                            <textarea name="notes" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $source->notes) }}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Erişim Modu</label>
+                            <select name="source_mode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="api" {{ old('source_mode', $source->source_mode) === 'api' ? 'selected' : '' }}>API Entegrasyonu (Official)</option>
+                                <option value="web_ingest" {{ old('source_mode', $source->source_mode) === 'web_ingest' ? 'selected' : '' }}>Web Ingestion (Scraping/Feed)</option>
+                                <option value="manual" {{ old('source_mode', $source->source_mode) === 'manual' ? 'selected' : '' }}>Manuel Veri Girişi</option>
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Base URL / Feed URL</label>
-                            <textarea name="base_url" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>{{ old('base_url', $source->base_url) }}</textarea>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Veri Çekme Yöntemi</label>
-                            <select name="fetch_method" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                                <option value="rss" {{ old('fetch_method', $source->fetch_method) === 'rss' ? 'selected' : '' }}>RSS Feed</option>
-                                <option value="api" {{ old('fetch_method', $source->fetch_method) === 'api' ? 'selected' : '' }}>API Entegrasyonu</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 text-sm">Durum</label>
-                            <select name="is_active" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="1" {{ old('is_active', $source->is_active) ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ !old('is_active', $source->is_active) ? 'selected' : '' }}>Pasif</option>
+                            <label class="block text-sm font-medium text-gray-700">Durum</label>
+                            <select name="is_enabled" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="1" {{ old('is_enabled', $source->is_enabled) ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ !old('is_enabled', $source->is_enabled) ? 'selected' : '' }}>Pasif</option>
                             </select>
                         </div>
                         <div class="flex items-center gap-4">

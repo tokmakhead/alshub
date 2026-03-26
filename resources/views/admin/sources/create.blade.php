@@ -13,26 +13,17 @@
                         @csrf
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Kaynak Adı</label>
-                            <input type="text" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <input type="text" name="source_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Tip</label>
-                            <select name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                                <option value="publication">Research / Publication</option>
-                                <option value="trial">Clinical Trial</option>
-                                <option value="drug">Drug / Treatment</option>
-                                <option value="article">General ALS Article</option>
-                            </select>
+                            <label class="block text-sm font-medium text-gray-700">Notlar / Açıklama</label>
+                            <textarea name="notes" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Base URL / Feed URL</label>
-                            <input type="url" name="base_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Yöntem</label>
-                            <select name="fetch_method" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                                <option value="rss">RSS Feed</option>
-                                <option value="api">API Integration</option>
+                            <label class="block text-sm font-medium text-gray-700">Yöntem / Erişim Modu</label>
+                            <select name="source_mode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="api">API Entegrasyonu (Official)</option>
+                                <option value="web_ingest">Web Ingest (Scraping/Feed)</option>
                                 <option value="manual">Manual Entry</option>
                             </select>
                         </div>

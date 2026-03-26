@@ -60,13 +60,13 @@ class SourceController extends Controller
 
         switch($source->source_name) {
             case 'PubMed':
-                $log = $manager->syncPubMed();
+                $log = $manager->syncPubMed($source);
                 break;
             case 'ClinicalTrials.gov':
-                $log = $manager->syncTrials();
+                $log = $manager->syncTrials($source);
                 break;
             case 'OpenFDA':
-                $log = $manager->syncDrugs();
+                $log = $manager->syncDrugs($source);
                 break;
             default:
                 return response()->json(['error' => 'Bu kaynak için otomatik senkronizasyon henüz yapılandırılmadı.'], 400);

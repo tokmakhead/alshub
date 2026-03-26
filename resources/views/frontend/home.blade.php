@@ -25,8 +25,12 @@
         </div>
 
         @php
-            // Geçici olarak sadece son 6 klinik çalışmayı göster
-            $allUpdates = collect($latestTrials ?? [])->sortByDesc('created_at')->take(6);
+            // Tüm içerik tiplerini (Haber, Araştırma, Klinik Çalışma) birleştir ve son 6'sını al
+            $allUpdates = collect($latestContents)
+                ->concat($latestResearch ?? [])
+                ->concat($latestTrials ?? [])
+                ->sortByDesc('created_at')
+                ->take(6);
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

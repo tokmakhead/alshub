@@ -40,7 +40,7 @@ class DashboardController extends Controller
             'drafts' => $drafts,
             'review' => $inReview,
             'published' => $published,
-            'sources' => Source::count(),
+            'sources' => \App\Models\SourceRegistry::count(),
         ];
 
         return view('admin.dashboard', compact('stats'));

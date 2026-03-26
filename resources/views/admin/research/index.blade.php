@@ -59,7 +59,13 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium">
-                                        <a href="{{ route('admin.research.edit', $article) }}" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded">İncele/Düzenle</a>
+                                        <div class="flex gap-2">
+                                            <a href="{{ route('admin.research.edit', $article) }}" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded">Düzenle</a>
+                                            <form action="{{ route('admin.research.destroy', $article) }}" method="POST" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 border border-red-600 px-2 py-1 rounded">Sil</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

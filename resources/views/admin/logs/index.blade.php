@@ -16,6 +16,7 @@
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mesaj</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right">İşlem</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -29,6 +30,12 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $log->message }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $log->created_at->format('d.m.Y H:i') }}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-right">
+                                        <form action="{{ route('admin.logs.destroy', $log) }}" method="POST" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 border border-red-600 px-2 py-1 rounded">Sil</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

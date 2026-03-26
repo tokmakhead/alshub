@@ -1,8 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('İçe Aktarma Günlükleri') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('İçe Aktarma Günlükleri') }}
+            </h2>
+            <form action="{{ route('admin.logs.clear') }}" method="POST" onsubmit="return confirm('Tüm kayıtları silmek istediğinize emin misiniz?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-red-700">Tümünü Temizle</button>
+            </form>
+        </div>
     </x-slot>
 
     <div class="py-12">

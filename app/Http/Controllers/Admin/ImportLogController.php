@@ -21,4 +21,10 @@ class ImportLogController extends Controller
         $log->delete();
         return redirect()->route('admin.logs.index')->with('success', 'İşlem günlüğü silindi.');
     }
+
+    public function deleteAll()
+    {
+        \App\Models\ImportLog::truncate();
+        return redirect()->route('admin.logs.index')->with('success', 'Tüm işlem günlükleri temizlendi.');
+    }
 }

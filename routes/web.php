@@ -77,6 +77,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');
+    Route::delete('/logs/clear', [ImportLogController::class, 'deleteAll'])->name('logs.clear');
     Route::delete('/logs/{log}', [ImportLogController::class, 'destroy'])->name('logs.destroy');
     Route::get('/health', [HealthController::class, 'index'])->name('health.index');
 });

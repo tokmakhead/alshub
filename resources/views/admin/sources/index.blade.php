@@ -1,65 +1,65 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kaynak Yönetimi (Source-Trust Registry)') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Kaynak Yönetimi (Source-Trust Registry)') }}
+            </h2>
+            <div class="flex items-center gap-4">
+                <p class="text-xs text-gray-500 italic">Resmi API ve Kurumsal Web Kaynakları (RSS Devre Dışı)</p>
+                <a href="{{ route('admin.sources.create') }}" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Yeni Kaynak Ekle</a>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-4 flex justify-between items-center">
-                <p class="text-sm text-gray-600">Sistem önceliği: Resmi API ve Kurumsal Web Kaynakları (RSS Devre Dışı)</p>
-                <a href="{{ route('admin.sources.create') }}" class="btn btn-primary btn-sm">Yeni Kaynak Ekle</a>
-            </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-0">
-                    <table class="table align-items-center mb-0">
+                <div class="p-6 text-gray-900">
+                    <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kaynak Adı</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Erişim Modu</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Durum</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Son Senkronizasyon</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksiyon</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kaynak Adı / Notlar</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erişim Modu</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Son Senkronizasyon</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right">İşlem</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($sources as $source)
                                 <tr>
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $source->source_name }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ $source->notes }}</p>
-                                            </div>
-                                        </div>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-bold text-gray-900">{{ $source->source_name }}</div>
+                                        <div class="text-xs text-gray-500">{{ $source->notes }}</div>
                                     </td>
-                                    <td>
-                                        <span class="badge badge-sm bg-gradient-{{ $source->source_mode == 'api' ? 'success' : ($source->source_mode == 'manual' ? 'info' : 'warning') }}">
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 text-xs font-bold rounded 
+                                            {{ $source->source_mode == 'api' ? 'bg-green-50 text-green-700 border border-green-200' : '' }}
+                                            {{ $source->source_mode == 'manual' ? 'bg-blue-50 text-blue-700 border border-blue-200' : '' }}
+                                            {{ $source->source_mode == 'web_ingest' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : '' }}
+                                        ">
                                             {{ strtoupper($source->source_mode) }}
                                         </span>
                                     </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="badge badge-sm bg-gradient-{{ $source->is_enabled ? 'success' : 'secondary' }}">
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $source->is_enabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                             {{ $source->is_enabled ? 'AKTİF' : 'PASİF' }}
                                         </span>
                                     </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">
-                                            {{ $source->last_successful_sync ? $source->last_successful_sync->format('d.m.Y H:i') : 'Hiç yok' }}
-                                        </span>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        {{ $source->last_successful_sync ? $source->last_successful_sync->format('d.m.Y H:i') : 'Hiç yok' }}
                                     </td>
-                                    <td class="align-middle text-center">
-                                        @if($source->source_mode != 'manual')
-                                            <button onclick="fetchSource({{ $source->id }})" class="btn btn-link text-primary text-gradient px-3 mb-0">
-                                                <i class="fas fa-sync me-2"></i>Şimdi Çek
-                                            </button>
-                                        @else
-                                            <span class="text-xs text-secondary">Manuel Giriş</span>
-                                        @endif
-                                        <a class="btn btn-link text-dark px-3 mb-0" href="{{ route('admin.sources.edit', $source->id) }}">
-                                            <i class="fas fa-pencil-alt text-dark me-2"></i>Düzenle
-                                        </a>
+                                    <td class="px-6 py-4 text-sm font-medium text-right">
+                                        <div class="flex justify-end gap-2">
+                                            @if($source->source_mode != 'manual')
+                                                <button onclick="fetchSource({{ $source->id }})" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded text-xs transition duration-150 ease-in-out">
+                                                    Şimdi Çek
+                                                </button>
+                                            @endif
+                                            <a href="{{ route('admin.sources.edit', $source->id) }}" class="text-gray-600 hover:text-gray-900 border border-gray-400 px-2 py-1 rounded text-xs transition duration-150 ease-in-out">
+                                                Düzenle
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -70,14 +70,14 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function fetchSource(id) {
-            if(!confirm('Resmi API üzerinden veri çekme işlemi başlatılsın mı?')) return;
-            
             Swal.fire({
                 title: 'Veri Çekiliyor...',
-                text: 'Resmi API üzerinden veriler normalize ediliyor ve doğrulanıyor.',
+                text: 'Resmi API üzerinden veriler normalize ediliyor ve doğrulanıyor. Bu işlem 10-20 saniye sürebilir.',
                 allowOutsideClick: false,
+                showConfirmButton: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -93,13 +93,18 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire('Başarılı!', data.message, 'success').then(() => location.reload());
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı!',
+                        text: data.message,
+                        timer: 2000
+                    }).then(() => location.reload());
                 } else {
                     Swal.fire('Hata!', data.message, 'error');
                 }
             })
             .catch(err => {
-                Swal.fire('Hata!', 'Sunucu ile iletişim saptanamadı.', 'error');
+                Swal.fire('Hata!', 'Sunucu ile iletişim kurulamadı.', 'error');
             });
         }
     </script>

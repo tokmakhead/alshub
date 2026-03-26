@@ -37,4 +37,23 @@ class ClinicalTrial extends Model
         'fetched_at' => 'datetime',
         'last_verified_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($trial) {
+            if (empty($trial->slug)) {
+                $trial->slug = \Illuminate\Support\Str::slug($trial->title . '-' . $trial->nct_id);
+            }
+        });
+    }
+
+    public function getDisplayTitleAttribute()
+    {
+        return $this->title_tr ?: $this->title;
+    }
+
+    public function getDisplaySummaryAttribute()
+    {
+        return $this->summary_tr ?: $this->summary;
+    }
 }

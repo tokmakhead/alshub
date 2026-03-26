@@ -83,6 +83,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/logs/clear', [ImportLogController::class, 'deleteAll'])->name('logs.clear');
     Route::delete('/logs/{log}', [ImportLogController::class, 'destroy'])->name('logs.destroy');
     Route::get('/health', [HealthController::class, 'index'])->name('health.index');
+
+    // Maintenance / Repair
+    Route::get('repair-slugs', function() {
+        $trials = \App\Models\ClinicalTrial::whereNull('slug')->orWhere('slug', '')->get();
+        foreach($trials as $t) { $t->save(); }
+        $articles = \App\Models\ResearchArticle::whereNull('slug')->orWhere('slug', '')->get();
+        foreach($articles as $a) { $a->save(); }
+        return "Repaired: " . count($trials) . " trials, " . count($articles) . " articles.";
+    })->name('repair-slugs');
+
+    Route::get('clear-cache', function() {
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        return "Cache cleared.";
+    })->name('clear-cache');
 });
 
 require __DIR__.'/auth.php';

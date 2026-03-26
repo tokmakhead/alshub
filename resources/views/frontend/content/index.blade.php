@@ -44,13 +44,13 @@
                                 <span class="text-gray-400">{{ $content->publication_date ? $content->publication_date->format('d.m.Y') : $content->created_at->format('d.m.Y') }}</span>
                             </div>
                             <h3 class="text-lg font-bold text-gray-900 mb-4 line-clamp-2">
-                                <a href="{{ route('content.show', [$type, $content->slug]) }}" class="hover:text-primary">{{ $content->display_title }}</a>
+                                <a href="{{ $content->slug ? route('content.show', [$type, $content->slug]) : '#' }}" class="hover:text-primary">{{ $content->display_title }}</a>
                             </h3>
                             <p class="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6">
                                 {{ $content->display_summary }}
                             </p>
                             <div class="mt-auto">
-                                <a href="{{ route('content.show', [$type, $content->slug]) }}" class="text-primary font-bold text-sm block border-t border-gray-50 pt-4">Devamını Oku &rarr;</a>
+                                <a href="{{ $content->slug ? route('content.show', [$type, $content->slug]) : '#' }}" class="text-primary font-bold text-sm block border-t border-gray-50 pt-4">Devamını Oku &rarr;</a>
                             </div>
                         </div>
                     </div>

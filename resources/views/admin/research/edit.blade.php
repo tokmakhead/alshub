@@ -41,8 +41,13 @@
                             <div class="space-y-4 border-r pr-8">
                                 <h3 class="font-bold border-b pb-2 text-blue-600 uppercase text-xs tracking-wider">Orijinal Veriler</h3>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase">PMID</label>
-                                    <div class="p-2 bg-gray-50 border border-gray-100 rounded text-xs">{{ $article->pmid }}</div>
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase">PMID / Kaynak</label>
+                                    <div class="p-2 bg-gray-50 border border-gray-100 rounded text-xs flex justify-between items-center">
+                                        <span>{{ $article->pmid }}</span>
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full" style="font-size: 9px;">
+                                            PubMed (Tier {{ $article->verification_tier }})
+                                        </span>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase">Orijinal Başlık</label>
@@ -90,10 +95,11 @@
                                             </div>
                                         </div>
                                         <select name="verification_tier" class="w-full rounded border-gray-300 text-xs shadow-sm focus:ring-blue-500">
-                                            <option value="1" {{ $article->verification_tier == 1 ? 'selected' : '' }}>Tier 1 - Resmi/Akademik Kaynak (En Yüksek Güven)</option>
-                                            <option value="2" {{ $article->verification_tier == 2 ? 'selected' : '' }}>Tier 2 - Kurumsal/Vakıf (Yüksek Güven)</option>
-                                            <option value="3" {{ $article->verification_tier == 3 ? 'selected' : '' }}>Tier 3 - Bilimsel Haber/Basın (Doğrulanması Önemli)</option>
+                                            <option value="1" {{ $article->verification_tier == 1 ? 'selected' : '' }}>Tier 1 - Resmi/Akademik Kaynak (Otomatik: PubMed)</option>
+                                            <option value="2" {{ $article->verification_tier == 2 ? 'selected' : '' }}>Tier 2 - Kurumsal/Vakıf (Dernekler/Hastaneler)</option>
+                                            <option value="3" {{ $article->verification_tier == 3 ? 'selected' : '' }}>Tier 3 - Bilimsel Haber/Basın (Medya)</option>
                                         </select>
+                                        <p class="text-[9px] text-gray-400 mt-1 italic">Not: Kaynağa göre otomatik seçilmiştir; elzem durumlar dışında değiştirmeyin.</p>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-gray-400 uppercase">Durum (Status)</label>

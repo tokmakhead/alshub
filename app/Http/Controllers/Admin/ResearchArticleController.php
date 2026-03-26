@@ -39,6 +39,10 @@ class ResearchArticleController extends Controller
             return redirect()->back()->with('error', 'PubMed üzerinden veri çekilemedi.');
         }
 
+        // Automatically detect source and tier
+        $source = \App\Models\SourceRegistry::where('source_name', 'PubMed')->first();
+        $tier = $source ? $source->verification_tier : 1;
+
         $article = ResearchArticle::create([
             'pmid' => $data['pmid'],
             'doi' => $data['doi'] ?? null,
@@ -48,7 +52,7 @@ class ResearchArticleController extends Controller
             'journal' => $data['journal'] ?? null,
             'publication_date' => $data['published_at'] ?? null,
             'status' => 'draft',
-            'verification_tier' => 1,
+            'verification_tier' => $tier,
         ]);
 
         return redirect()->route('admin.research.edit', $article->id)->with('success', 'Veri çekildi.');

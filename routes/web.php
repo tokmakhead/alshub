@@ -28,8 +28,21 @@ Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('c
 
 // Temporary execution routes for automated scripts
 Route::get('/run-migrations-tmp', function() {
-    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-    return "Migrations run: " . \Illuminate\Support\Facades\Artisan::output();
+    try {
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('drugs', 'fda_link')) {
+            \Illuminate\Support\Facades\Schema::table('drugs', function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->text('indication')->nullable()->after('brand_name');
+                $table->string('fda_link')->nullable()->after('is_approved_fda');
+                $table->string('ema_link')->nullable()->after('is_approved_ema');
+                $table->text('price_info')->nullable();
+                $table->text('accessibility_info')->nullable();
+            });
+            return "Custom Schema Alt applied successfully.";
+        }
+        return "Columns already exist.";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
 });
 Route::get('/cleanup-drugs-tmp', [App\Http\Controllers\Admin\DrugController::class, 'cleanupTitles']);
 
@@ -67,11 +80,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('trials/{trial}/toggle-status', [ClinicalTrialController::class, 'toggleStatus'])->name('trials.toggle-status');
     Route::post('trials/{trial}/fetch', [ClinicalTrialController::class, 'fetchSingle'])->name('trials.fetch');
     Route::post('trials/{trial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
-    Route::get('/cleanup-drugs', [DrugController::class, 'cleanupTitles'])->name('drugs.cleanup');
-    Route::get('/run-migrations', function() {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return "Migrations run: " . \Illuminate\Support\Facades\Artisan::output();
-    });
     Route::resource('drugs', DrugController::class);
 
     // Archive / Legacy

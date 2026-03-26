@@ -212,6 +212,10 @@ class IngestionManager
                     [
                         'brand_name' => $data['brand_name'],
                         'slug' => $data['slug'],
+                        'indication' => $data['region_status']['indication'] ?? null,
+                        'description_original' => $data['region_status']['description_original'] ?? null,
+                        'fda_link' => $data['region_status']['label_url'] ?? null,
+                        'is_approved_fda' => ($data['region_status']['approval_status'] ?? '') === 'Approved',
                         'status' => 'draft',
                         'verification_tier' => 1
                     ]

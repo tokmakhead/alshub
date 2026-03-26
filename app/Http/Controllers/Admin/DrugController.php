@@ -84,20 +84,50 @@ class DrugController extends Controller
 
     public function cleanupTitles()
     {
-        $drugs = Drug::where('generic_name', 'like', '%INDICATIONS%')->get();
+        $drugs = Drug::all();
         $count = 0;
         foreach ($drugs as $drug) {
             $current = $drug->generic_name;
-            // Remove "1. INDICATIONS AND USAGE" prefixes
-            $clean = preg_replace('/^(\d+\.?\s+)?INDICATIONS\s+AND\s+USAGE\s+/i', '', $current);
-            
-            if ($current !== $clean) {
+            $updated = false;
+
+            // 1. Force sync fda_link from regional status if empty
+            if (empty($drug->fda_link)) {
+                $status = $drug->regionalStatuses()->where('region', 'US')->first();
+                if ($status && $status->label_url) {
+                    $drug->fda_link = $status->label_url;
+                    $drug->is_approved_fda = true;
+                    $updated = true;
+                }
+            }
+
+            // 2. Heavy Cleaning for titles that are actually sentences
+            // Pattern: starts with "X is indicated for..." or is very long
+            if (strlen($current) > 40 && str_contains(strtolower($current), 'indicated for')) {
+                // Move current title to description_original if empty
+                if (empty($drug->description_original)) {
+                    $drug->description_original = $current;
+                }
+                
+                // Extract real generic name (usually first word or two)
+                // e.g. "Riluzole is indicated for..." -> "Riluzole"
+                $parts = explode(' ', $current);
+                $drug->generic_name = $parts[0] ?? $current;
+                $updated = true;
+            }
+
+            // 3. Remove "INDICATIONS" prefixes (standard cleanup)
+            $clean = preg_replace('/^(\d+\.?\s+)?INDICATIONS\s+AND\s+USAGE\s+/i', '', $drug->generic_name);
+            if ($drug->generic_name !== $clean) {
                 $drug->generic_name = trim($clean);
+                $updated = true;
+            }
+            
+            if ($updated) {
                 $drug->save();
                 $count++;
             }
         }
-        return "Cleaned $count drugs. You can now delete this route.";
+        return "Refined $count drugs and synced metadata. Page 17 should be cleaner now.";
     }
 
     public function destroy(Drug $drug)

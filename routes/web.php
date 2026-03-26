@@ -72,7 +72,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // AI Summary Generation
     Route::post('research/{researchArticle}/ai-summary', [ResearchArticleController::class, 'generateAiSummary'])->name('research.ai-summary');
     Route::post('trials/{clinicalTrial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
+    Route::post('drugs/{drug}/ai-summary', [DrugController::class, 'generateAiSummary'])->name('drugs.ai-summary');
     Route::post('guidelines/{guideline}/ai-summary', [GuidelineController::class, 'generateAiSummary'])->name('guidelines.ai-summary');
+    
+    // Additional Drug Actions
+    Route::post('drugs/{drug}/toggle-status', [DrugController::class, 'toggleStatus'])->name('drugs.toggle-status');
     
     // Guidelines
     Route::resource('guidelines', GuidelineController::class)->names('guidelines');

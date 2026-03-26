@@ -22,26 +22,22 @@
                 <h2 class="text-3xl font-bold text-gray-900">Son Güncellemeler</h2>
                 <p class="text-gray-500 mt-2">Dünyadan derlenen en son haberler ve araştırmalar.</p>
             </div>
+            <a href="{{ route('publications') }}" class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                Tümünü Gör 
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
         </div>
 
         @php
-            // Tüm içerik tiplerini (Haber, Araştırma, Klinik Çalışma) birleştir ve son 6'sını al
-            $allUpdates = collect($latestContents)
-                ->concat($latestResearch ?? [])
-                ->concat($latestTrials ?? [])
-                ->sortByDesc('created_at')
-                ->take(6);
+            // Geçici olarak sadece son 6 klinik çalışmayı göster
+            $allUpdates = collect($latestTrials ?? [])->sortByDesc('created_at')->take(6);
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($allUpdates as $item)
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full relative">
-                    @php
-                        $modelClass = get_class($item);
-                        $topLabel = null;
-                        $topColor = null;
-
-                        if ($modelClass === 'App\Models\ClinicalTrial') {
+                    @if(get_class($item) === 'App\Models\ClinicalTrial')
+                        @php
                             $rawStatus = $item->raw_payload_json['protocolSection']['statusModule']['overallStatus'] ?? '';
                             $statusConfig = match(strtolower($rawStatus)) {
                                 'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
@@ -53,20 +49,9 @@
                                 'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],
                                 default => ['label' => $rawStatus ?: 'Bilinmiyor', 'color' => 'bg-gray-400 text-white']
                             };
-                            $topLabel = $statusConfig['label'];
-                            $topColor = $statusConfig['color'];
-                        } elseif ($modelClass === 'App\Models\ResearchArticle') {
-                            $topLabel = 'Bilimsel Araştırma';
-                            $topColor = 'bg-emerald-600 text-white';
-                        } elseif (str_contains(strtolower($modelClass), 'drug')) {
-                            $topLabel = 'İlaç Gelişimi';
-                            $topColor = 'bg-purple-600 text-white';
-                        }
-                    @endphp
-
-                    @if($topLabel)
-                        <div class="{{ $topColor }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
-                            {{ $topLabel }}
+                        @endphp
+                        <div class="{{ $statusConfig['color'] }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+                            {{ $statusConfig['label'] }}
                         </div>
                     @endif
 

@@ -37,15 +37,23 @@
                                         </div>
                                         <div class="text-xs text-gray-500">{{ $source->notes }}</div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2 py-1 text-xs font-bold rounded 
-                                            {{ $source->source_mode == 'api' ? 'bg-green-50 text-green-700 border border-green-200' : '' }}
-                                            {{ $source->source_mode == 'manual' ? 'bg-blue-50 text-blue-700 border border-blue-200' : '' }}
-                                            {{ $source->source_mode == 'web_ingest' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : '' }}
-                                        ">
-                                            {{ strtoupper($source->source_mode) }}
+                                        @php
+                                            $modeLabel = match($source->source_mode) {
+                                                'api' => $isAutomated ? 'ROBOT (API)' : 'PASİF API',
+                                                'web_ingest' => 'WEB TAKİBİ',
+                                                'manual' => 'ELLE GİRİŞ',
+                                                default => strtoupper($source->source_mode)
+                                            };
+                                            $modeColor = match($source->source_mode) {
+                                                'api' => $isAutomated ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-500 border border-gray-200',
+                                                'web_ingest' => 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+                                                'manual' => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                                default => 'bg-gray-100 text-gray-800'
+                                            };
+                                        @endphp
+                                        <span class="px-2 py-1 text-xs font-bold rounded {{ $modeColor }}">
+                                            {{ $modeLabel }}
                                         </span>
-                                    </td>
                                     <td class="px-6 py-4">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $source->is_enabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                             {{ $source->is_enabled ? 'AKTİF' : 'PASİF' }}

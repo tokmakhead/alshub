@@ -64,8 +64,10 @@
                                     $displayDate = \Carbon\Carbon::parse($strDate);
                                 }
                             }
+                        } elseif ($modelClass === 'App\Models\Content' && isset($item->source_published_at)) {
+                            $displayDate = clone $item->source_published_at;
                         }
-                    } catch (\Exception $e) { $displayDate = $item->created_at; }
+                    } catch (\Exception $e) { $displayDate = clone ($item->source_published_at ?? $item->created_at); }
                     
                     $item->computed_sort_date = $displayDate;
                     return $item;

@@ -101,7 +101,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Guidelines
     Route::resource('guidelines', GuidelineController::class)->names('guidelines');
-    Route::resource('contents', AdminContentController::class)->names('contents')->except(['index', 'create', 'store', 'deleteAll']);
+    Route::resource('contents', AdminContentController::class)->names('contents')->except(['index', 'deleteAll']);
     Route::post('contents/{content}/translate', [AdminContentController::class, 'translate'])->name('contents.translate');
     
     Route::get('/logs', [ImportLogController::class, 'index'])->name('logs.index');

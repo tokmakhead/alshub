@@ -28,6 +28,48 @@ class ContentController extends Controller
         return view('admin.contents.index', compact('contents'));
     }
 
+    public function create()
+    {
+        // Tüm aktif kurumsal kaynakları (API ve Manuel dahil) Source Dropdown için çek
+        $sources = \App\Models\SourceRegistry::where('is_enabled', true)
+            ->orderBy('source_name')
+            ->get();
+            
+        return view('admin.contents.create', compact('sources'));
+    }
+
+    public function store(\Illuminate\Http\Request $request)
+    {
+        $validated = $request->validate([
+            'source_id' => 'required|exists:source_registries,id',
+            'type' => 'required|string',
+            'status' => 'required|in:draft,review,published,archived',
+            'original_title' => 'required|string',
+            'original_summary' => 'nullable|string',
+            'original_content' => 'nullable|string',
+            'translated_title' => 'required|string',
+            'translated_summary' => 'nullable|string',
+            'translated_content' => 'nullable|string',
+            'source_url' => 'nullable|url',
+            'source_published_at' => 'nullable|date',
+        ]);
+
+        // Veritabanı tutarlılığı için ek alanları hazırla
+        $source = \App\Models\SourceRegistry::find($validated['source_id']);
+        $validated['source_name'] = $source->source_name ?? 'Manuel Kaynak';
+        $validated['verification_tier'] = 3; // En yüksek güven derecesi (Admin manuel girdiği için)
+        $validated['slug'] = \Illuminate\Support\Str::slug($validated['translated_title'] . '-' . uniqid());
+        $validated['language'] = 'en';
+
+        if ($validated['status'] === 'published') {
+            $validated['published_at'] = now();
+        }
+
+        \App\Models\Content::create($validated);
+
+        return redirect()->route('admin.contents.index')->with('success', '✅ Yeni içerik başarıyla oluşturuldu ve havuza eklendi.');
+    }
+
     public function edit(\App\Models\Content $content)
     {
         return view('admin.contents.edit', compact('content'));

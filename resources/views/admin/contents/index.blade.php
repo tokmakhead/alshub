@@ -2,13 +2,14 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('İçerik Yönetimi') }}
+                {{ __('Manuel Haber & İçerik Yönetimi') }}
             </h2>
             <div class="flex items-center gap-4">
+                <a href="{{ route('admin.contents.create') }}" class="bg-indigo-600 text-white px-4 py-1.5 rounded shadow-sm text-sm font-bold hover:bg-indigo-700 transition">✨ Yeni Haber/Makale Ekle</a>
                 <form action="{{ route('admin.contents.delete-all') }}" method="POST" onsubmit="return confirm('DİKKAT! Tüm içerikler silinecektir. Bu işlemin geri dönüşü yoktur. Emin misiniz?');">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded text-sm font-bold hover:bg-red-700 transition">Tümünü Sil</button>
+                    <button type="submit" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm font-bold hover:bg-red-700 transition">Tümünü Sil</button>
                 </form>
                 <form action="{{ route('admin.contents.index') }}" method="GET" class="flex gap-2">
                     <select name="status" class="rounded border-gray-300 text-sm">

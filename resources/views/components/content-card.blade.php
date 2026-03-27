@@ -91,9 +91,11 @@
                         $displayDate = \Carbon\Carbon::parse($strDate);
                     }
                 }
+            } elseif (isset($item->source_published_at)) {
+                $displayDate = clone $item->source_published_at;
             }
         } catch (\Exception $e) {
-            $displayDate = clone ($item->publication_date ?? $item->created_at);
+            $displayDate = clone ($item->source_published_at ?? $item->publication_date ?? $item->created_at);
         }
 
         // Kesin Türkçe Tarih Çevirisi

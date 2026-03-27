@@ -12,12 +12,21 @@ class HealthController extends Controller
     {
         $checks = [
             'database' => $this->checkDatabase(),
+            'storage' => $this->checkStorage(),
+            'scheduler' => $this->checkScheduler(),
             'pubmed_api' => $this->checkUrl('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'),
             'clinical_trials_api' => $this->checkUrl('https://clinicaltrials.gov/api/v2/studies'),
             'gemini_api' => $this->checkGemini(),
         ];
 
-        return view('admin.health.index', compact('checks'));
+        $systemInfo = [
+            'php_version' => PHP_VERSION,
+            'laravel_version' => app()->version(),
+            'environment' => app()->environment(),
+            'debug_mode' => config('app.debug') ? 'Açık' : 'Kapalı',
+        ];
+
+        return view('admin.health.index', compact('checks', 'systemInfo'));
     }
 
     protected function checkDatabase()
@@ -57,5 +66,39 @@ class HealthController extends Controller
         } catch (\Exception $e) {
             return ['status' => 'error', 'message' => 'Bağlantı hatası.'];
         }
+    }
+
+    protected function checkStorage()
+    {
+        $paths = [
+            'logs' => storage_path('logs'),
+            'framework' => storage_path('framework/views'),
+            'app' => storage_path('app/public'),
+        ];
+
+        foreach ($paths as $name => $path) {
+            if (!is_writable($path)) {
+                return ['status' => 'error', 'message' => "Yazma izni eksik: {$name}"];
+            }
+        }
+
+        return ['status' => 'ok', 'message' => 'Tüm klasörler yazılabilir.'];
+    }
+
+    protected function checkScheduler()
+    {
+        $lastSync = \App\Models\SourceRegistry::max('last_successful_sync');
+        
+        if (!$lastSync) {
+            return ['status' => 'warning', 'message' => 'Henüz hiç senkronizasyon yapılmadı.'];
+        }
+
+        $diffHours = now()->diffInHours($lastSync);
+        
+        if ($diffHours > 24) {
+            return ['status' => 'warning', 'message' => "Son senkronizasyon {$diffHours} saat önce yapıldı (Gecikme olabilir)."];
+        }
+
+        return ['status' => 'ok', 'message' => "Senkronizasyon güncel: " . $lastSync->format('d.m.Y H:i')];
     }
 }

@@ -13,21 +13,49 @@ class ContentController extends Controller
 {
     public function publications()
     {
-        $contents = ResearchArticle::where('status', 'published')->latest()->paginate(12);
+        // Yıla göre ve created_at'e göre kaba SQL sıralaması (Performans için)
+        // PubMed XML yapıları karışık olduğu için en net 'Year' düğümlerinden birini referans alır.
+        $contents = ResearchArticle::where('status', 'published')
+            ->orderByRaw("COALESCE(
+                JSON_UNQUOTE(JSON_EXTRACT(raw_payload_json, '$.MedlineCitation.DateCompleted.Year')),
+                JSON_UNQUOTE(JSON_EXTRACT(raw_payload_json, '$.MedlineCitation.Article.ArticleDate.Year')),
+                JSON_UNQUOTE(JSON_EXTRACT(raw_payload_json, '$.MedlineCitation.Article.Journal.JournalIssue.PubDate.Year')),
+                YEAR(created_at)
+            ) DESC, created_at DESC")
+            ->paginate(12);
+            
         $title = "Bilimsel Araştırmalar";
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
     public function trials()
     {
-        $contents = ClinicalTrial::where('status', 'published')->latest()->paginate(12);
+        $contents = ClinicalTrial::where('status', 'published')
+            ->orderByRaw("COALESCE(
+                JSON_UNQUOTE(JSON_EXTRACT(raw_payload_json, '$.protocolSection.statusModule.lastUpdateSubmitDate')), 
+                JSON_UNQUOTE(JSON_EXTRACT(raw_payload_json, '$.protocolSection.statusModule.studyFirstPostDateStruct.date')),
+                created_at
+            ) DESC")
+            ->paginate(12);
+            
         $title = "Klinik Çalışmalar";
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
     public function drugs()
     {
-        $contents = Drug::where('status', 'published')->latest()->paginate(12);
+        $contents = Drug::where('drugs.status', 'published')
+            ->select('drugs.*')
+            ->leftJoin('drug_regional_statuses', function($join) {
+                 $join->on('drugs.id', '=', 'drug_regional_statuses.drug_id')
+                      ->where('drug_regional_statuses.region', '=', 'US');
+            })
+            ->orderByRaw("COALESCE(
+                JSON_UNQUOTE(JSON_EXTRACT(drug_regional_statuses.raw_payload_json, '$.effective_time')),
+                drugs.created_at
+            ) DESC")
+            ->paginate(12);
+            
         $title = "İlaç ve Tedavi Gelişmeleri";
         return view('frontend.content.index', compact('contents', 'title'));
     }

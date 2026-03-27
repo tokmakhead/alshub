@@ -33,7 +33,44 @@
                 ->concat($latestResearch ?? [])
                 ->concat($latestTrials ?? [])
                 ->concat($latestDrugs ?? [])
-                ->sortByDesc('created_at')
+                ->map(function ($item) {
+                    $modelClass = get_class($item);
+                    $displayDate = $item->created_at; 
+                    try {
+                        $raw = is_string($item->raw_payload_json) ? json_decode($item->raw_payload_json, true) : ($item->raw_payload_json ?? []);
+                        if ($modelClass === 'App\Models\ResearchArticle' && !empty($raw)) {
+                            $y = $raw['MedlineCitation']['Article']['ArticleDate']['Year'] ?? 
+                                 $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year'] ?? 
+                                 $raw['MedlineCitation']['DateCompleted']['Year'] ?? null;
+                            $m = $raw['MedlineCitation']['Article']['ArticleDate']['Month'] ?? 
+                                 $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Month'] ?? 
+                                 $raw['MedlineCitation']['DateCompleted']['Month'] ?? '01';
+                            $d = $raw['MedlineCitation']['Article']['ArticleDate']['Day'] ?? 
+                                 $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Day'] ?? 
+                                 $raw['MedlineCitation']['DateCompleted']['Day'] ?? '01';
+                            if ($y) $displayDate = \Carbon\Carbon::parse("$y-$m-$d");
+                            elseif (isset($item->publication_date) && $item->publication_date->year > 1970) $displayDate = $item->publication_date;
+                        } elseif ($modelClass === 'App\Models\ClinicalTrial' && !empty($raw)) {
+                            $rawDate = $raw['protocolSection']['statusModule']['lastUpdateSubmitDate'] ?? 
+                                       $raw['protocolSection']['statusModule']['studyFirstPostDateStruct']['date'] ?? null;
+                            if ($rawDate) $displayDate = \Carbon\Carbon::parse($rawDate);
+                        } elseif ($modelClass === 'App\Models\Drug') {
+                            $usStatus = $item->regionalStatuses->where('region', 'US')->first();
+                            if ($usStatus) {
+                                $drugRaw = is_string($usStatus->raw_payload_json) ? json_decode($usStatus->raw_payload_json, true) : ($usStatus->raw_payload_json ?? []);
+                                $effTime = $drugRaw['effective_time'] ?? null;
+                                if ($effTime && strlen($effTime) == 8) {
+                                    $strDate = substr($effTime, 0, 4) . '-' . substr($effTime, 4, 2) . '-' . substr($effTime, 6, 2);
+                                    $displayDate = \Carbon\Carbon::parse($strDate);
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) { $displayDate = $item->created_at; }
+                    
+                    $item->computed_sort_date = $displayDate;
+                    return $item;
+                })
+                ->sortByDesc(fn($item) => $item->computed_sort_date->timestamp)
                 ->take(6);
         @endphp
 

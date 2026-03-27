@@ -17,7 +17,22 @@ class GuidelineController extends Controller
 
     public function create()
     {
-        return view('admin.guidelines.edit'); // Use same edit view for create
+        $guideline = new Guideline();
+        return view('admin.guidelines.create', compact('guideline'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'source_org' => 'required|string|max:255',
+            'summary_original' => 'nullable|string',
+            'status' => 'required|in:draft,in_review,approved,published,rejected',
+            'verification_tier' => 'required|integer',
+        ]);
+
+        $guideline = Guideline::create($data);
+        return redirect()->route('admin.guidelines.edit', $guideline)->with('success', 'Rehber taslağı oluşturuldu. Şimdi AI ile özet hazırlayabilirsiniz.');
     }
 
     public function edit(Guideline $guideline)

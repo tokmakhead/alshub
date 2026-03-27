@@ -4,9 +4,9 @@
 @section('content')
     <!-- Hero Section -->
     <div class="relative bg-white overflow-hidden border-b border-gray-100 pb-16">
-        <!-- Subtle Pattern Overlay & Gradient -->
-        <div class="absolute inset-0 opacity-[0.05]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M10 10l20 20m40 40l20 20M10 90l20-20m40-40l20-20\" stroke=\"%230f4c81\" stroke-width=\"0.5\" fill=\"none\"/%3E%3Ccircle cx=\"50\" cy=\"50\" r=\"2\" fill=\"%230f4c81\"/%3E%3C/svg%3E');"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50/50"></div>
+        <!-- More Visible Pattern & Gradient -->
+        <div class="absolute inset-0 opacity-[0.12] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\"120\" height=\"120\" viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M10 10l20 20m40 40l20 20M10 90l20-20m40-40l20-20\" stroke=\"%230f4c81\" stroke-width=\"1\" fill=\"none\"/%3E%3Cpath d=\"M60 10c10 20-10 40 0 60s20 40 0 60\" stroke=\"%230f4c81\" stroke-width=\"0.5\" fill=\"none\" opacity=\"0.5\"/%3E%3Ccircle cx=\"50\" cy=\"50\" r=\"3\" fill=\"%230f4c81\"/%3E%3Ccircle cx=\"90\" cy=\"20\" r=\"2\" fill=\"%230f4c81\"/%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-transparent to-purple-100/30"></div>
         
         <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative text-center">
             <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">

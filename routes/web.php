@@ -139,7 +139,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title) . '-' . ($a->pmid ?: uniqid()); $a->save(); }
         
         $drugs = \App\Models\Drug::all();
-        foreach($drugs as $d) { $d->slug = \Illuminate\Support\Str::slug($d->generic_name); $d->save(); }
+        foreach($drugs as $d) { 
+            $d->slug = \Illuminate\Support\Str::slug($d->generic_name . '-' . ($d->brand_name ?: '') . '-' . $d->id); 
+            $d->save(); 
+        }
         
         $guidelines = \App\Models\Guideline::all();
         foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org); $g->save(); }

@@ -7,7 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Drug extends Model
 {
-    use HasFactory;
+    protected static function boot()
+    {
+        parent::boot();
+        static::saving(function ($drug) {
+            if (empty($drug->slug)) {
+                $drug->slug = \Illuminate\Support\Str::slug($drug->generic_name . '-' . ($drug->brand_name ?: '') . '-' . $drug->id);
+            }
+        });
+    }
+
+    public function getSlugAttribute($value)
+    {
+        return $value ?: \Illuminate\Support\Str::slug($this->generic_name . '-' . ($this->brand_name ?: '') . '-' . $this->id);
+    }
 
     protected $fillable = [
         'generic_name',

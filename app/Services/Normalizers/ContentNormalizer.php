@@ -90,7 +90,7 @@ class ContentNormalizer
                 'indication' => $rawData['indications_and_usage'][0] ?? null,
                 'description_original' => $rawData['indications_and_usage'][0] ?? null,
                 'approval_status' => 'Approved',
-                'label_url' => "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=" . ($rawData['set_id'] ?? ''),
+                'label_url' => "https://labels.fda.gov/preview.cfm?set_id=" . ($rawData['set_id'] ?? ''),
                 'raw_payload_json' => $rawData,
             ]
         ];

@@ -66,7 +66,19 @@
                     @if($content->source_url)
                         <a href="{{ $content->source_url }}" target="_blank" class="text-primary text-xs flex items-center gap-1 mt-1 underline hover:text-blue-800 transition">Orijinal Kaynak <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
                     @elseif($modelType === 'drug' && !empty($content->fda_link))
-                        <a href="{{ $content->fda_link }}" target="_blank" class="text-primary text-xs flex items-center gap-1 mt-1 underline hover:text-blue-800 transition">FDA Prospektüsü <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
+                        <div class="flex flex-col gap-1 mt-1">
+                            <a href="{{ $content->fda_link }}" target="_blank" class="text-primary text-xs flex items-center gap-1 underline hover:text-blue-800 transition" title="Resmi FDA API Kaynağı">
+                                Orijinal API Kaynağı (FDA) <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                            @php 
+                                $dailymed = str_replace('labels.fda.gov/preview.cfm?set_id=', 'dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=', $content->fda_link);
+                            @endphp
+                            @if(str_contains($content->fda_link, 'set_id='))
+                                <a href="{{ $dailymed }}" target="_blank" class="text-gray-500 text-xs flex items-center gap-1 hover:text-gray-700 transition" title="Hastalar için okunabilir kopya">
+                                    [Okuma] DailyMed Prospektüsü <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            @endif
+                        </div>
                     @endif
                 </div>
                 <div class="ml-auto">

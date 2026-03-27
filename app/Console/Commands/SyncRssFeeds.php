@@ -30,12 +30,16 @@ class SyncRssFeeds extends Command
             'url' => 'https://alsnewstoday.com/feed/',
         ],
         [
-            'source_name' => 'ALS Association',
-            'url' => 'https://www.als.org/news/feed',
+            'source_name' => 'Les Turner ALS Foundation',
+            'url' => 'https://lesturnerals.org/feed/',
         ],
         [
-            'source_name' => 'MND Association',
-            'url' => 'https://www.mndassociation.org/news-rss.xml',
+            'source_name' => 'Target ALS',
+            'url' => 'https://targetals.org/feed/',
+        ],
+        [
+            'source_name' => 'ENCALS',
+            'url' => 'https://www.encals.eu/feed/',
         ]
     ];
 

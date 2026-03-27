@@ -51,48 +51,59 @@
 
     @php
         // Dinamik Orijinal Tarih Çıkarımı
-        $displayDate = $item->created_at; // Varsayılan
+        $displayDate = clone ($item->publication_date ?? $item->created_at); // Varsayılan
 
         try {
             $raw = is_string($item->raw_payload_json) ? json_decode($item->raw_payload_json, true) : ($item->raw_payload_json ?? []);
 
             if ($modelClass === 'App\Models\ResearchArticle' && !empty($raw)) {
-                // PubMed XML'den tarih
-                if (isset($raw['PubmedData']['ArticleIdList']['ArticleId'])) {
-                     $displayDate = $item->publication_date ?? $item->created_at;
-                }
-                // Try DateCompleted or default publication_date checking
-                if (isset($item->publication_date) && $item->publication_date->year > 1970) {
-                    $displayDate = $item->publication_date;
-                } else if (isset($raw['MedlineCitation']['DateCompleted']['Year'])) {
-                    $y = $raw['MedlineCitation']['DateCompleted']['Year'];
-                    $m = $raw['MedlineCitation']['DateCompleted']['Month'] ?? '01';
-                    $d = $raw['MedlineCitation']['DateCompleted']['Day'] ?? '01';
+                // Try DateCompleted or ArticleDate or PubDate
+                $y = $raw['MedlineCitation']['Article']['ArticleDate']['Year'] ?? 
+                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year'] ?? 
+                     $raw['MedlineCitation']['DateCompleted']['Year'] ?? null;
+                     
+                $m = $raw['MedlineCitation']['Article']['ArticleDate']['Month'] ?? 
+                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Month'] ?? 
+                     $raw['MedlineCitation']['DateCompleted']['Month'] ?? '01';
+                     
+                $d = $raw['MedlineCitation']['Article']['ArticleDate']['Day'] ?? 
+                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Day'] ?? 
+                     $raw['MedlineCitation']['DateCompleted']['Day'] ?? '01';
+
+                if ($y) {
                     $displayDate = \Carbon\Carbon::parse("$y-$m-$d");
+                } elseif (isset($item->publication_date) && $item->publication_date->year > 1970) {
+                    $displayDate = clone $item->publication_date;
                 }
             } elseif ($modelClass === 'App\Models\ClinicalTrial' && !empty($raw)) {
-                // ClinicalTrials.gov JSON'dan tarih
-                $rawDate = $raw['protocolSection']['statusModule']['lastUpdateSubmitDate'] ?? null;
-                if (!$rawDate) {
-                     $rawDate = $raw['protocolSection']['statusModule']['studyFirstPostDateStruct']['date'] ?? null;
-                }
+                $rawDate = $raw['protocolSection']['statusModule']['lastUpdateSubmitDate'] ?? 
+                           $raw['protocolSection']['statusModule']['studyFirstPostDateStruct']['date'] ?? null;
                 if ($rawDate) {
                     $displayDate = \Carbon\Carbon::parse($rawDate);
                 }
-            } elseif ($modelClass === 'App\Models\Drug' && !empty($raw)) {
-                // OpenFDA JSON'dan tarih
-                $effTime = $raw['effective_time'] ?? null;
-                if ($effTime && strlen($effTime) == 8) {
-                    // YYYYMMDD
-                    $strDate = substr($effTime, 0, 4) . '-' . substr($effTime, 4, 2) . '-' . substr($effTime, 6, 2);
-                    $displayDate = \Carbon\Carbon::parse($strDate);
+            } elseif ($modelClass === 'App\Models\Drug') {
+                $usStatus = $item->regionalStatuses->where('region', 'US')->first();
+                if ($usStatus) {
+                    $drugRaw = is_string($usStatus->raw_payload_json) ? json_decode($usStatus->raw_payload_json, true) : ($usStatus->raw_payload_json ?? []);
+                    $effTime = $drugRaw['effective_time'] ?? null;
+                    if ($effTime && strlen($effTime) == 8) {
+                        $strDate = substr($effTime, 0, 4) . '-' . substr($effTime, 4, 2) . '-' . substr($effTime, 6, 2);
+                        $displayDate = \Carbon\Carbon::parse($strDate);
+                    }
                 }
-            } else if (isset($item->publication_date)) {
-                $displayDate = $item->publication_date;
             }
         } catch (\Exception $e) {
-            $displayDate = $item->created_at;
+            $displayDate = clone ($item->publication_date ?? $item->created_at);
         }
+
+        // Kesin Türkçe Tarih Çevirisi
+        $monthsTr = [
+            'January' => 'Ocak', 'February' => 'Şubat', 'March' => 'Mart', 'April' => 'Nisan', 
+            'May' => 'Mayıs', 'June' => 'Haziran', 'July' => 'Temmuz', 'August' => 'Ağustos', 
+            'September' => 'Eylül', 'October' => 'Ekim', 'November' => 'Kasım', 'December' => 'Aralık'
+        ];
+        $dateStr = $displayDate->format('d F Y');
+        $dateStr = strtr($dateStr, $monthsTr);
     @endphp
 
     <div class="p-8 flex flex-col flex-grow">
@@ -112,7 +123,7 @@
             </span>
 
             <span class="text-xs text-gray-400 font-medium ml-auto" title="Orijinal Kaynak Tarihi">
-                {{ $displayDate->translatedFormat('d F Y') }}
+                {{ $dateStr }}
             </span>
         </div>
         

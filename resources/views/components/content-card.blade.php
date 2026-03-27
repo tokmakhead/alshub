@@ -47,8 +47,12 @@
         <div class="bg-teal-600 text-white text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
             BİLİMSEL ARAŞTIRMA
         </div>
+    @elseif($modelClass === 'App\Models\Guideline' || $typeStr === 'guideline')
+         <div class="bg-blue-600 text-white text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+            REHBER
+        </div>
     @else
-        <div class="bg-gray-200 text-gray-500 text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+        <div class="bg-orange-500 text-white text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
             BİLGİ PAYLAŞIMI
         </div>
     @endif

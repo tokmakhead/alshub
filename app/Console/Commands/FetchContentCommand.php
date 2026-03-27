@@ -31,5 +31,16 @@ class FetchContentCommand extends Command
         }
 
         $this->info("Fetching and translation complete.");
+
+        // Log to database for Admin visibility
+        \App\Models\ImportLog::create([
+            'status' => 'success',
+            'message' => "Genel senkronizasyon ve çeviri işlemi tamamlandı. ({$sources->count()} kaynak, {$drafts->count()} çeviri)",
+            'payload' => [
+                'source_count' => $sources->count(),
+                'translation_count' => $drafts->count(),
+                'command' => 'als:fetch-content'
+            ]
+        ]);
     }
 }

@@ -64,7 +64,9 @@
                     <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider">Doğrulanmış Kaynak</span>
                     <span class="text-sm font-bold text-gray-700">{{ $content->source_label }}</span>
                     @if($content->source_url)
-                        <a href="{{ $content->source_url }}" target="_blank" class="text-primary text-xs ml-2 underline hover:text-blue-800 transition">Orijinal Kaynak &rarr;</a>
+                        <a href="{{ $content->source_url }}" target="_blank" class="text-primary text-xs flex items-center gap-1 mt-1 underline hover:text-blue-800 transition">Orijinal Kaynak <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
+                    @elseif($modelType === 'drug' && !empty($content->fda_link))
+                        <a href="{{ $content->fda_link }}" target="_blank" class="text-primary text-xs flex items-center gap-1 mt-1 underline hover:text-blue-800 transition">FDA Prospektüsü <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
                     @endif
                 </div>
                 <div class="ml-auto">
@@ -151,8 +153,18 @@
                         <div>
                             <span class="text-xs font-bold text-gray-400 uppercase block">Onay Durumları</span>
                             <div class="flex gap-2 mt-1">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_fda ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">FDA</span>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_ema ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">EMA</span>
+                                @if(!empty($content->fda_link))
+                                    <a href="{{ $content->fda_link }}" target="_blank" title="FDA Etiketini Gör" class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 hover:bg-green-200 transition flex items-center gap-1">FDA <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
+                                @else
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_fda ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">FDA</span>
+                                @endif
+                                
+                                @if(!empty($content->ema_link))
+                                    <a href="{{ $content->ema_link }}" target="_blank" title="EMA Cümlesini Gör" class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 hover:bg-green-200 transition flex items-center gap-1">EMA <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>
+                                @else
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_ema ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">EMA</span>
+                                @endif
+                                
                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $content->is_approved_titck ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">TİTCK</span>
                             </div>
                         </div>

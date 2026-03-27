@@ -35,11 +35,11 @@ class SyncRssFeeds extends Command
         ],
         [
             'source_name' => 'Target ALS',
-            'url' => 'https://targetals.org/feed/',
+            'url' => 'https://targetals.org/feed/?post_type=news',
         ],
         [
-            'source_name' => 'ENCALS',
-            'url' => 'https://www.encals.eu/feed/',
+            'source_name' => 'ALS Association (NY)',
+            'url' => 'https://als-ny.org/feed',
         ]
     ];
 

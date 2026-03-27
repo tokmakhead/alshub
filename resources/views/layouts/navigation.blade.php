@@ -37,7 +37,7 @@
                     
                     <div class="border-l border-gray-200 h-6 mx-2"></div>
                     
-                    <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Legacy Arşiv</x-nav-link>
+                    <x-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Haberler & Blog</x-nav-link>
                     <x-nav-link :href="route('admin.logs.index')" :active="request()->routeIs('admin.logs.*')">
                         {{ __('İşlem Logları') }}
                     </x-nav-link>

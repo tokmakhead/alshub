@@ -133,22 +133,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('repair-slugs', function() {
         // Force update all slugs to ensure they match the URL patterns
         $trials = \App\Models\ClinicalTrial::all();
-        foreach($trials as $t) { $t->slug = \Illuminate\Support\Str::slug($t->title . '-' . $t->nct_id); $t->save(); }
+        foreach($trials as $t) { $t->slug = \Illuminate\Support\Str::slug($t->title . '-' . $t->nct_id . '-' . $t->id); $t->save(); }
         
         $articles = \App\Models\ResearchArticle::all();
-        foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title) . '-' . ($a->pmid ?: uniqid()); $a->save(); }
+        foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title . '-' . ($a->pmid ?: $a->id)); $a->save(); }
         
         $drugs = \App\Models\Drug::all();
-        foreach($drugs as $d) { 
-            $d->slug = \Illuminate\Support\Str::slug($d->generic_name . '-' . ($d->brand_name ?: '') . '-' . $d->id); 
-            $d->save(); 
-        }
+        foreach($drugs as $d) { $d->slug = \Illuminate\Support\Str::slug($d->generic_name . '-' . ($d->brand_name ?: '') . '-' . $d->id); $d->save(); }
         
         $guidelines = \App\Models\Guideline::all();
-        foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org); $g->save(); }
+        foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org . '-' . $g->id); $g->save(); }
         
         $contents = \App\Models\Content::all();
-        foreach($contents as $c) { $c->slug = \Illuminate\Support\Str::slug($c->original_title ?: $c->translated_title ?: 'news-' . $c->id); $c->save(); }
+        foreach($contents as $c) { $c->slug = \Illuminate\Support\Str::slug(($c->original_title ?: $c->translated_title ?: 'news') . '-' . $c->id); $c->save(); }
         
         return "SUCCESS: All slugs (Trials, Articles, Drugs, Guidelines, News) have been FORCE REGENERATED and saved to database.";
     })->name('repair-slugs');

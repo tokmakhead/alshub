@@ -33,7 +33,7 @@ class Guideline extends Model
 
     public function getSlugAttribute($value)
     {
-        return $value ?: Str::slug($this->title . '-' . $this->source_org);
+        return $value ?: Str::slug($this->title . '-' . $this->source_org . '-' . $this->id);
     }
 
     public function getDisplayTitleAttribute()

@@ -63,7 +63,7 @@ class Content extends Model
 
     public function getSlugAttribute($value)
     {
-        return $value ?: \Illuminate\Support\Str::slug($this->original_title ?: $this->translated_title);
+        return $value ?: \Illuminate\Support\Str::slug(($this->original_title ?: $this->translated_title ?: 'news') . '-' . $this->id);
     }
 
     public function getPublicationDateAttribute()

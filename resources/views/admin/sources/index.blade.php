@@ -27,6 +27,10 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($sources as $source)
+                                @php
+                                    $automatedSources = ['PubMed', 'ClinicalTrials.gov', 'OpenFDA'];
+                                    $isAutomated = in_array($source->source_name, $automatedSources);
+                                @endphp
                                 <tr>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2 mb-1">
@@ -37,6 +41,7 @@
                                         </div>
                                         <div class="text-xs text-gray-500">{{ $source->notes }}</div>
                                     </td>
+                                    <td class="px-6 py-4">
                                         @php
                                             $modeLabel = match($source->source_mode) {
                                                 'api' => $isAutomated ? 'ROBOT (API)' : 'PASİF API',
@@ -54,6 +59,7 @@
                                         <span class="px-2 py-1 text-xs font-bold rounded {{ $modeColor }}">
                                             {{ $modeLabel }}
                                         </span>
+                                    </td>
                                     <td class="px-6 py-4">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $source->is_enabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                             {{ $source->is_enabled ? 'AKTİF' : 'PASİF' }}
@@ -64,10 +70,6 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium text-right">
                                         <div class="flex justify-end gap-2">
-                                            @php
-                                                $automatedSources = ['PubMed', 'ClinicalTrials.gov', 'OpenFDA'];
-                                                $isAutomated = in_array($source->source_name, $automatedSources);
-                                            @endphp
                                             @if($source->source_mode != 'manual')
                                                 @if($isAutomated)
                                                     <button onclick="fetchSource({{ $source->id }})" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded text-xs transition duration-150 ease-in-out font-bold">

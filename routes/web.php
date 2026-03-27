@@ -43,8 +43,16 @@ Route::get('/run-migrations-tmp', function() {
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }
-});
 Route::get('/cleanup-drugs-tmp', [App\Http\Controllers\Admin\DrugController::class, 'cleanupTitles']);
+
+Route::get('/run-rss-test', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('app:sync-rss');
+        return "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "Hata: " . $e->getMessage();
+    }
+});
 
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');

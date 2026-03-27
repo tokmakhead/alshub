@@ -84,6 +84,17 @@ class DrugController extends Controller
 
     public function cleanupTitles()
     {
+        // 0. EMERGENCY DB SCHEMA PATCH (Because 'migrate' says nothing to migrate)
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('drugs', 'fda_link')) {
+            \Illuminate\Support\Facades\Schema::table('drugs', function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->text('indication')->nullable()->after('brand_name');
+                $table->string('fda_link')->nullable()->after('is_approved_fda');
+                $table->string('ema_link')->nullable()->after('is_approved_ema');
+                $table->text('price_info')->nullable();
+                $table->text('accessibility_info')->nullable();
+            });
+        }
+
         $drugs = Drug::all();
         $count = 0;
         foreach ($drugs as $drug) {

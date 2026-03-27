@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClinicalTrial;
 use Illuminate\Http\Request;
 use App\Services\IngestionManager;
+use App\Services\ClinicalSummaryService;
 
 class ClinicalTrialController extends Controller
 {
@@ -66,7 +67,7 @@ class ClinicalTrialController extends Controller
         return response()->json(['success' => false, 'message' => 'API hata verdi.'], 500);
     }
 
-    public function generateAiSummary(ClinicalTrial $trial, \App\Services\ClinicalSummaryService $ai)
+    public function generateAiSummary(ClinicalTrial $trial, ClinicalSummaryService $ai)
     {
         $result = $ai->summarize($trial->title, $trial->summary, 'clinical trial');
         

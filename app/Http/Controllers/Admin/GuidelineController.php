@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Guideline;
+use App\Services\ClinicalSummaryService;
 use Illuminate\Http\Request;
 
 class GuidelineController extends Controller

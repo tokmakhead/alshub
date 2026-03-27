@@ -38,9 +38,11 @@
 
                             <!-- Düzenleme / Çeviri -->
                             <div class="space-y-4">
-                                <div class="flex justify-between items-center border-b pb-2">
-                                    <h3 class="font-bold text-green-600">Editör Çalışma Alanı (Türkçe / Basitleştirilmiş)</h3>
-                                    <button type="button" onclick="generateAISummary()" class="bg-purple-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-purple-700">🪄 AI ile Hazırla</button>
+                                <div class="flex justify-between items-center border-b pb-4 mb-4">
+                                    <h3 class="font-bold text-emerald-600 text-lg">Editör Çalışma Alanı (Türkçe)</h3>
+                                    <button type="button" onclick="generateAISummary(this)" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center gap-2">
+                                        <span>🪄</span> AI ile Hazırla
+                                    </button>
                                 </div>
                                 
                                 <div>
@@ -49,10 +51,10 @@
                                 </div>
 
                                 <script>
-                                    function generateAISummary() {
-                                        const btn = event.target;
+                                    function generateAISummary(btn) {
                                         btn.disabled = true;
-                                        btn.innerText = 'Hazırlanıyor...';
+                                        const originalText = btn.innerHTML;
+                                        btn.innerHTML = '<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Bekleyiniz...';
                                         
                                         fetch('{{ route('admin.guidelines.ai-summary', $guideline) }}', {
                                             method: 'POST',
@@ -72,7 +74,9 @@
                                             }
                                         });
                                     }
-                                </script>                               <div class="grid grid-cols-2 gap-4">
+                                </script>
+
+                                <div class="grid grid-cols-2 gap-4 pt-4 border-t">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-500 uppercase">Onay Durumu</label>
                                         <select name="status" class="w-full rounded border-gray-300 text-sm">

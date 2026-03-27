@@ -13,6 +13,5 @@ Schedule::command('sync:all')->dailyAt('14:00');
 
 // Temporary hack removed.
 
-// RSS Haber Akışı (Günde iki kez)
-Schedule::command('app:sync-rss')->dailyAt('06:00');
-Schedule::command('app:sync-rss')->dailyAt('18:00');
+// RSS Haber Akışı (Her saat başı yeni haber kontrolü)
+Schedule::command('app:sync-rss')->hourly()->withoutOverlapping();

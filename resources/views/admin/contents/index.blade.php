@@ -5,7 +5,11 @@
                 {{ __('Manuel Haber & İçerik Yönetimi') }}
             </h2>
             <div class="flex items-center gap-4">
-                <a href="{{ route('admin.contents.create') }}" class="bg-indigo-600 text-white px-4 py-1.5 rounded shadow-sm text-sm font-bold hover:bg-indigo-700 transition">✨ Yeni Haber/Makale Ekle</a>
+                <a href="{{ route('admin.contents.create') }}" 
+                   class="px-4 py-1.5 rounded shadow-sm text-sm font-bold transition flex items-center gap-2"
+                   style="background-color: #6366f1 !important; color: white !important; cursor: pointer;">
+                    ✨ Yeni Haber/Makale Ekle
+                </a>
                 <form action="{{ route('admin.contents.delete-all') }}" method="POST" onsubmit="return confirm('DİKKAT! Tüm içerikler silinecektir. Bu işlemin geri dönüşü yoktur. Emin misiniz?');">
                     @csrf
                     @method('DELETE')

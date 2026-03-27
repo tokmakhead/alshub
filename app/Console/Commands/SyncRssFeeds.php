@@ -103,8 +103,9 @@ class SyncRssFeeds extends Command
                         continue; // Daha önce eklendiyse atla
                     }
 
-                    $title = (string)$item->title;
-                    $summary = strip_tags((string)$item->description);
+                    $title = html_entity_decode((string)$item->title);
+                    $summary = strip_tags(html_entity_decode((string)$item->description));
+                    $summary = preg_replace('/\[.*?\]/', '...', $summary); // Clean up WordPress [...]
                     
                     // WordPress often stores full content in content:encoded
                     $namespaces = $xml->getNamespaces(true);
@@ -112,7 +113,8 @@ class SyncRssFeeds extends Command
                     if (isset($namespaces['content'])) {
                         $contentNode = $item->children($namespaces['content']);
                         if (isset($contentNode->encoded)) {
-                            $content = strip_tags((string)$contentNode->encoded, '<p><br><ul><li><strong><em>');
+                            $fullHtml = (string)$contentNode->encoded;
+                            $content = strip_tags(html_entity_decode($fullHtml), '<p><br><ul><li><strong><em>');
                         }
                     }
 
@@ -124,14 +126,19 @@ class SyncRssFeeds extends Command
                         $pubDate = now();
                     }
 
+                    // If summary is too short and content is long, use content for everything
+                    if (strlen($summary) < 50 && strlen($content) > 100) {
+                        $summary = Str::limit(strip_tags($content), 300);
+                    }
+
                     Content::create([
                         'type' => 'news',
                         'source_id' => $sourceLegacy->id, // Use ID from 'sources' table to satisfy FK
                         'source_name' => $sourceRegistry->source_name,
                         'source_url' => $link,
                         'original_title' => $title,
-                        'original_summary' => $summary,
-                        'original_content' => $content,
+                        'original_summary' => trim($summary),
+                        'original_content' => trim($content),
                         'translated_title' => $title, // AI translate will overwrite this later via Admin Panel
                         'status' => 'draft', // Her zaman TASLAK olarak gelir (İnsan onayına muhtaç)
                         'language' => 'en',

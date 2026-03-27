@@ -14,13 +14,23 @@
                 </div>
                 <div class="p-6">
                     <div class="mb-4">
-                        <label class="font-bold block">Orijinal Başlık</label>
-                        <div class="p-2 bg-gray-100 rounded">{{ $content->original_title }}</div>
+                        <label class="font-bold block text-gray-700">Orijinal Başlık</label>
+                        <div class="p-3 bg-gray-100 rounded border">{{ $content->original_title }}</div>
                     </div>
                     <div class="mb-4">
-                        <label class="font-bold block">Orijinal Özet</label>
-                        <div class="p-2 bg-gray-100 rounded">{!! nl2br(e($content->original_summary)) !!}</div>
+                        <label class="font-bold block text-gray-700">Orijinal Özet / Giriş</label>
+                        <div class="p-3 bg-gray-100 rounded border text-sm italic text-gray-700">
+                            {!! nl2br(e($content->original_summary)) !!}
+                        </div>
                     </div>
+                    @if($content->original_content && strlen($content->original_content) > strlen($content->original_summary) + 10)
+                    <div class="mb-4">
+                        <label class="font-bold block text-gray-700">Orijinal Detaylı Metin (Full Content)</label>
+                        <div class="p-3 bg-gray-100 rounded border text-sm max-h-96 overflow-y-auto">
+                            {!! $content->original_content !!}
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
 

@@ -19,8 +19,13 @@ class TranslationService
         }
 
         try {
-            // Strip HTML from original summary to provide a clean text to AI
-            $cleanSummary = strip_tags($content->original_summary);
+            // Prefer original_content if it's longer than summary (for full articles)
+            $sourceText = $content->original_content && strlen($content->original_content) > strlen($content->original_summary) 
+                ? $content->original_content 
+                : $content->original_summary;
+
+            // Strip HTML but keep some context, limit to 4000 chars for Gemini
+            $cleanSource = \Illuminate\Support\Str::limit(strip_tags($sourceText), 4000);
             
             $prompt = "Sen uzman bir tıp çevirmenisin. Aşağıdaki ALS makalesini Türkçeye çevir.\n\n" .
                       "KESİN KURALLAR:\n" .
@@ -29,7 +34,7 @@ class TranslationService
                       "3. ASLA başka açıklama yapma.\n" .
                       "4. Özetleme yapma, tam metni çevir.\n\n" .
                       "BAŞLIK: {$content->original_title}\n" .
-                      "ÖZET: {$cleanSummary}";
+                      "METİN: {$cleanSource}";
 
             $response = \Illuminate\Support\Facades\Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
                 'contents' => [

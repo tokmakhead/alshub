@@ -101,13 +101,21 @@ class DrugController extends Controller
             $current = $drug->generic_name;
             $updated = false;
 
-            // 1. Force sync fda_link from regional status if empty
-            if (empty($drug->fda_link)) {
-                $status = $drug->regionalStatuses()->where('region', 'US')->first();
-                if ($status && $status->label_url) {
-                    $drug->fda_link = $status->label_url;
-                    $drug->is_approved_fda = true;
-                    $updated = true;
+            // 1. Force sync and fix fda_link from regional status (Using correct set_id)
+            $status = $drug->regionalStatuses()->where('region', 'US')->first();
+            if ($status && !empty($status->raw_payload_json)) {
+                $raw = $status->raw_payload_json;
+                $setId = $raw['set_id'] ?? null;
+                if ($setId) {
+                    $correctLink = "https://labels.fda.gov/preview.cfm?set_id=" . $setId;
+                    // Always try to heal the link if it is missing or has the wrong format (id= instead of set_id=)
+                    if (empty($drug->fda_link) || str_contains($drug->fda_link, '?id=')) {
+                        $drug->fda_link = $correctLink;
+                        $drug->is_approved_fda = true;
+                        $status->label_url = $correctLink;
+                        $status->save();
+                        $updated = true;
+                    }
                 }
             }
 

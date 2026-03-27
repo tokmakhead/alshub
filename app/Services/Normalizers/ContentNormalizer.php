@@ -86,11 +86,11 @@ class ContentNormalizer
             'region_status' => [
                 'region' => 'US',
                 'regulator_name' => 'FDA',
-                'external_id' => $rawData['id'] ?? null,
+                'external_id' => $rawData['set_id'] ?? ($rawData['id'] ?? null),
                 'indication' => $rawData['indications_and_usage'][0] ?? null,
                 'description_original' => $rawData['indications_and_usage'][0] ?? null,
                 'approval_status' => 'Approved',
-                'label_url' => "https://labels.fda.gov/preview.cfm?id=" . ($rawData['id'] ?? ''),
+                'label_url' => "https://labels.fda.gov/preview.cfm?set_id=" . ($rawData['set_id'] ?? ''),
                 'raw_payload_json' => $rawData,
             ]
         ];

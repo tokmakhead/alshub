@@ -29,7 +29,12 @@
         </div>
 
         @php
-            $allUpdates = $latestContents ?? collect([]);
+            $allUpdates = collect($latestContents ?? [])
+                ->concat($latestResearch ?? [])
+                ->concat($latestTrials ?? [])
+                ->concat($latestDrugs ?? [])
+                ->sortByDesc('created_at')
+                ->take(6);
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

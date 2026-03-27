@@ -118,6 +118,11 @@ class SyncRssFeeds extends Command
                 foreach ($xml->channel->item as $item) {
                     $link = (string)$item->link;
                     
+                    // Clean URL: Strip UTM and other junk parameters
+                    if (str_contains($link, '?')) {
+                        $link = explode('?', $link)[0];
+                    }
+                    
                     if (Content::where('source_url', $link)->exists()) {
                         continue; // Daha önce eklendiyse atla
                     }

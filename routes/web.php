@@ -43,6 +43,7 @@ Route::get('/run-migrations-tmp', function() {
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }
+});
 Route::get('/cleanup-drugs-tmp', [App\Http\Controllers\Admin\DrugController::class, 'cleanupTitles']);
 
 Route::get('/run-rss-test', function() {

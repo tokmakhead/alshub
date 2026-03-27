@@ -26,34 +26,7 @@
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($contents as $content)
-                    @php
-                        $type = strtolower(class_basename($content));
-                        $type = match($type) {
-                            'researcharticle' => 'research',
-                            'clinicaltrial' => 'trial',
-                            'drug' => 'drug',
-                            'guideline' => 'guideline',
-                            default => 'legacy'
-                        };
-                    @endphp
-                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full">
-                        <div class="p-8 flex flex-col flex-grow">
-                            <div class="flex items-center gap-2 mb-4 text-xs">
-                                <span class="bg-blue-50 text-primary font-bold px-2 py-0.5 rounded">{{ $content->source_label }}</span>
-                                <span class="text-gray-300">•</span>
-                                <span class="text-gray-400">{{ $content->publication_date ? $content->publication_date->format('d.m.Y') : $content->created_at->format('d.m.Y') }}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-4 line-clamp-2">
-                                <a href="{{ $content->slug ? route('content.show', [$type, $content->slug]) : '#' }}" class="hover:text-primary">{{ $content->display_title }}</a>
-                            </h3>
-                            <p class="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6">
-                                {{ $content->display_summary }}
-                            </p>
-                            <div class="mt-auto">
-                                <a href="{{ $content->slug ? route('content.show', [$type, $content->slug]) : '#' }}" class="text-primary font-bold text-sm block border-t border-gray-50 pt-4">Devamını Oku &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
+                    <x-content-card :item="$content" />
                 @endforeach
             </div>
 

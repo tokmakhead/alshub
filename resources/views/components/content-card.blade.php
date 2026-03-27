@@ -43,6 +43,10 @@
          <div class="{{ $drugColor }} text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
             {{ $drugStatus }}
         </div>
+    @elseif($modelClass === 'App\Models\ResearchArticle' || $typeStr === 'research' || $typeStr === 'publication')
+        <div class="bg-teal-600 text-white text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
+            BİLİMSEL ARAŞTIRMA
+        </div>
     @else
         <div class="bg-gray-200 text-gray-500 text-[10px] font-black uppercase py-1 px-4 text-center tracking-widest">
             BİLGİ PAYLAŞIMI

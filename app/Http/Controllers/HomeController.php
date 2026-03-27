@@ -43,7 +43,10 @@ class HomeController extends Controller
             ) DESC")
             ->take(6)->get();
 
-        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs'));
+        // Klinik Rehberleri çek
+        $latestGuidelines = \App\Models\Guideline::where('status', 'published')->latest()->take(4)->get();
+
+        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs', 'latestGuidelines'));
     }
 
     public function aboutAls()

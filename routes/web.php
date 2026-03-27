@@ -46,6 +46,15 @@ Route::get('/run-migrations-tmp', function() {
 });
 Route::get('/cleanup-drugs-tmp', [App\Http\Controllers\Admin\DrugController::class, 'cleanupTitles']);
 
+Route::get('/clean-optimize', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        return "Bütün cache/optimize dosyaları başarıyla temizlendi! Şimdi RSS testini deneyebilirsin.";
+    } catch (\Exception $e) {
+        return "Hata: " . $e->getMessage();
+    }
+});
+
 Route::get('/run-rss-test', function() {
     try {
         \Illuminate\Support\Facades\Artisan::call('app:sync-rss');

@@ -162,9 +162,6 @@ class DoctorSeeder extends Seeder
                 'biography' => 'Director of the Robert Packard Center for ALS Research.',
                 'is_verified' => true
             ]
-        ];esearch.',
-                'is_verified' => true
-            ]
         ];
 
         foreach ($doctors as $doc) {

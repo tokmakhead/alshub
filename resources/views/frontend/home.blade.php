@@ -1,4 +1,5 @@
 @extends('frontend.layout')
+{{-- UI Modernization Phase --}}
 
 @section('content')
     <!-- Hero Section -->

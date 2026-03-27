@@ -11,9 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('sync:all')->dailyAt('02:00');
 Schedule::command('sync:all')->dailyAt('14:00');
 
-// Register the command explicitly to bypass Plesk Autoload/Cache issues
-require_once __DIR__.'/../app/Console/Commands/SyncRssFeeds.php';
-Illuminate\Support\Facades\Artisan::resolveCommands([\App\Console\Commands\SyncRssFeeds::class]);
+// Temporary hack removed.
 
 // RSS Haber Akışı (Günde iki kez)
 Schedule::command('app:sync-rss')->dailyAt('06:00');

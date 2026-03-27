@@ -106,6 +106,14 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
 
+            // Unified Log for Admin UI
+            \App\Models\ImportLog::create([
+                'source_id' => \App\Models\Source::where('name', 'PubMed')->first()?->id,
+                'status' => 'success',
+                'message' => "PubMed: {$inserted} yeni kayıt, {$updated} güncelleme.",
+                'payload' => ['fetched' => count($ids), 'inserted' => $inserted, 'updated' => $updated]
+            ]);
+
             if ($source) $source->update(['last_successful_sync' => now()]);
 
             return $log;
@@ -168,6 +176,14 @@ class IngestionManager
                 'inserted_count' => $inserted,
                 'updated_count' => $updated,
                 'finished_at' => now(),
+            ]);
+
+            // Unified Log for Admin UI
+            \App\Models\ImportLog::create([
+                'source_id' => \App\Models\Source::where('name', 'ClinicalTrials.gov')->first()?->id,
+                'status' => 'success',
+                'message' => "ClinicalTrials: {$inserted} yeni kayıt, {$updated} güncelleme.",
+                'payload' => ['fetched' => count($studies), 'inserted' => $inserted, 'updated' => $updated]
             ]);
 
             if ($source) $source->update(['last_successful_sync' => now()]);

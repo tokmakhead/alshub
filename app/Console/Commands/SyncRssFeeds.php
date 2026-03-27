@@ -178,8 +178,26 @@ class SyncRssFeeds extends Command
                     $sourceRegistry->update(['last_successful_sync' => now()]);
                 }
 
+                // Log to database for Admin UI
+                \App\Models\ImportLog::create([
+                    'source_id' => $sourceLegacy->id,
+                    'status' => 'success',
+                    'message' => "{$count} yeni içerik eklendi.",
+                    'payload' => ['count' => $count, 'url' => $feed['url']]
+                ]);
+
             } catch (\Exception $e) {
                 $this->error("Hata ({$feed['source_name']}): " . $e->getMessage());
+                
+                // Log error to database
+                if (isset($sourceLegacy)) {
+                    \App\Models\ImportLog::create([
+                        'source_id' => $sourceLegacy->id,
+                        'status' => 'error',
+                        'message' => $e->getMessage(),
+                        'payload' => ['url' => $feed['url']]
+                    ]);
+                }
             }
         }
 

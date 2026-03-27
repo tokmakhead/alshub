@@ -2,16 +2,76 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="bg-white border-b border-gray-100 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">ALS Hakkında Bilgiye <span class="text-primary tracking-normal">Güvenilir</span> Erişim</h1>
-            <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-10">
-                Gelişmeleri, klinik çalışmaları ve ilaç araştırmalarını Türkçe olarak takip edin.
+    <!-- Hero Section -->
+    <div class="relative bg-white overflow-hidden border-b border-gray-100">
+        <!-- Subtle Pattern Overlay -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%230f4c81\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative text-center">
+            <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
+                ALS Hakkında Bilgiye <br/>
+                <span class="text-primary bg-blue-50 px-4 rounded-2xl">Güvenilir</span> Erişim
+            </h1>
+            <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12 font-medium">
+                Dünya çapındaki gelişmeleri, klinik çalışmaları ve resmi rehberleri <br class="hidden md:block"/> yapay zeka desteğiyle anında Türkçe olarak takip edin.
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="{{ route('publications') }}" class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-blue-900 transition shadow-lg shadow-blue-100">Araştırmaları İncele</a>
-                <a href="{{ route('about.als') }}" class="bg-white text-primary border border-primary px-8 py-3 rounded-full font-bold hover:bg-blue-50 transition">ALS Nedir?</a>
+            
+            <!-- Quick Search Center -->
+            <div class="max-w-xl mx-auto mb-16 relative group">
+                <form action="{{ route('search') }}" method="GET">
+                    <input type="text" name="q" placeholder="Hangi konuyu merak ediyorsunuz? (Kök Hücre, Tofersen, Beslenme...)" 
+                           class="w-full pl-14 pr-6 py-5 bg-white border-2 border-gray-100 rounded-[2rem] shadow-2xl shadow-blue-100 focus:border-primary focus:outline-none transition-all group-hover:border-blue-200">
+                    <svg class="w-6 h-6 text-gray-400 absolute left-5 top-5 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <button type="submit" class="absolute right-3 top-3 bg-primary text-white px-6 py-2.5 rounded-2xl font-bold hover:bg-blue-900 transition shadow-lg">Ara</button>
+                </form>
             </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto bg-white/80 backdrop-blur p-8 rounded-[2.5rem] border border-gray-50 shadow-sm">
+                <div class="text-center group">
+                    <div class="text-3xl font-black text-primary mb-1 group-hover:scale-110 transition-transform">{{ number_format($stats['research'] ?? 0) }}</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Bilimsel Makale</div>
+                </div>
+                <div class="text-center group border-l border-gray-100">
+                    <div class="text-3xl font-black text-emerald-600 mb-1 group-hover:scale-110 transition-transform">{{ number_format($stats['trials'] ?? 0) }}</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Klinik Çalışma</div>
+                </div>
+                <div class="text-center group border-l border-gray-100">
+                    <div class="text-3xl font-black text-purple-600 mb-1 group-hover:scale-110 transition-transform">{{ number_format($stats['drugs'] ?? 0) }}</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Onaylı İlaç</div>
+                </div>
+                <div class="text-center group border-l border-gray-100">
+                    <div class="text-3xl font-black text-orange-500 mb-1 group-hover:scale-110 transition-transform">{{ number_format($stats['guidelines'] ?? 0) }}</div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Bakım Rehberi</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Icons -->
+    <div class="max-w-7xl mx-auto px-4 -mt-10 relative z-10 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="{{ route('publications') }}" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-xl shadow-blue-900/[0.03] hover:shadow-2xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.691.346a6 6 0 01-3.86.517l-2.387-.477a2 2 0 00-1.022.547l-1.168 1.168a2 2 0 00.566 3.414l9.74 1.391a2 2 0 001.166-.2l9.74-5.566a2 2 0 00.566-3.414l-1.168-1.168z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Makaleleri Keşfedin</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Dünyadaki en önemli ALS araştırmalarının yapay zeka özetleri.</p>
+            </a>
+            <a href="{{ route('trials') }}" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-xl shadow-blue-900/[0.03] hover:shadow-2xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Klinik Çalışmalar</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Devam eden ve hasta kabul eden klinik deneyleri takip edin.</p>
+            </a>
+            <a href="{{ route('guidelines') }}" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-xl shadow-blue-900/[0.03] hover:shadow-2xl hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Bakım Rehberleri</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Uluslararası otoritelerin hazırladığı profesyonel bakım kılavuzları.</p>
+            </a>
         </div>
     </div>
 

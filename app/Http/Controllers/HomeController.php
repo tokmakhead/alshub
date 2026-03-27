@@ -49,7 +49,15 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
-        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs', 'latestGuidelines'));
+        // İstatistikleri çek
+        $stats = [
+            'research' => \App\Models\ResearchArticle::count(),
+            'trials' => \App\Models\ClinicalTrial::count(),
+            'drugs' => \App\Models\Drug::count(),
+            'guidelines' => \App\Models\Guideline::count(),
+        ];
+
+        return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs', 'latestGuidelines', 'stats'));
     }
 
     public function aboutAls()

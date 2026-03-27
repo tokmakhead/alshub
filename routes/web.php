@@ -131,18 +131,23 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Maintenance / Repair
     Route::get('repair-slugs', function() {
-        $trials = \App\Models\ClinicalTrial::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($trials as $t) { $t->slug = \Illuminate\Support\Str::slug($t->title); $t->save(); }
-        $articles = \App\Models\ResearchArticle::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title); $a->save(); }
-        $drugs = \App\Models\Drug::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($drugs as $d) { $d->slug = \Illuminate\Support\Str::slug($d->generic_name); $d->save(); }
-        $guidelines = \App\Models\Guideline::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org); $g->save(); }
-        $contents = \App\Models\Content::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($contents as $c) { $c->slug = \Illuminate\Support\Str::slug($c->original_title ?: $c->translated_title); $c->save(); }
+        // Force update all slugs to ensure they match the URL patterns
+        $trials = \App\Models\ClinicalTrial::all();
+        foreach($trials as $t) { $t->slug = \Illuminate\Support\Str::slug($t->title . '-' . $t->nct_id); $t->save(); }
         
-        return "Repaired slugs for: " . count($trials) . " trials, " . count($articles) . " articles, " . count($drugs) . " drugs, " . count($guidelines) . " guidelines, " . count($contents) . " news.";
+        $articles = \App\Models\ResearchArticle::all();
+        foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title) . '-' . ($a->pmid ?: uniqid()); $a->save(); }
+        
+        $drugs = \App\Models\Drug::all();
+        foreach($drugs as $d) { $d->slug = \Illuminate\Support\Str::slug($d->generic_name); $d->save(); }
+        
+        $guidelines = \App\Models\Guideline::all();
+        foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org); $g->save(); }
+        
+        $contents = \App\Models\Content::all();
+        foreach($contents as $c) { $c->slug = \Illuminate\Support\Str::slug($c->original_title ?: $c->translated_title ?: 'news-' . $c->id); $c->save(); }
+        
+        return "SUCCESS: All slugs (Trials, Articles, Drugs, Guidelines, News) have been FORCE REGENERATED and saved to database.";
     })->name('repair-slugs');
 
     Route::get('clear-cache', function() {

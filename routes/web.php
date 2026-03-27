@@ -132,10 +132,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Maintenance / Repair
     Route::get('repair-slugs', function() {
         $trials = \App\Models\ClinicalTrial::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($trials as $t) { $t->save(); }
+        foreach($trials as $t) { $t->slug = \Illuminate\Support\Str::slug($t->title); $t->save(); }
         $articles = \App\Models\ResearchArticle::whereNull('slug')->orWhere('slug', '')->get();
-        foreach($articles as $a) { $a->save(); }
-        return "Repaired: " . count($trials) . " trials, " . count($articles) . " articles.";
+        foreach($articles as $a) { $a->slug = \Illuminate\Support\Str::slug($a->title); $a->save(); }
+        $drugs = \App\Models\Drug::whereNull('slug')->orWhere('slug', '')->get();
+        foreach($drugs as $d) { $d->slug = \Illuminate\Support\Str::slug($d->generic_name); $d->save(); }
+        $guidelines = \App\Models\Guideline::whereNull('slug')->orWhere('slug', '')->get();
+        foreach($guidelines as $g) { $g->slug = \Illuminate\Support\Str::slug($g->title . '-' . $g->source_org); $g->save(); }
+        $contents = \App\Models\Content::whereNull('slug')->orWhere('slug', '')->get();
+        foreach($contents as $c) { $c->slug = \Illuminate\Support\Str::slug($c->original_title ?: $c->translated_title); $c->save(); }
+        
+        return "Repaired slugs for: " . count($trials) . " trials, " . count($articles) . " articles, " . count($drugs) . " drugs, " . count($guidelines) . " guidelines, " . count($contents) . " news.";
     })->name('repair-slugs');
 
     Route::get('clear-cache', function() {

@@ -71,4 +71,9 @@ class ClinicalTrial extends Model
     {
         return 'clinical-trial';
     }
+
+    public function getSlugAttribute($value)
+    {
+        return $value ?: \Illuminate\Support\Str::slug($this->title . '-' . $this->nct_id);
+    }
 }

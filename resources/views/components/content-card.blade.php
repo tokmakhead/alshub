@@ -50,37 +50,17 @@
     @endif
 
     @php
-        // Dinamik Orijinal Tarih Çıkarımı
-        $displayDate = clone ($item->publication_date ?? $item->created_at); // Varsayılan
+        // Dinamik Orijinal Tarih Çıkarımı (Favoring publication/original dates)
+        $displayDate = null;
 
         try {
-            $raw = is_string($item->raw_payload_json) ? json_decode($item->raw_payload_json, true) : ($item->raw_payload_json ?? []);
-
-            if ($modelClass === 'App\Models\ResearchArticle' && !empty($raw)) {
-                // Try DateCompleted or ArticleDate or PubDate
-                $y = $raw['MedlineCitation']['Article']['ArticleDate']['Year'] ?? 
-                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year'] ?? 
-                     $raw['MedlineCitation']['DateCompleted']['Year'] ?? null;
-                     
-                $m = $raw['MedlineCitation']['Article']['ArticleDate']['Month'] ?? 
-                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Month'] ?? 
-                     $raw['MedlineCitation']['DateCompleted']['Month'] ?? '01';
-                     
-                $d = $raw['MedlineCitation']['Article']['ArticleDate']['Day'] ?? 
-                     $raw['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Day'] ?? 
-                     $raw['MedlineCitation']['DateCompleted']['Day'] ?? '01';
-
-                if ($y) {
-                    $displayDate = \Carbon\Carbon::parse("$y-$m-$d");
-                } elseif (isset($item->publication_date) && $item->publication_date->year > 1970) {
-                    $displayDate = clone $item->publication_date;
-                }
-            } elseif ($modelClass === 'App\Models\ClinicalTrial' && !empty($raw)) {
+            if ($modelClass === 'App\Models\ResearchArticle') {
+                 $displayDate = $item->publication_date;
+            } elseif ($modelClass === 'App\Models\ClinicalTrial') {
+                $raw = is_string($item->raw_payload_json) ? json_decode($item->raw_payload_json, true) : ($item->raw_payload_json ?? []);
                 $rawDate = $raw['protocolSection']['statusModule']['lastUpdateSubmitDate'] ?? 
                            $raw['protocolSection']['statusModule']['studyFirstPostDateStruct']['date'] ?? null;
-                if ($rawDate) {
-                    $displayDate = \Carbon\Carbon::parse($rawDate);
-                }
+                if ($rawDate) $displayDate = \Carbon\Carbon::parse($rawDate);
             } elseif ($modelClass === 'App\Models\Drug') {
                 $usStatus = $item->regionalStatuses->where('region', 'US')->first();
                 if ($usStatus) {
@@ -91,12 +71,14 @@
                         $displayDate = \Carbon\Carbon::parse($strDate);
                     }
                 }
+            } elseif ($modelClass === 'App\Models\Guideline') {
+                $displayDate = $item->publication_date;
             } elseif (isset($item->source_published_at)) {
-                $displayDate = clone $item->source_published_at;
+                $displayDate = $item->source_published_at;
             }
-        } catch (\Exception $e) {
-            $displayDate = clone ($item->source_published_at ?? $item->publication_date ?? $item->created_at);
-        }
+        } catch (\Exception $e) {}
+
+        $finalDate = $displayDate ?? $item->created_at;
 
         // Kesin Türkçe Tarih Çevirisi
         $monthsTr = [
@@ -104,8 +86,17 @@
             'May' => 'Mayıs', 'June' => 'Haziran', 'July' => 'Temmuz', 'August' => 'Ağustos', 
             'September' => 'Eylül', 'October' => 'Ekim', 'November' => 'Kasım', 'December' => 'Aralık'
         ];
-        $dateStr = $displayDate->format('d F Y');
+        $dateStr = $finalDate->format('d F Y');
         $dateStr = strtr($dateStr, $monthsTr);
+
+        $routeType = match($modelClass) {
+            'App\Models\ResearchArticle' => 'research',
+            'App\Models\ClinicalTrial' => 'trial',
+            'App\Models\Drug' => 'drug',
+            'App\Models\Guideline' => 'guideline',
+            default => ($typeStr === 'publication' ? 'research' : ($typeStr ?: 'content'))
+        };
+        $route = route('content.show', ['type' => $routeType, 'slug' => $item->slug]);
     @endphp
 
     <div class="p-8 flex flex-col flex-grow">
@@ -130,20 +121,6 @@
         </div>
         
         <h3 class="text-xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-primary transition">
-            @php
-                $routeType = match($modelClass) {
-                    'App\Models\ResearchArticle' => 'research',
-                    'App\Models\ClinicalTrial' => 'trial',
-                    'App\Models\Drug' => 'drug',
-                    'App\Models\Guideline' => 'guideline',
-                    default => ($typeStr === 'publication' ? 'research' : ($typeStr ?: 'content'))
-                };
-                try {
-                    $route = route('content.show', ['type' => $routeType, 'slug' => $item->slug ?? '']);
-                } catch(\Exception $e) {
-                    $route = '#';
-                }
-            @endphp
             <a href="{{ $route }}">{{ $item->display_title }}</a>
         </h3>
         <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">

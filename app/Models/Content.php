@@ -61,6 +61,11 @@ class Content extends Model
         return $this->source_name ?: 'ALSHub Haber';
     }
 
+    public function getSlugAttribute($value)
+    {
+        return $value ?: \Illuminate\Support\Str::slug($this->original_title ?: $this->translated_title);
+    }
+
     public function getPublicationDateAttribute()
     {
         return $this->source_published_at ?: ($this->published_at ?: $this->created_at);

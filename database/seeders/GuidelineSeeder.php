@@ -15,6 +15,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Practice Parameter: Drug Therapy and Symptom Management in ALS',
                 'summary_original' => 'Evidence-based review of drug therapies (Riluzole) and management of symptoms (Sialorrhea, pseudobulbar affect, cramps) in patients with ALS.',
                 'source_url' => 'https://www.aan.com/Guidelines/home/GetGuidelineContent/372',
+                'publication_date' => '2009-10-13',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -23,6 +24,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Practice Parameter: Nutrition and Respiratory Support in ALS',
                 'summary_original' => 'Guidelines on the timing of PEG placement for nutrition and the use of Noninvasive Ventilation (NIV) to extend life and quality.',
                 'source_url' => 'https://www.aan.com/Guidelines/home/GetGuidelineContent/373',
+                'publication_date' => '2009-10-13',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -31,6 +33,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Motor neurone disease: assessment and management (NG42)',
                 'summary_original' => 'Comprehensive UK guidelines covering multidisciplinary care, symptom management, and end-of-life care for MND patients.',
                 'source_url' => 'https://www.nice.org.uk/guidance/ng42',
+                'publication_date' => '2016-02-24',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -39,6 +42,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'EFNS guidelines on the Clinical Management of ALS',
                 'summary_original' => 'European consensus on the diagnosis and management of ALS, including genetic testing and symptomatic treatments.',
                 'source_url' => 'https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-1331.2012.03691.x',
+                'publication_date' => '2012-03-01',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -47,6 +51,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Respiratory Care and Breathing Support in ALS',
                 'summary_original' => 'Patient-centric guide on identifying breathing changes, using NIV, and clearing secretions.',
                 'source_url' => 'https://www.als.org/library/breathing-trouble-and-als',
+                'publication_date' => '2022-05-15',
                 'verification_tier' => 2,
                 'status' => 'published'
             ],
@@ -55,6 +60,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Nutritional Care and Feeding Tubes (PEG) in ALS',
                 'summary_original' => 'Practical advice on managing swallowing difficulties, calorie intake, and the benefits of PEG placement.',
                 'source_url' => 'https://www.als.org/library/nutrition-and-als',
+                'publication_date' => '2021-11-20',
                 'verification_tier' => 2,
                 'status' => 'published'
             ],
@@ -63,6 +69,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'PEG and RIG: Information for Professionals',
                 'summary_original' => 'Detailed clinical protocol for gastrostomy placement and post-procedure care for motor neurone disease.',
                 'source_url' => 'https://www.mndassociation.org/professionals/management-of-mnd/respiratory-and-nutritional-management/',
+                'publication_date' => '2023-01-10',
                 'verification_tier' => 2,
                 'status' => 'published'
             ],
@@ -71,6 +78,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Revised El Escorial Criteria for the Diagnosis of ALS',
                 'summary_original' => 'The international standard for classifying ALS diagnosis certainty (Definite, Probable, Possible).',
                 'source_url' => 'https://www.wfnals.org/guidelines/el-escorial-criteria',
+                'publication_date' => '2000-01-01',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -79,6 +87,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Gold Coast Criteria for the Diagnosis of ALS (2020 Update)',
                 'summary_original' => 'Simplified diagnostic criteria aiming to accelerate clinical trial participation and diagnosis for patients.',
                 'source_url' => 'https://www.clinicalneurophysiology.org/article/S1388-2457(20)30386-X/fulltext',
+                'publication_date' => '2020-07-29',
                 'verification_tier' => 1,
                 'status' => 'published'
             ],
@@ -87,6 +96,7 @@ class GuidelineSeeder extends Seeder
                 'title' => 'Exercise and Physical Therapy in ALS',
                 'summary_original' => 'Guidelines on maintaining mobility, range of motion, and preventing complications through safe exercise.',
                 'source_url' => 'https://www.als.org/library/exercise-and-als',
+                'publication_date' => '2022-09-01',
                 'verification_tier' => 2,
                 'status' => 'published'
             ]

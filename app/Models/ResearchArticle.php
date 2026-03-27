@@ -67,7 +67,12 @@ class ResearchArticle extends Model
         return $this->abstract_tr ?: $this->abstract_original;
     }
 
-    public function getSourceNameAttribute()
+    public function getSlugAttribute($value)
+    {
+        return $value ?: \Illuminate\Support\Str::slug($this->title);
+    }
+
+    public function getSourceLabelAttribute()
     {
         return $this->journal ?: 'PubMed';
     }
@@ -75,10 +80,5 @@ class ResearchArticle extends Model
     public function getTypeAttribute()
     {
         return 'publication';
-    }
-
-    public function getSourceLabelAttribute()
-    {
-        return $this->journal ?: 'PubMed';
     }
 }

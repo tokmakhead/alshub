@@ -31,6 +31,11 @@ class Guideline extends Model
         });
     }
 
+    public function getSlugAttribute($value)
+    {
+        return $value ?: Str::slug($this->title . '-' . $this->source_org);
+    }
+
     public function getDisplayTitleAttribute()
     {
         return $this->title_tr ?: $this->title;
@@ -39,6 +44,11 @@ class Guideline extends Model
     public function getDisplaySummaryAttribute()
     {
         return $this->summary_tr ?: $this->summary_original;
+    }
+
+    public function getPublicationDateAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value) : $this->created_at;
     }
 
     public function getSourceLabelAttribute()

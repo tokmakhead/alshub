@@ -114,6 +114,38 @@ class ExpertCenterSeeder extends Seeder
 
             // Other International
             [
+                'name' => 'Northwestern University ALS Center',
+                'location_city' => 'Chicago',
+                'location_country' => 'USA',
+                'website_url' => 'https://www.nm.org/conditions-and-care-areas/neurosciences/als-program',
+                'description' => 'Home to pioneering upper motor neuron research by Dr. Hande Ozdinler.',
+                'is_verified' => true
+            ],
+            [
+                'name' => 'University of Michigan ALS Center',
+                'location_city' => 'Ann Arbor',
+                'location_country' => 'USA',
+                'website_url' => 'https://www.uofmhealth.org/conditions-treatments/brain-neurological-conditions/als',
+                'description' => 'Leading center for stem cell therapy and environmental ALS research.',
+                'is_verified' => true
+            ],
+            [
+                'name' => 'Boğaziçi Üniversitesi NDAL Laboratuvarı',
+                'location_city' => 'İstanbul',
+                'location_country' => 'Turkey',
+                'website_url' => 'https://ndal.ku.edu.tr/',
+                'description' => 'Türkiye\'nin nörogenetik alanındaki en prestijli araştırma merkezi.',
+                'is_verified' => true
+            ],
+            [
+                'name' => 'Çukurova Üniversitesi Nöroloji AD',
+                'location_city' => 'Adana',
+                'location_country' => 'Turkey',
+                'website_url' => 'https://cukurova.edu.tr/',
+                'description' => 'Güney Türkiye\'nin ana ALS ve nöromüsküler hastalıklar merkezi.',
+                'is_verified' => true
+            ],
+            [
                 'name' => 'The University of Queensland ALS Research',
                 'location_city' => 'Brisbane',
                 'location_country' => 'Australia',

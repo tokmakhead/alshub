@@ -11,7 +11,7 @@ class DoctorSeeder extends Seeder
     public function run()
     {
         $doctors = [
-            // USA / MGH
+            // USA / MGH & UMass
             [
                 'center_name' => 'Massachusetts General Hospital ALS House',
                 'first_name' => 'Merit',
@@ -19,6 +19,35 @@ class DoctorSeeder extends Seeder
                 'title' => 'Prof. Dr.',
                 'specialty' => 'Neurology / ALS Research',
                 'biography' => 'Chief of Neurology at MGH and co-founder of NEALS.',
+                'is_verified' => true
+            ],
+            [
+                'center_name' => 'Massachusetts General Hospital ALS House',
+                'first_name' => 'Robert',
+                'last_name' => 'Brown',
+                'title' => 'Prof. Dr. PhD',
+                'specialty' => 'Neurology / Genetics',
+                'biography' => 'Discoverer of the first ALS gene (SOD1) and a pioneer in gene therapy.',
+                'is_verified' => true
+            ],
+            // USA / Northwestern (Hande Ozdinler)
+            [
+                'center_name' => 'Northwestern University ALS Center',
+                'first_name' => 'Hande',
+                'last_name' => 'Özdinler',
+                'title' => 'Doç. Dr.',
+                'specialty' => 'Neurobiology / Upper Motor Neurons',
+                'biography' => 'Pioneer in upper motor neuron research and recognized as one of the best in her field globally.',
+                'is_verified' => true
+            ],
+            // USA / Michigan (Eva Feldman)
+            [
+                'center_name' => 'University of Michigan ALS Center',
+                'first_name' => 'Eva',
+                'last_name' => 'Feldman',
+                'title' => 'Prof. Dr.',
+                'specialty' => 'Neurology / Stem Cells',
+                'biography' => 'Leader in human stem cell trials for ALS and environmental impacts on the disease.',
                 'is_verified' => true
             ],
             // Netherlands / UMC Utrecht
@@ -49,6 +78,17 @@ class DoctorSeeder extends Seeder
                 'title' => 'Prof. Dr.',
                 'specialty' => 'Neurology',
                 'biography' => 'Head of the ALS Outpatient Clinic at Charité Berlin.',
+                'is_verified' => true
+            ],
+
+            // Turkey / Boğaziçi NDAL
+            [
+                'center_name' => 'Boğaziçi Üniversitesi NDAL Laboratuvarı',
+                'first_name' => 'Nazlı',
+                'last_name' => 'Başak',
+                'title' => 'Prof. Dr.',
+                'specialty' => 'Neurogenetics',
+                'biography' => 'Founder of NDAL and the pioneer of ALS genetic research in Turkey.',
                 'is_verified' => true
             ],
 
@@ -101,6 +141,17 @@ class DoctorSeeder extends Seeder
                 'is_verified' => true
             ],
 
+            // Turkey / Çukurova
+            [
+                'center_name' => 'Çukurova Üniversitesi Nöroloji AD',
+                'first_name' => 'Filiz',
+                'last_name' => 'Koç',
+                'title' => 'Prof. Dr.',
+                'specialty' => 'Nöroloji',
+                'biography' => 'Güney Türkiye bölgesinde ALS klinik araştırmalarının öncü ismi.',
+                'is_verified' => true
+            ],
+
             // USA / Johns Hopkins
             [
                 'center_name' => 'Johns Hopkins ALS Clinic',
@@ -109,6 +160,9 @@ class DoctorSeeder extends Seeder
                 'title' => 'Prof. Dr. PhD',
                 'specialty' => 'Neurology and Neuroscience',
                 'biography' => 'Director of the Robert Packard Center for ALS Research.',
+                'is_verified' => true
+            ]
+        ];esearch.',
                 'is_verified' => true
             ]
         ];

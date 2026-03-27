@@ -42,4 +42,27 @@ class Content extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    /**
+     * Frontend Accessibility / Display Accessors
+     */
+    public function getDisplayTitleAttribute()
+    {
+        return $this->translated_title ?: $this->original_title;
+    }
+
+    public function getDisplaySummaryAttribute()
+    {
+        return $this->translated_summary ?: ($this->original_summary ?: $this->original_content);
+    }
+
+    public function getSourceLabelAttribute()
+    {
+        return $this->source_name ?: 'ALSHub Haber';
+    }
+
+    public function getPublicationDateAttribute()
+    {
+        return $this->source_published_at ?: ($this->published_at ?: $this->created_at);
+    }
 }

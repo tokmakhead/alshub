@@ -30,4 +30,19 @@ class Guideline extends Model
             $guideline->slug = $guideline->slug ?? Str::slug($guideline->title . '-' . $guideline->source_org);
         });
     }
+
+    public function getDisplayTitleAttribute()
+    {
+        return $this->title;
+    }
+
+    public function getDisplaySummaryAttribute()
+    {
+        return $this->summary_tr ?: $this->summary_original;
+    }
+
+    public function getSourceLabelAttribute()
+    {
+        return $this->source_org ?: 'Klinik Rehber';
+    }
 }

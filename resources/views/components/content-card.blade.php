@@ -19,10 +19,10 @@
             }
 
             $statusConfig = match(strtolower($rawStatus)) {
-                'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-green-500 text-white'],
+                'recruiting' => ['label' => 'Kayıt Devam Ediyor', 'color' => 'bg-amber-500 text-white'],
                 'active, not recruiting' => ['label' => 'Aktif, Kayıt Kapalı', 'color' => 'bg-blue-500 text-white'],
                 'not yet recruiting' => ['label' => 'Henüz Başlamadı', 'color' => 'bg-indigo-500 text-white'],
-                'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-gray-500 text-white'],
+                'completed' => ['label' => 'Tamamlandı', 'color' => 'bg-green-600 text-white'],
                 'withdrawn' => ['label' => 'Geri Çekildi', 'color' => 'bg-red-500 text-white'],
                 'terminated' => ['label' => 'Durduruldu', 'color' => 'bg-red-600 text-white'],
                 'suspended' => ['label' => 'Askıya Alındı', 'color' => 'bg-yellow-500 text-white'],

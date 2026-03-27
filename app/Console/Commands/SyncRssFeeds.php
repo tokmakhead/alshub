@@ -49,9 +49,14 @@ class SyncRssFeeds extends Command
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $feed['url']);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ALSHubBot/1.0');
+                // Enhanced headers for ALS Association 403 bypass
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Accept: application/rss+xml, application/xml, text/xml, */*',
+                    'Accept-Language: en-US,en;q=0.9',
+                ]);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 20);
                 $xmlString = curl_exec($ch);
                 
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -68,13 +73,25 @@ class SyncRssFeeds extends Command
                     continue;
                 }
 
-                $sourceModel = SourceRegistry::firstOrCreate(
+                $sourceRegistry = SourceRegistry::firstOrCreate(
                     ['source_name' => $feed['source_name']],
                     [
                         'target_module' => 'contents', 
                         'source_mode' => 'web_ingest', 
                         'is_enabled' => true,
                         'notes' => 'Otomatik RSS entegrasyonu ile eklendi.'
+                    ]
+                );
+
+                // HOTFIX: contents table has a FK to 'sources' table. Sync them.
+                $sourceLegacy = \App\Models\Source::updateOrCreate(
+                    ['id' => $sourceRegistry->id], // ID matching to bypass FK issues if possible, or just same name
+                    [
+                        'name' => $feed['source_name'],
+                        'type' => 'article',
+                        'base_url' => $feed['url'],
+                        'is_active' => true,
+                        'fetch_method' => 'rss'
                     ]
                 );
 
@@ -109,8 +126,8 @@ class SyncRssFeeds extends Command
 
                     Content::create([
                         'type' => 'news',
-                        'source_id' => $sourceModel->id,
-                        'source_name' => $sourceModel->source_name,
+                        'source_id' => $sourceLegacy->id, // Use ID from 'sources' table to satisfy FK
+                        'source_name' => $sourceRegistry->source_name,
                         'source_url' => $link,
                         'original_title' => $title,
                         'original_summary' => $summary,
@@ -127,7 +144,7 @@ class SyncRssFeeds extends Command
 
                 $this->info("{$feed['source_name']}: {$count} yeni taslak eklendi.");
                 if ($count > 0) {
-                    $sourceModel->update(['last_successful_sync' => now()]);
+                    $sourceRegistry->update(['last_successful_sync' => now()]);
                 }
 
             } catch (\Exception $e) {

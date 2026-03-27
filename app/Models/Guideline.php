@@ -11,7 +11,7 @@ class Guideline extends Model
     use HasFactory;
 
     protected $fillable = [
-        'source_org', 'external_id', 'title', 'slug', 
+        'source_org', 'external_id', 'title', 'title_tr', 'slug', 
         'summary_original', 'summary_tr', 'full_text_html', 
         'pdf_url', 'source_url', 'publication_date', 'last_updated_at',
         'status', 'verification_tier', 'raw_payload_json'
@@ -33,7 +33,7 @@ class Guideline extends Model
 
     public function getDisplayTitleAttribute()
     {
-        return $this->title;
+        return $this->title_tr ?: $this->title;
     }
 
     public function getDisplaySummaryAttribute()

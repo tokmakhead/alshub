@@ -36,14 +36,25 @@
                                 @endif
                             </div>
 
-                            <!-- Düzenleme / Çeviri -->
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center border-b pb-4 mb-4">
-                                    <h3 class="font-bold text-emerald-600 text-lg">Editör Çalışma Alanı (Türkçe)</h3>
-                                    <button type="button" onclick="generateAISummary(this)" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center gap-2">
-                                        <span>🪄</span> AI ile Hazırla
-                                    </button>
-                                </div>
+                             <!-- Düzenleme / Çeviri -->
+                             <div class="space-y-4">
+                                 <div class="flex justify-between items-center bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-6">
+                                     <h3 class="font-bold text-blue-800 flex items-center gap-2">
+                                         <span class="p-2 bg-blue-600 text-white rounded-lg">✍️</span> 
+                                         Editör Çalışma Alanı (Türkçe)
+                                     </h3>
+                                     <button type="button" onclick="generateAISummary(this)" 
+                                             class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 ring-4 ring-white">
+                                         <span class="text-lg">🪄</span> AI Sihirbazı ile Hazırla
+                                     </button>
+                                 </div>
+                                 
+                                 <div class="bg-yellow-50/50 p-4 rounded-xl border border-yellow-100 mb-4">
+                                     <label class="block text-xs font-bold text-yellow-700 uppercase mb-1">Türkçe Başlık (AI tarafından güncellenir)</label>
+                                     <input type="text" name="title_tr" id="title_tr" value="{{ $guideline->title_tr }}" 
+                                            class="w-full rounded-xl border-yellow-200 text-sm font-bold text-gray-800 focus:ring-yellow-500 focus:border-yellow-500" 
+                                            placeholder="Rehberin Türkçe Başlığı...">
+                                 </div>
                                 
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase">Türkçe Özet ve Basitleştirilmiş Anlatım</label>

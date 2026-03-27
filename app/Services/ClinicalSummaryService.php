@@ -50,14 +50,19 @@ class ClinicalSummaryService
 
     protected function buildPrompt($title, $abstract, $type)
     {
-        return "Sen uzman bir tıp editörü ve ALS araştırmacısısın. Aşağıdaki {$type} verisini analiz et.\n\n" .
+        return "Sen kıdemli bir tıp profesörü ve ALS uzmanısın. Aşağıdaki tıp metnini analiz et.\n\n" .
                "BAŞLIK: {$title}\n" .
                "ABSTRACT: {$abstract}\n\n" .
+               "ÖNEMLİ KURALLAR:\n" .
+               "1. YANITININ TAMAMI TÜRKÇE OLMALIDIR. İngilizce başlık veya terim bırakma.\n" .
+               "2. 'Technical Summary' yerine 'Doktor Özeti' başlığını kullan.\n" .
+               "3. 'Key Takeaways' yerine 'Önemli Maddeler' başlığını kullan.\n" .
+               "4. Tıbbi terimleri parantez içinde aslıyla bırakabilirsin (Örn: Sialorrhea (Aşırı Salya)).\n\n" .
                "SENDEN BEKLENENLER:\n" .
-               "1. Başlığı Türkçeye çevir.\n" .
-               "2. Doktorlar için teknik bir özet (Technical Summary) hazırla.\n" .
-               "3. Hastalar ve aileleri için tıbbi terimlerden arındırılmış, umut verici ama gerçekçi bir anlatım (Patient Friendly) hazırla.\n" .
-               "4. Bu çalışmadan çıkarılacak en önemli 3 maddeyi (Key Takeaways) belirle.\n\n" .
+               "1. Başlığı Türkçeye çevir (title_tr).\n" .
+               "2. Doktorlar için teknik bir analiz (summary_doctor).\n" .
+               "3. Hastalar için çok sade bir anlatım (summary_patient).\n" .
+               "4. En önemli 3 çıkarım (key_takeaways).\n\n" .
                "YANIT FORMATI (SADECE JSON):\n" .
                "{\n" .
                "  \"title_tr\": \"...\",\n" .
@@ -65,7 +70,7 @@ class ClinicalSummaryService
                "  \"summary_patient\": \"...\",\n" .
                "  \"key_takeaways\": [\"...\", \"...\", \"...\"]\n" .
                "}\n" .
-               "ASLA başka metin ekleme, sadece JSON döndür.";
+               "ASLA başka metin ekleme.";
     }
 
     protected function parseResponse($text)

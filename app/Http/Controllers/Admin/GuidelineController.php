@@ -29,6 +29,7 @@ class GuidelineController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
+            'title_tr' => 'nullable|string|max:255',
             'summary_tr' => 'nullable|string',
             'status' => 'required|in:draft,in_review,approved,published,rejected',
             'verification_tier' => 'required|integer',
@@ -42,8 +43,15 @@ class GuidelineController extends Controller
     {
         $result = $ai->summarize($guideline->title, $guideline->summary_original, 'clinical guideline');
         if ($result && !isset($result['error'])) {
+            $summary = $result['summary_patient'] . "\n\n---\n\n**Doktor Özeti:**\n" . $result['summary_doctor'] . "\n\n**Önemli Maddeler:**\n" . implode("\n", $result['key_takeaways']);
+            
+            // Clean markdown and markers
+            $summary = str_replace('**', '', $summary);
+            $titleTr = str_replace('**', '', $result['title_tr'] ?? '');
+
             $guideline->update([
-                'summary_tr' => $result['summary_patient'] . "\n\n---\n\n**Technical Summary:**\n" . $result['summary_doctor'] . "\n\n**Key Takeaways:**\n" . implode("\n", $result['key_takeaways'])
+                'title_tr' => $titleTr,
+                'summary_tr' => $summary
             ]);
             return response()->json(['success' => true, 'data' => $result]);
         }

@@ -3,10 +3,10 @@
 
 @section('content')
     <!-- Hero Section -->
-    <!-- Hero Section -->
-    <div class="relative bg-white overflow-hidden border-b border-gray-100">
-        <!-- Subtle Pattern Overlay -->
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%230f4c81\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div class="relative bg-white overflow-hidden border-b border-gray-100 pb-16">
+        <!-- Subtle Pattern Overlay & Gradient -->
+        <div class="absolute inset-0 opacity-[0.05]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M10 10l20 20m40 40l20 20M10 90l20-20m40-40l20-20\" stroke=\"%230f4c81\" stroke-width=\"0.5\" fill=\"none\"/%3E%3Ccircle cx=\"50\" cy=\"50\" r=\"2\" fill=\"%230f4c81\"/%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50/50"></div>
         
         <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative text-center">
             <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
@@ -130,8 +130,10 @@
                     $item->computed_sort_date = $displayDate;
                     return $item;
                 })
-                ->sortByDesc(fn($item) => $item->computed_sort_date->timestamp)
-                ->take(6);
+                ->sortByDesc(fn($item) => $item->computed_sort_date->timestamp);
+
+            $featuredScientific = $scientificUpdates->shift();
+            $scientificUpdates = $scientificUpdates->take(6);
 
             $newsUpdates = collect($latestContents ?? [])
                 ->map(function ($item) {
@@ -142,6 +144,48 @@
                 ->sortByDesc(fn($item) => $item->computed_sort_date->timestamp)
                 ->take(6);
         @endphp
+
+        @if($featuredScientific)
+            <!-- Featured Scientific Update -->
+            <div class="mb-12">
+                <div class="relative group overflow-hidden rounded-[2.5rem] bg-indigo-900 text-white min-h-[350px] flex flex-col md:flex-row shadow-2xl shadow-indigo-200">
+                    <!-- Background Decoration -->
+                    <div class="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none overflow-hidden">
+                        <svg class="w-full h-full transform translate-x-1/4" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#FFFFFF" d="M44.7,-76.4C58.2,-69.2,70.1,-59,78.2,-46.1C86.3,-33.1,90.6,-17.5,89.5,-2.3C88.4,12.9,81.8,27.7,72.4,40.4C63.1,53.1,51,63.7,37.3,71.2C23.6,78.7,8.2,83,-6.4,81.8C-21,80.7,-34.7,73.9,-46.5,64.9C-58.2,55.9,-67.9,44.6,-74.4,32C-80.9,19.3,-84.1,5.3,-83.1,-8.5C-82.1,-22.3,-76.9,-35.9,-68,-47.5C-59.1,-59.1,-46.5,-68.6,-33.5,-76.1C-20.4,-83.6,-7,-89.1,6.8,-90.4C20.6,-91.7,31.2,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
+                        </svg>
+                    </div>
+                    
+                    <div class="p-10 md:p-16 relative flex flex-col justify-center flex-1">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-indigo-500 text-xs font-black px-3 py-1 rounded-full tracking-widest uppercase">HAFTANIN ÖNE ÇIKANI</span>
+                            @if($featuredScientific->computed_sort_date)
+                                <span class="text-indigo-300 text-xs font-bold">{{ $featuredScientific->computed_sort_date->format('d/m/Y') }}</span>
+                            @endif
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black mb-6 leading-tight group-hover:text-indigo-200 transition-colors pointer-events-none">
+                            {{ $featuredScientific->display_title }}
+                        </h3>
+                        <p class="text-indigo-100 text-lg mb-8 line-clamp-2 max-w-2xl leading-relaxed">
+                            {{ $featuredScientific->display_summary }}
+                        </p>
+                        <div>
+                            @php
+                                $featuredType = 'news';
+                                $featuredClass = get_class($featuredScientific);
+                                if(str_contains($featuredClass, 'ResearchArticle')) $featuredType = 'research';
+                                elseif(str_contains($featuredClass, 'ClinicalTrial')) $featuredType = 'trial';
+                                elseif(str_contains($featuredClass, 'Drug')) $featuredType = 'drug';
+                            @endphp
+                            <a href="{{ route('content.show', ['type' => $featuredType, 'slug' => $featuredScientific->slug]) }}" class="inline-flex items-center gap-2 bg-white text-indigo-900 px-8 py-3 rounded-2xl font-black hover:bg-indigo-50 transition shadow-xl">
+                                Devamını Oku
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($scientificUpdates as $item)

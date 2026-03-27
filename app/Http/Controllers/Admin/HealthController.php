@@ -93,6 +93,8 @@ class HealthController extends Controller
             return ['status' => 'warning', 'message' => 'Henüz hiç senkronizasyon yapılmadı.'];
         }
 
+        // Ensure it's a Carbon instance as max() might return a string
+        $lastSync = \Illuminate\Support\Carbon::parse($lastSync);
         $diffHours = now()->diffInHours($lastSync);
         
         if ($diffHours > 24) {

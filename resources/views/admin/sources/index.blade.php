@@ -56,10 +56,20 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium text-right">
                                         <div class="flex justify-end gap-2">
+                                            @php
+                                                $automatedSources = ['PubMed', 'ClinicalTrials.gov', 'OpenFDA'];
+                                                $isAutomated = in_array($source->source_name, $automatedSources);
+                                            @endphp
                                             @if($source->source_mode != 'manual')
-                                                <button onclick="fetchSource({{ $source->id }})" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded text-xs transition duration-150 ease-in-out">
-                                                    Şimdi Çek
-                                                </button>
+                                                @if($isAutomated)
+                                                    <button onclick="fetchSource({{ $source->id }})" class="text-indigo-600 hover:text-indigo-900 border border-indigo-600 px-2 py-1 rounded text-xs transition duration-150 ease-in-out font-bold">
+                                                        Şimdi Çek
+                                                    </button>
+                                                @else
+                                                    <button disabled title="Bu kurum için aktif bir API robotu kodlanmamıştır. Sağlık içeriklerini manuel eklerken 'Kimlik/Etiket' (Source Reference) olarak kullanılır." class="text-gray-400 bg-gray-50 border border-gray-200 px-2 py-1 rounded text-xs cursor-not-allowed">
+                                                        Manuel Kaynak
+                                                    </button>
+                                                @endif
                                             @endif
                                             <a href="{{ route('admin.sources.edit', $source->id) }}" class="text-gray-600 hover:text-gray-900 border border-gray-400 px-2 py-1 rounded text-xs transition duration-150 ease-in-out">
                                                 Düzenle

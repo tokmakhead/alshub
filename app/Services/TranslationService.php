@@ -36,15 +36,23 @@ class TranslationService
                       "BAŞLIK: {$content->original_title}\n" .
                       "METİN: {$cleanSource}";
 
-            $response = \Illuminate\Support\Facades\Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt]
+            $response = \Illuminate\Support\Facades\Http::timeout(60)
+                ->retry(2, 2000)
+                ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $prompt]
+                            ]
                         ]
+                    ],
+                    'generationConfig' => [
+                        'temperature' => 0.2, // Faster and more consistent
+                        'topK' => 40,
+                        'topP' => 0.95,
+                        'maxOutputTokens' => 2048,
                     ]
-                ]
-            ]);
+                ]);
 
             if ($response->successful()) {
                 $data = $response->json();

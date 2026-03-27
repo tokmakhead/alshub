@@ -19,8 +19,8 @@
     <div class="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
         <div class="flex justify-between items-end mb-12">
             <div>
-                <h2 class="text-3xl font-bold text-gray-900">Son Güncellemeler</h2>
-                <p class="text-gray-500 mt-2">Dünyadan derlenen en son haberler ve araştırmalar.</p>
+                <h2 class="text-3xl font-bold text-gray-900">Bilimsel Gelişmeler</h2>
+                <p class="text-gray-500 mt-2">En son araştırmalar, klinik çalışmalar ve onaylanan ilaçlar.</p>
             </div>
             <a href="{{ route('publications') }}" class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all">
                 Tümünü Gör 
@@ -29,8 +29,7 @@
         </div>
 
         @php
-            $allUpdates = collect($latestContents ?? [])
-                ->concat($latestResearch ?? [])
+            $scientificUpdates = collect($latestResearch ?? [])
                 ->concat($latestTrials ?? [])
                 ->concat($latestDrugs ?? [])
                 ->map(function ($item) {
@@ -64,11 +63,18 @@
                                     $displayDate = \Carbon\Carbon::parse($strDate);
                                 }
                             }
-                        } elseif ($modelClass === 'App\Models\Content' && isset($item->source_published_at)) {
-                            $displayDate = clone $item->source_published_at;
                         }
-                    } catch (\Exception $e) { $displayDate = clone ($item->source_published_at ?? $item->created_at); }
+                    } catch (\Exception $e) { $displayDate = clone ($item->created_at); }
                     
+                    $item->computed_sort_date = $displayDate;
+                    return $item;
+                })
+                ->sortByDesc(fn($item) => $item->computed_sort_date->timestamp)
+                ->take(6);
+
+            $newsUpdates = collect($latestContents ?? [])
+                ->map(function ($item) {
+                    $displayDate = clone ($item->source_published_at ?? $item->published_at ?? $item->created_at);
                     $item->computed_sort_date = $displayDate;
                     return $item;
                 })
@@ -77,15 +83,35 @@
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @forelse($allUpdates as $item)
+            @forelse($scientificUpdates as $item)
                 <x-content-card :item="$item" />
             @empty
                 <div class="col-span-full text-center py-10 text-gray-400 font-bold italic">
-                    Henüz yeni bir güncelleme bulunmuyor.
+                    Henüz yeni bir bilimsel güncelleme bulunmuyor.
                 </div>
             @endforelse
         </div>
     </div>
+
+    @if($newsUpdates->count() > 0)
+    <!-- News & Blog Section -->
+    <div class="bg-blue-50/50 border-t border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">ALS Dünyasından Haberler</h2>
+                    <p class="text-gray-500 mt-2">Uluslararası ALS dernekleri, organizasyonlar ve ağlardan (NEALS, EMA vb.) derlenen güncel gelişmeler.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                @foreach($newsUpdates as $item)
+                    <x-content-card :item="$item" />
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Disclaimer Banner -->
     <div class="max-w-7xl mx-auto px-4 pb-20 sm:px-6 lg:px-8">

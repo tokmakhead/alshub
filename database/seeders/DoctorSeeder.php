@@ -84,6 +84,15 @@ class DoctorSeeder extends Seeder
             // Turkey / Hacettepe
             [
                 'center_name' => 'Hacettepe Üniversitesi Nöroloji AD',
+                'first_name' => 'Ersin',
+                'last_name' => 'Tan',
+                'title' => 'Prof. Dr.',
+                'specialty' => 'Nöromüsküler Hastalıklar / ALS',
+                'biography' => 'Hacettepe Üniversitesi Nöroloji AD emekli öğretim üyesi ve Türkiye\'nin en kıdemli ALS otoritelerinden biri.',
+                'is_verified' => true
+            ],
+            [
+                'center_name' => 'Hacettepe Üniversitesi Nöroloji AD',
                 'first_name' => 'Sevim',
                 'last_name' => 'Erdem Özdamar',
                 'title' => 'Prof. Dr.',

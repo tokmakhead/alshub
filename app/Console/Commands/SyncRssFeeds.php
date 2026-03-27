@@ -31,7 +31,11 @@ class SyncRssFeeds extends Command
         ],
         [
             'source_name' => 'ALS Association',
-            'url' => 'https://www.als.org/rss.xml',
+            'url' => 'https://www.als.org/news/feed',
+        ],
+        [
+            'source_name' => 'MND Association',
+            'url' => 'https://www.mndassociation.org/news-rss.xml',
         ]
     ];
 
@@ -51,22 +55,21 @@ class SyncRssFeeds extends Command
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                curl_setopt($ch, CURLOPT_ENCODING, ""); // Handle gzip/deflate
+                curl_setopt($ch, CURLOPT_ENCODING, "");
                 
-                // Extremely realistic browser signature
-                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+                // Special UA for als.org to bypass Cloudflare
+                if (str_contains($feed['url'], 'als.org')) {
+                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');
+                } else {
+                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+                }
                 
                 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language: en-US,en;q=0.9',
                     'Cache-Control: no-cache',
                     'Connection: keep-alive',
-                    'Pragma: no-cache',
-                    'Referer: https://www.google.com/',
-                    'Sec-Ch-Ua: "Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
-                    'Sec-Ch-Ua-Mobile: ?0',
-                    'Sec-Ch-Ua-Platform: "Windows"',
-                    'Upgrade-Insecure-Requests: 1'
+                    'Referer: https://www.google.com/'
                 ]);
                 
                 $xmlString = curl_exec($ch);

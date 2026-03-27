@@ -44,7 +44,10 @@ class HomeController extends Controller
             ->take(6)->get();
 
         // Klinik Rehberleri çek
-        $latestGuidelines = \App\Models\Guideline::where('status', 'published')->latest()->take(4)->get();
+        $latestGuidelines = \App\Models\Guideline::where('status', 'published')
+            ->orderByDesc('publication_date')
+            ->take(4)
+            ->get();
 
         return view('frontend.home', compact('latestContents', 'latestResearch', 'latestTrials', 'latestDrugs', 'latestGuidelines'));
     }

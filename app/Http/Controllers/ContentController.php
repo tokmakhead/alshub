@@ -62,7 +62,9 @@ class ContentController extends Controller
 
     public function guidelines()
     {
-        $contents = Guideline::where('status', 'published')->latest()->paginate(12);
+        $contents = Guideline::where('status', 'published')
+            ->orderByDesc('publication_date')
+            ->paginate(12);
         $title = "Klinik Rehberler";
         return view('frontend.content.index', compact('contents', 'title'));
     }

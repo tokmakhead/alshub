@@ -49,14 +49,26 @@ class SyncRssFeeds extends Command
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $feed['url']);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                // Enhanced headers for ALS Association 403 bypass
-                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Accept: application/rss+xml, application/xml, text/xml, */*',
-                    'Accept-Language: en-US,en;q=0.9',
-                ]);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_ENCODING, ""); // Handle gzip/deflate
+                
+                // Extremely realistic browser signature
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+                
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                    'Accept-Language: en-US,en;q=0.9',
+                    'Cache-Control: no-cache',
+                    'Connection: keep-alive',
+                    'Pragma: no-cache',
+                    'Referer: https://www.google.com/',
+                    'Sec-Ch-Ua: "Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+                    'Sec-Ch-Ua-Mobile: ?0',
+                    'Sec-Ch-Ua-Platform: "Windows"',
+                    'Upgrade-Insecure-Requests: 1'
+                ]);
+                
                 $xmlString = curl_exec($ch);
                 
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);

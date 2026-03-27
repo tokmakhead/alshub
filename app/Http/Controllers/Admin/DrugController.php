@@ -107,9 +107,9 @@ class DrugController extends Controller
                 $raw = $status->raw_payload_json;
                 $setId = $raw['set_id'] ?? null;
                 if ($setId) {
-                    $correctLink = "https://labels.fda.gov/preview.cfm?set_id=" . $setId;
-                    // Always try to heal the link if it is missing or has the wrong format (id= instead of set_id=)
-                    if (empty($drug->fda_link) || str_contains($drug->fda_link, '?id=')) {
+                    $correctLink = "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=" . $setId;
+                    // Overwrite if empty or if it points to the old labels.fda.gov domain
+                    if (empty($drug->fda_link) || str_contains($drug->fda_link, 'labels.fda.gov')) {
                         $drug->fda_link = $correctLink;
                         $drug->is_approved_fda = true;
                         $status->label_url = $correctLink;

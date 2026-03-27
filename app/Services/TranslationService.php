@@ -32,7 +32,8 @@ class TranslationService
                       "1. Yanıtını SADECE geçerli bir JSON formatında ver.\n" .
                       "2. JSON şeması: {\"baslik\": \"...\", \"ozet\": \"...\"}\n" .
                       "3. ASLA başka açıklama yapma.\n" .
-                      "4. Özetleme yapma, tam metni çevir.\n\n" .
+                      "4. Özetleme yapma, tam metni çevir.\n" .
+                      "5. ÖNEMLİ: Metin sonundaki 'Recommended Reading', 'Related Posts', 'Author Bio' veya reklam gibi makale ile ilgisi olmayan kısımları TESPİT ET VE SİL. Sadece ana makaleyi çevir.\n\n" .
                       "BAŞLIK: {$content->original_title}\n" .
                       "METİN: {$cleanSource}";
 

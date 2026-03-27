@@ -14,7 +14,7 @@
                         @method('PUT')
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Kaynak Verisi -->
+                            <!-- Orijinal Veriler -->
                             <div class="space-y-4 border-r pr-6">
                                 <h3 class="font-bold border-b pb-2 text-blue-600">Orijinal Rehber Bilgisi</h3>
                                 <div>
@@ -30,42 +30,39 @@
                                     <div class="p-2 bg-gray-50 border rounded text-xs h-60 overflow-y-auto">{{ $guideline->summary_original }}</div>
                                 </div>
                                 @if($guideline->pdf_url)
-                                    <div>
+                                    <div class="pt-2">
                                         <a href="{{ $guideline->pdf_url }}" target="_blank" class="text-blue-600 underline text-sm">PDF Kaynağını Görüntüle</a>
                                     </div>
                                 @endif
                             </div>
 
-                             <!-- Düzenleme / Çeviri -->
-                             <div class="space-y-4">
-                                 <div class="flex justify-between items-center bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-6">
-                                     <h3 class="font-bold text-blue-800 flex items-center gap-2">
-                                         <span class="p-2 bg-blue-600 text-white rounded-lg">✍️</span> 
-                                         Editör Çalışma Alanı (Türkçe)
-                                     </h3>
-                                     <button type="button" onclick="generateAISummary(this)" 
-                                             class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 ring-4 ring-white">
-                                         <span class="text-lg">🪄</span> AI Sihirbazı ile Hazırla
-                                     </button>
-                                 </div>
-                                 
-                                 <div class="bg-yellow-50/50 p-4 rounded-xl border border-yellow-100 mb-4">
-                                     <label class="block text-xs font-bold text-yellow-700 uppercase mb-1">Türkçe Başlık (AI tarafından güncellenir)</label>
-                                     <input type="text" name="title_tr" id="title_tr" value="{{ $guideline->title_tr }}" 
-                                            class="w-full rounded-xl border-yellow-200 text-sm font-bold text-gray-800 focus:ring-yellow-500 focus:border-yellow-500" 
-                                            placeholder="Rehberin Türkçe Başlığı...">
-                                 </div>
+                            <!-- Düzenleme Paneli -->
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center border-b pb-4 mb-2">
+                                    <h3 class="font-bold text-gray-800">Editör Çalışma Alanı (Türkçe)</h3>
+                                    <button type="button" onclick="generateAISummary(this)" 
+                                            class="px-4 py-2 rounded-lg font-bold text-sm shadow-md transition-all flex items-center gap-2"
+                                            style="background-color: #6366f1 !important; color: white !important; cursor: pointer;">
+                                        <span>🪄</span> AI ile Hazırla
+                                    </button>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase">Türkçe Başlık (AI ile dolacaktır)</label>
+                                    <input type="text" name="title_tr" id="title_tr" value="{{ $guideline->title_tr }}" 
+                                           class="w-full rounded border-gray-300 text-sm font-bold" placeholder="Türkçe başlığı buraya girin veya AI kullanın...">
+                                </div>
                                 
                                 <div>
                                     <label class="block text-xs font-bold text-gray-500 uppercase">Türkçe Özet ve Basitleştirilmiş Anlatım</label>
-                                    <textarea id="summary_tr" name="summary_tr" rows="15" class="w-full rounded border-gray-300 text-sm" placeholder="AI tarafından hazırlanan veya manuel girilen rehber özeti...">{{ $guideline->summary_tr }}</textarea>
+                                    <textarea id="summary_tr" name="summary_tr" rows="15" class="w-full rounded border-gray-300 text-sm" placeholder="AI tarafından hazırlanan veya manuel girilen özet...">{{ $guideline->summary_tr }}</textarea>
                                 </div>
 
                                 <script>
                                     function generateAISummary(btn) {
                                         btn.disabled = true;
-                                        const originalText = btn.innerHTML;
-                                        btn.innerHTML = '<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Bekleyiniz...';
+                                        const originalHTML = btn.innerHTML;
+                                        btn.innerHTML = '<span>⏳</span> Bekleyiniz...';
                                         
                                         fetch('{{ route('admin.guidelines.ai-summary', $guideline) }}', {
                                             method: 'POST',
@@ -79,10 +76,15 @@
                                             if(data.success) {
                                                 location.reload();
                                             } else {
-                                                alert('Hata: ' + data.message);
+                                                alert('Hata: ' + (data.message || 'Beklenmedik hata.'));
                                                 btn.disabled = false;
-                                                btn.innerText = '🪄 AI ile Hazırla';
+                                                btn.innerHTML = originalHTML;
                                             }
+                                        })
+                                        .catch(err => {
+                                            alert('Bağlantı Hatası!');
+                                            btn.disabled = false;
+                                            btn.innerHTML = originalHTML;
                                         });
                                     }
                                 </script>

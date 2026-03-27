@@ -260,6 +260,14 @@ class IngestionManager
                 'finished_at' => now(),
             ]);
 
+            // Unified Log for Admin UI
+            \App\Models\ImportLog::create([
+                'source_id' => \App\Models\Source::where('name', 'OpenFDA')->first()?->id,
+                'status' => 'success',
+                'message' => "OpenFDA: {$inserted} yeni ilaç kaydı.",
+                'payload' => ['fetched' => count($results), 'inserted' => $inserted, 'updated' => $updated]
+            ]);
+
             if ($source) $source->update(['last_successful_sync' => now()]);
 
             return $log;

@@ -49,6 +49,52 @@
         </div>
     @endif
 
+    @php
+        // Dinamik Orijinal Tarih Çıkarımı
+        $displayDate = $item->created_at; // Varsayılan
+
+        try {
+            $raw = is_string($item->raw_payload_json) ? json_decode($item->raw_payload_json, true) : ($item->raw_payload_json ?? []);
+
+            if ($modelClass === 'App\Models\ResearchArticle' && !empty($raw)) {
+                // PubMed XML'den tarih
+                if (isset($raw['PubmedData']['ArticleIdList']['ArticleId'])) {
+                     $displayDate = $item->publication_date ?? $item->created_at;
+                }
+                // Try DateCompleted or default publication_date checking
+                if (isset($item->publication_date) && $item->publication_date->year > 1970) {
+                    $displayDate = $item->publication_date;
+                } else if (isset($raw['MedlineCitation']['DateCompleted']['Year'])) {
+                    $y = $raw['MedlineCitation']['DateCompleted']['Year'];
+                    $m = $raw['MedlineCitation']['DateCompleted']['Month'] ?? '01';
+                    $d = $raw['MedlineCitation']['DateCompleted']['Day'] ?? '01';
+                    $displayDate = \Carbon\Carbon::parse("$y-$m-$d");
+                }
+            } elseif ($modelClass === 'App\Models\ClinicalTrial' && !empty($raw)) {
+                // ClinicalTrials.gov JSON'dan tarih
+                $rawDate = $raw['protocolSection']['statusModule']['lastUpdateSubmitDate'] ?? null;
+                if (!$rawDate) {
+                     $rawDate = $raw['protocolSection']['statusModule']['studyFirstPostDateStruct']['date'] ?? null;
+                }
+                if ($rawDate) {
+                    $displayDate = \Carbon\Carbon::parse($rawDate);
+                }
+            } elseif ($modelClass === 'App\Models\Drug' && !empty($raw)) {
+                // OpenFDA JSON'dan tarih
+                $effTime = $raw['effective_time'] ?? null;
+                if ($effTime && strlen($effTime) == 8) {
+                    // YYYYMMDD
+                    $strDate = substr($effTime, 0, 4) . '-' . substr($effTime, 4, 2) . '-' . substr($effTime, 6, 2);
+                    $displayDate = \Carbon\Carbon::parse($strDate);
+                }
+            } else if (isset($item->publication_date)) {
+                $displayDate = $item->publication_date;
+            }
+        } catch (\Exception $e) {
+            $displayDate = $item->created_at;
+        }
+    @endphp
+
     <div class="p-8 flex flex-col flex-grow">
         <div class="flex items-center gap-2 mb-4">
             <span class="text-xs font-bold uppercase tracking-widest text-primary bg-blue-50 px-3 py-1 rounded-full">
@@ -65,8 +111,8 @@
                 @endif
             </span>
 
-            <span class="text-xs text-gray-400 font-medium ml-auto">
-                {{ ($item->publication_date ?? $item->created_at)->translatedFormat('d F Y') }}
+            <span class="text-xs text-gray-400 font-medium ml-auto" title="Orijinal Kaynak Tarihi">
+                {{ $displayDate->translatedFormat('d F Y') }}
             </span>
         </div>
         

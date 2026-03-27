@@ -24,6 +24,8 @@ Route::get('/klinik-calismalar', [ContentController::class, 'trials'])->name('tr
 Route::get('/ilaclar', [ContentController::class, 'drugs'])->name('drugs');
 Route::get('/rehberler', [ContentController::class, 'guidelines'])->name('guidelines');
 Route::get('/arama', [ContentController::class, 'search'])->name('search');
+Route::get('/uzmanlik-merkezleri', [App\Http\Controllers\ExpertController::class, 'index'])->name('experts.index');
+Route::get('/uzmanlik-merkezi/{slug}', [App\Http\Controllers\ExpertController::class, 'show'])->name('experts.show');
 Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('content.show');
 
 // Temporary execution routes for automated scripts

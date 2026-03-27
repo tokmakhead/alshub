@@ -28,6 +28,7 @@
                         <a href="{{ route('publications') }}" class="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium transition">Araştırmalar</a>
                         <a href="{{ route('trials') }}" class="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium transition">Klinik Çalışmalar</a>
                         <a href="{{ route('drugs') }}" class="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium transition">İlaçlar</a>
+                        <a href="{{ route('experts.index') }}" class="text-gray-600 hover:text-primary px-3 py-2 text-sm font-medium transition">Uzmanlar & Merkezler</a>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">

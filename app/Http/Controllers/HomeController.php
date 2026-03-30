@@ -82,6 +82,11 @@ class HomeController extends Controller
         return view('frontend.pages.about_us', compact('stats', 'trustedSources'));
     }
 
+    public function contact()
+    {
+        return view('frontend.pages.contact');
+    }
+
     public function storeContact(Request $request)
     {
         $validated = $request->validate([

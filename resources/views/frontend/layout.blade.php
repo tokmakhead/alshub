@@ -27,7 +27,7 @@
                 </div>
                 
                 <!-- Center: Desktop Menu (Absolutely Centered) -->
-                <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center">
+                <div class="hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center">
                     <div class="flex items-center space-x-1">
                         <a href="{{ route('about.als') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">ALS Nedir?</a>
                         <div class="h-4 w-px bg-gray-100 mx-1"></div>

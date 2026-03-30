@@ -261,6 +261,10 @@
                     <h2 class="text-3xl font-bold text-gray-900">ALS Dünyasından Haberler</h2>
                     <p class="text-gray-500 mt-2">Uluslararası ALS dernekleri, organizasyonlar ve ağlardan (NEALS, EMA vb.) derlenen güncel gelişmeler.</p>
                 </div>
+                <a href="{{ route('news') }}" class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                    Tümünü Gör 
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

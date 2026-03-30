@@ -32,17 +32,8 @@ Route::get('/icerik/{type}/{slug}', [ContentController::class, 'show'])->name('c
 // Temporary execution routes for automated scripts
 Route::get('/run-migrations-tmp', function() {
     try {
-        if (!\Illuminate\Support\Facades\Schema::hasColumn('drugs', 'fda_link')) {
-            \Illuminate\Support\Facades\Schema::table('drugs', function (\Illuminate\Database\Schema\Blueprint $table) {
-                $table->text('indication')->nullable()->after('brand_name');
-                $table->string('fda_link')->nullable()->after('is_approved_fda');
-                $table->string('ema_link')->nullable()->after('is_approved_ema');
-                $table->text('price_info')->nullable();
-                $table->text('accessibility_info')->nullable();
-            });
-            return "Custom Schema Alt applied successfully.";
-        }
-        return "Columns already exist.";
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }

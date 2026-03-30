@@ -168,9 +168,9 @@
     <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
         <div class="bg-primary rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden shadow-2xl shadow-blue-200">
             <div class="relative z-10 text-center max-w-3xl mx-auto">
-                <h2 class="text-4xl font-black mb-6 leading-tight italic">Belirsizliğe Karşı Bilgiyle Savaşın.</h2>
-                <p class="text-blue-100 text-lg mb-10 leading-relaxed">
-                    ALSHub ailesine katılın, en son araştırmaları takip edin veya bu gönüllü projenin bir parçası olarak sürece katkıda bulunun.
+                <h3 class="italic text-4xl font-black text-white mb-4">Birlikte Daha Güçlüyüz.</h3>
+                <p class="text-blue-100 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">
+                    ALS yolculuğunda kimse yalnız kalmamalı. Bilgi paylaşarak, araştırarak ve destek olarak bu büyük dayanışmanın bir parçası olun.
                 </p>
                 <div class="flex flex-wrap justify-center gap-6">
                     <a href="{{ route('contact') }}" class="bg-white text-primary px-10 py-4 rounded-2xl font-bold hover:bg-blue-50 transition shadow-xl">İletişime Geçin</a>

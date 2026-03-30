@@ -51,13 +51,16 @@
                     </div>
                 </div>
 
-                <!-- Right: Mobile Trigger / Balance -->
+                <!-- Right: Action Button -->
                 <div class="flex justify-end items-center">
+                    <a href="{{ route('first.steps') }}" class="hidden lg:flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95 group">
+                        <span>Yeni Tanı Alanlar</span>
+                        <span class="group-hover:rotate-12 transition-transform">✨</span>
+                    </a>
+                    
                     <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <!-- PC'de dengeleyici boş div (Merkezlemeyi korumak için) -->
-                    <div class="hidden lg:block w-32"></div>
                 </div>
             </div>
         </nav>

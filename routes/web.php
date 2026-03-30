@@ -90,6 +90,7 @@ Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
 Route::post('/iletisim', [HomeController::class, 'storeContact'])->name('contact.store');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');
+Route::get('/ilk-adimlar', [HomeController::class, 'firstSteps'])->name('first.steps');
 
 // Auth Routes (Breeze)
 Route::get('/dashboard', function () {

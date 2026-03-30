@@ -131,9 +131,4 @@ class HomeController extends Controller
     {
         return view('frontend.pages.policy');
     }
-
-    public function firstSteps()
-    {
-        return view('frontend.pages.first-steps');
-    }
 }

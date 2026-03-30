@@ -4,9 +4,16 @@
 @section('content')
     <!-- Hero Section -->
     <div class="relative bg-white overflow-hidden border-b border-gray-100 pb-16">
-        <!-- High-Visibility Pattern & Gradient -->
-        <div class="absolute inset-0 opacity-[0.20] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\"80\" height=\"80\" viewBox=\"0 0 80 80\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M10 10l20 20m40 40l20 20M10 70l20-20m40-40l20-20\" stroke=\"%230f4c81\" stroke-width=\"4\" fill=\"none\"/%3E%3Cpath d=\"M40 0 C 60 20, 20 60, 40 80\" stroke=\"%230f4c81\" stroke-width=\"2\" fill=\"none\" opacity=\"0.5\"/%3E%3Ccircle cx=\"40\" cy=\"40\" r=\"6\" fill=\"%230f4c81\"/%3E%3C/svg%3E');"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-200/30 via-transparent to-purple-200/20"></div>
+        <!-- Bulletproof SVG Pattern & Gradient -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.15]">
+            <svg class="w-full h-full text-blue-900/20" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 10 Q 50 50, 100 10 M0 90 Q 50 50, 100 90 M10 0 Q 50 50, 10 100 M90 0 Q 50 50, 90 100" stroke="currentColor" stroke-width="0.5"/>
+                <circle cx="50" cy="50" r="1" fill="currentColor"/>
+                <circle cx="20" cy="80" r="1.5" fill="currentColor"/>
+                <circle cx="80" cy="20" r="1.5" fill="currentColor"/>
+            </svg>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-200/40 via-transparent to-purple-200/30"></div>
         
         <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative text-center">
             <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">

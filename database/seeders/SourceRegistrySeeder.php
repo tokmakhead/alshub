@@ -55,13 +55,26 @@ class SourceRegistrySeeder extends Seeder
 
         // 4. GUIDELINES / NICE-AAN-EAN (Manual/Curated)
         SourceRegistry::updateOrCreate(
-            ['source_name' => 'Guidelines (NICE/EAN)'],
+            ['source_name' => 'NICE Guidelines'],
             [
                 'source_mode' => 'manual',
-                'verification_tier' => 1,
                 'is_enabled' => true,
-                'config_json' => [],
-                'notes' => 'Manual entry for official clinical guidelines.'
+                'verification_tier' => 1,
+                'official_url' => 'https://www.nice.org.uk/guidance/ng42',
+                'logo_url' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/NICE_Logo.svg/1024px-NICE_Logo.svg.png',
+                'notes' => 'National Institute for Health and Care Excellence (UK) official ALS guidelines.'
+            ]
+        );
+
+        SourceRegistry::updateOrCreate(
+            ['source_name' => 'EAN Guidelines'],
+            [
+                'source_mode' => 'manual',
+                'is_enabled' => true,
+                'verification_tier' => 1,
+                'official_url' => 'https://www.ean.org',
+                'logo_url' => 'https://ern-euro-nmd.eu/wp-content/uploads/2018/12/ean-logo.png',
+                'notes' => 'European Academy of Neurology official ALS management guidelines.'
             ]
         );
 

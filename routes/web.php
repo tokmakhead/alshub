@@ -49,12 +49,39 @@ Route::get('/clean-optimize', function() {
     }
 });
 
-Route::get('/run-rss-test', function() {
+Route::get('/fix-sources-tmp', function() {
     try {
-        \Illuminate\Support\Facades\Artisan::call('app:sync-rss');
-        return "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+        $old = \App\Models\SourceRegistry::where('source_name', 'Guidelines (NICE/EAN)')->first();
+        
+        \App\Models\SourceRegistry::updateOrCreate(
+            ['source_name' => 'NICE Guidelines'],
+            [
+                'source_mode' => 'manual',
+                'is_enabled' => true,
+                'verification_tier' => 1,
+                'official_url' => 'https://www.nice.org.uk/guidance/ng42',
+                'logo_url' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/NICE_Logo.svg/1024px-NICE_Logo.svg.png',
+                'notes' => 'National Institute for Health and Care Excellence (UK) official ALS guidelines.'
+            ]
+        );
+
+        \App\Models\SourceRegistry::updateOrCreate(
+            ['source_name' => 'EAN Guidelines'],
+            [
+                'source_mode' => 'manual',
+                'is_enabled' => true,
+                'verification_tier' => 1,
+                'official_url' => 'https://www.ean.org',
+                'logo_url' => 'https://ern-euro-nmd.eu/wp-content/uploads/2018/12/ean-logo.png',
+                'notes' => 'European Academy of Neurology official ALS management guidelines.'
+            ]
+        );
+
+        if ($old) $old->delete();
+        
+        return "SUCCESS: Guidelines (NICE/EAN) split into NICE and EAN successfully.";
     } catch (\Exception $e) {
-        return "Hata: " . $e->getMessage();
+        return "Error: " . $e->getMessage();
     }
 });
 

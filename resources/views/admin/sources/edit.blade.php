@@ -24,7 +24,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Kaynak Adı</label>
-                                <input type="text" name="source_name" value="{{ old('source_name', $source->source_name) }}" class="w-full rounded-lg border-gray-200 text-sm font-bold p-2.5 bg-gray-50" required>
+                                <input type="text" name="source_name" value="{{ old('source_name', $source->source_name) }}" class="w-full rounded-lg border-gray-200 text-sm font-bold p-2.5 bg-gray-50" required placeholder="Örn: PubMed">
                             </div>
 
                             <div>
@@ -34,6 +34,21 @@
                                     <option value="web_ingest" {{ $source->source_mode == 'web_ingest' ? 'selected' : '' }}>Web Ingest (Scraping/Feed)</option>
                                     <option value="manual" {{ $source->source_mode == 'manual' ? 'selected' : '' }}>Manual Entry</option>
                                 </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Logo URL (PNG/SVG Tavsiye Edilir)</label>
+                                <input type="url" name="logo_url" value="{{ old('logo_url', $source->logo_url) }}" class="w-full rounded-lg border-gray-200 text-sm p-2.5 bg-gray-50" placeholder="https://logo.png">
+                                @if($source->logo_url)
+                                    <div class="mt-2 p-2 bg-gray-50 rounded-lg border inline-block">
+                                        <img src="{{ $source->logo_url }}" class="h-8 object-contain" alt="Logo Preview">
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Resmi Web Sitesi (Tıklanınca Gidilecek Adres)</label>
+                                <input type="url" name="official_url" value="{{ old('official_url', $source->official_url) }}" class="w-full rounded-lg border-gray-200 text-sm p-2.5 bg-gray-50" placeholder="https://www.example.com">
                             </div>
                         </div>
 

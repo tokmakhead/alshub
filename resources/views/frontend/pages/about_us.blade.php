@@ -148,13 +148,18 @@
                 <h4 class="text-2xl font-black text-gray-900">Bilgiye Güven Veren Paydaşlarımız</h4>
             </div>
 
-            <div class="flex flex-wrap justify-center items-center gap-12 opacity-40 hover:opacity-100 transition-opacity">
-                <span class="text-2xl font-black text-gray-400 font-serif">Mayo Clinic</span>
-                <span class="text-2xl font-black text-gray-400 font-serif">ALS Assoc.</span>
-                <span class="text-2xl font-black text-gray-400 font-sans">FDA</span>
-                <span class="text-2xl font-black text-gray-400 font-sans tracking-widest italic">EMA</span>
-                <span class="text-2xl font-black text-gray-400 font-mono italic">PubMed</span>
-                <span class="text-2xl font-black text-gray-400 font-serif">NIH</span>
+            <div class="flex flex-wrap justify-center items-center gap-x-16 gap-y-10">
+                @foreach($trustedSources as $source)
+                    @if($source->logo_url)
+                        <a href="{{ $source->official_url ?? '#' }}" target="_blank" class="block grayscale opacity-40 hover:opacity-100 hover:grayscale-0 transition-all duration-300">
+                            <img src="{{ $source->logo_url }}" class="h-10 md:h-12 w-auto object-contain" alt="{{ $source->source_name }} Logo">
+                        </a>
+                    @else
+                        <a href="{{ $source->official_url ?? '#' }}" target="_blank" class="text-xl font-black text-gray-300 hover:text-gray-900 transition-colors uppercase tracking-widest font-sans opacity-60 hover:opacity-100">
+                            {{ $source->source_name }}
+                        </a>
+                    @endif
+                @endforeach
             </div>
         </div>
     </div>

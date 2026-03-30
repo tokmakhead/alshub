@@ -51,11 +51,21 @@
                                     <option value="manual">Manual Entry</option>
                                 </select>
                             </div>
-                        </div>
 
-                        <div id="other_name_div" class="hidden">
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Özel Kaynak İsmi</label>
-                            <input type="text" id="other_name" class="w-full rounded-lg border-gray-200 text-sm p-2.5" placeholder="Kaynağın adını yazın...">
+                            <div id="other_name_div" class="hidden">
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Özel Kaynak İsmi</label>
+                                <input type="text" id="other_name" class="w-full rounded-lg border-gray-200 text-sm p-2.5 bg-gray-50" placeholder="Kaynağın adını yazın...">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Logo URL (PNG/SVG Tavsiye Edilir)</label>
+                                <input type="url" name="logo_url" class="w-full rounded-lg border-gray-200 text-sm p-2.5 bg-gray-50" placeholder="https://logo.png">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Resmi Web Sitesi (Tıklanınca Gidilecek Adres)</label>
+                                <input type="url" name="official_url" class="w-full rounded-lg border-gray-200 text-sm p-2.5 bg-gray-50" placeholder="https://www.example.com">
+                            </div>
                         </div>
 
                         <div>

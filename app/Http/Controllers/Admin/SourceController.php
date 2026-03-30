@@ -25,6 +25,8 @@ class SourceController extends Controller
     {
         $validated = $request->validate([
             'source_name' => 'required|string|max:255',
+            'logo_url' => 'nullable|url|max:2048',
+            'official_url' => 'nullable|url|max:2048',
             'source_mode' => 'required|in:api,web_ingest,manual',
             'notes' => 'nullable|string',
         ]);
@@ -42,6 +44,8 @@ class SourceController extends Controller
     {
         $validated = $request->validate([
             'source_name' => 'required|string|max:255',
+            'logo_url' => 'nullable|url|max:2048',
+            'official_url' => 'nullable|url|max:2048',
             'source_mode' => 'required|in:api,web_ingest,manual',
             'is_enabled' => 'boolean',
             'notes' => 'nullable|string',

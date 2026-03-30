@@ -73,7 +73,12 @@ class HomeController extends Controller
             'drugs' => \App\Models\Drug::count(),
             'guidelines' => \App\Models\Guideline::count(),
         ];
-        return view('frontend.pages.about_us', compact('stats'));
+        
+        $trustedSources = \App\Models\SourceRegistry::where('is_enabled', true)
+            ->orderBy('verification_tier', 'desc')
+            ->get();
+
+        return view('frontend.pages.about_us', compact('stats', 'trustedSources'));
     }
 
     public function contact()

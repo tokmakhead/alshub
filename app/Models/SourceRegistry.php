@@ -13,6 +13,8 @@ class SourceRegistry extends Model
 
     protected $fillable = [
         'source_name',
+        'logo_url',
+        'official_url',
         'source_mode',
         'verification_tier',
         'is_enabled',

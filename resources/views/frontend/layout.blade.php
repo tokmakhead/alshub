@@ -22,7 +22,7 @@
                 <!-- Left: Logo -->
                 <div class="flex justify-start items-center shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="ALSHub Logo">
+                        <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto py-1" alt="ALSHub Logo">
                     </a>
                 </div>
                 
@@ -73,7 +73,7 @@
         <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
-                    <img src="{{ asset('images/logo.png') }}" class="h-8 w-auto mb-4" alt="ALSHub Logo">
+                    <img src="{{ asset('images/logo.png') }}" class="h-14 w-auto mb-4" alt="ALSHub Logo">
                     <p class="text-gray-500 text-sm max-w-sm leading-relaxed">
                         ALS hastalığı ile ilgili güvenilir ve güncel bilgileri, Türkçe olarak sunan kar amacı gütmeyen bir bilgilendirme platformudur.
                     </p>

@@ -87,6 +87,7 @@ Route::get('/fix-sources-tmp', function() {
 
 Route::get('/hakkimizda', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/iletisim', [HomeController::class, 'contact'])->name('contact');
+Route::post('/iletisim', [HomeController::class, 'storeContact'])->name('contact.store');
 Route::get('/politika', [HomeController::class, 'policy'])->name('policy');
 
 // Auth Routes (Breeze)
@@ -121,6 +122,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('trials/{trial}/ai-summary', [ClinicalTrialController::class, 'generateAiSummary'])->name('trials.ai-summary');
     Route::get('/cleanup-drugs', [DrugController::class, 'cleanupTitles'])->name('drugs.cleanup');
     Route::resource('drugs', DrugController::class);
+    Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
+    Route::patch('messages/{message}/archive', [MessageController::class, 'archive'])->name('messages.archive');
 
     // Archive / Legacy
     Route::get('legacy', [AdminContentController::class, 'index'])->name('contents.index');

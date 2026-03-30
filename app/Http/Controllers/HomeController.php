@@ -82,9 +82,44 @@ class HomeController extends Controller
         return view('frontend.pages.about_us', compact('stats', 'trustedSources'));
     }
 
-    public function contact()
+    public function storeContact(Request $request)
     {
-        return view('frontend.pages.contact');
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:100',
+            'phone' => 'nullable|string|max:20',
+            'subject' => 'required|string|max:50',
+            'message' => 'required|string|min:10',
+        ]);
+
+        try {
+            // 1. Save to Database
+            $contact = \App\Models\ContactMessage::create(array_merge($validated, [
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+            ]));
+
+            // 2. Trigger Telegram Notification
+            $telegramMsg = "<b>📩 Yeni Mesaj (ALSHub)</b>\n\n"
+                        . "<b>Kişi:</b> {$contact->name}\n"
+                        . "<b>E-posta:</b> {$contact->email}\n"
+                        . "<b>Konu:</b> {$contact->subject}\n"
+                        . "<b>Tarih:</b> " . now()->format('d.m.Y H:i') . "\n\n"
+                        . "<b>Mesaj:</b>\n" . $contact->message;
+
+            \App\Services\TelegramService::sendMessage($telegramMsg);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Mesajınız başarıyla iletildi. En kısa sürede dönüş yapacağız.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.'
+            ], 500);
+        }
     }
 
     public function policy()

@@ -75,6 +75,7 @@ class HomeController extends Controller
         ];
         
         $trustedSources = \App\Models\SourceRegistry::where('is_enabled', true)
+            ->where('source_name', 'not like', '%NY%')
             ->orderBy('verification_tier', 'desc')
             ->get();
 

@@ -18,44 +18,43 @@
     <!-- Floating Header -->
     <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50">
         <nav class="bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_20px_50px_rgba(15,76,129,0.05)] rounded-[2.5rem] px-8">
-            <div class="grid grid-cols-3 items-center h-20">
+            <div class="flex justify-between items-center h-20">
                 <!-- Left: Logo -->
-                <div class="flex justify-start items-center">
+                <div class="flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center">
                         <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="ALSHub Logo">
                     </a>
                 </div>
                 
                 <!-- Center: Navigation Menu -->
-                <div class="hidden lg:flex justify-center items-center">
-                    <div class="flex items-center space-x-1 whitespace-nowrap">
-                        <a href="{{ route('about.als') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">ALS Nedir?</a>
+                <div class="hidden lg:flex items-center mx-4 overflow-hidden">
+                    <div class="flex items-center space-x-1">
+                        <a href="{{ route('about.als') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">ALS Nedir?</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('publications') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Araştırmalar</a>
+                        <a href="{{ route('publications') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">Araştırmalar</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('trials') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Klinik Çalışmalar</a>
+                        <a href="{{ route('trials') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">Klinik Çalışmalar</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('drugs') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">İlaçlar</a>
+                        <a href="{{ route('drugs') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">İlaçlar</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('news') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Haberler</a>
+                        <a href="{{ route('news') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">Haberler</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('guidelines') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Klinik Rehberler</a>
+                        <a href="{{ route('guidelines') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">Klinik Rehberler</a>
                         <div class="h-3 w-px bg-gray-100/60"></div>
                         
-                        <a href="{{ route('experts.index') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Uzmanlar & Merkezler</a>
+                        <a href="{{ route('experts.index') }}" class="text-gray-500 hover:text-primary px-2.5 py-2 text-[13px] font-bold transition rounded-xl hover:bg-blue-50/50 whitespace-nowrap">Uzmanlar & Merkezler</a>
                     </div>
                 </div>
 
                 <!-- Right: Action Button -->
-                <div class="flex justify-end items-center">
-                    <a href="{{ route('first.steps') }}" class="hidden lg:flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95 group">
-                        <span>Yeni Tanı Alanlar</span>
-                        <span class="group-hover:rotate-12 transition-transform">✨</span>
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <a href="{{ route('first.steps') }}" class="hidden lg:flex items-center px-4 py-2 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10 active:scale-95">
+                        Yeni Tanı Alanlar
                     </a>
                     
                     <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">

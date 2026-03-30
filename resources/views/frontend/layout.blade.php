@@ -53,9 +53,8 @@
 
                 <!-- Right: Action Button -->
                 <div class="flex justify-end items-center">
-                    <a href="{{ route('first.steps') }}" class="hidden lg:flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-black rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95 group">
-                        <span>Yeni Tanı Alanlar</span>
-                        <span class="group-hover:rotate-12 transition-transform">✨</span>
+                    <a href="{{ route('first.steps') }}" class="hidden lg:flex items-center gap-2 px-6 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-2xl hover:bg-slate-900 transition-all shadow-lg shadow-slate-900/10 active:scale-95">
+                        <span>Tanı Sonrası Bilgilendirme</span>
                     </a>
                     
                     <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">

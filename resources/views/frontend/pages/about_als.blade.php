@@ -1,41 +1,242 @@
 @extends('frontend.layout')
 
-@section('title', 'ALS Nedir? - ALSHub')
+@section('title', 'ALS Nedir? Kapsamlı Rehber - ALSHub')
 
 @section('content')
-    <article class="max-w-4xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-10 tracking-tight">ALS Nedir?</h1>
-        
-        <div class="prose prose-blue max-w-none text-gray-600 leading-relaxed space-y-8">
-            <p class="text-lg leading-relaxed">
-                Amyotrofik Lateral Skleroz (ALS), motor nöronların kaybı ile karakterize, ilerleyici ve hayatı tehdit eden nörodejeneratif bir hastalıktır. Motor nöronlar, beynimizden kaslarımıza giden sinyalleri taşıyarak hareket etmemizi sağlayan sinir hücreleridir.
-            </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div class="flex flex-col lg:flex-row gap-12">
+            
+            <!-- Side Navigation (Sticky) -->
+            <aside class="lg:w-1/4">
+                <div class="sticky top-32 space-y-2">
+                    <h5 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-3">İçindekiler</h5>
+                    <a href="#tanim" class="block px-4 py-2 text-sm font-medium text-primary bg-blue-50 rounded-xl transition">1. ALS Nedir?</a>
+                    <a href="#belirtiler" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">2. Belirtiler ve Süreç</a>
+                    <a href="#nedenler" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">3. Nedenler ve Riskler</a>
+                    <a href="#turler" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">4. ALS Türleri</a>
+                    <a href="#tani" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">5. Tanı Süreci</a>
+                    <a href="#tedavi" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">6. Tedavi ve Yönetim</a>
+                    <a href="#yasam" class="block px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition">7. Yaşam Kalitesi</a>
+                </div>
+            </aside>
 
-            <div class="bg-blue-50 p-8 rounded-3xl border border-blue-100 italic">
-                <h3 class="text-blue-900 font-bold mb-4">Temel Gerçekler</h3>
-                <ul class="list-disc pl-5 space-y-2 text-blue-900/80">
-                    <li>ALS, genellikle 40-70 yaşları arasında ortaya çıkar.</li>
-                    <li>Erkeklerde kadınlara oranla biraz daha yaygındır.</li>
-                    <li>Vakaların %90-95'i "sporadik" (nedeni bilinmeyen), %5-10'u ise "ailesel" (genetik) kaynaklıdır.</li>
-                </ul>
-            </div>
+            <!-- Main Content Area -->
+            <main class="lg:w-3/4">
+                <article class="prose prose-blue max-w-none">
+                    
+                    <!-- Section: Tanım -->
+                    <section id="tanim" class="scroll-mt-32 mb-16">
+                        <h1 class="text-4xl font-black text-gray-900 mb-8 tracking-tight">ALS (Amyotrofik Lateral Skleroz) Nedir?</h1>
+                        <p class="text-xl text-gray-600 leading-relaxed font-medium">
+                            ALS, beyin ve omurilikteki motor nöronların kaybına yol açan, ilerleyici ve fatal bir nörodejeneratif hastalıktır. 
+                            Dünyada genellikle Amerikalı beyzbolcu Lou Gehrig'in adıyla (Lou Gehrig Hastalığı) bilinir. 
+                        </p>
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 rounded-[2rem] text-white my-10 shadow-xl shadow-blue-900/10">
+                            <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                                <svg class="w-6 h-6 outline-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Temel Mekanizma
+                            </h3>
+                            <p class="text-blue-50 leading-relaxed opacity-90">
+                                Motor nöronlar, beyninizden kaslarınıza giden elektrik sinyallerini taşıyan "iletişim hatlarıdır". ALS hastalarında bu hücreler ölür ve kaslara sinyal gitmez olur. Sinyal alamayan kaslar kullanılamaz hale gelir, zamanla erir (atrofi) ve durur.
+                            </p>
+                        </div>
+                    </section>
 
-            <h2 class="text-2xl font-bold text-gray-900">Belirtiler ve Süreç</h2>
-            <p>
-                ALS'nin ilk belirtileri genellikle kaslarda zayıflık, seğirmeler veya konuşma bozukluğu şeklinde başlar. Hastalık ilerledikçe yürüme, konuşma, yutkunma ve nefes alma gibi temel fonksiyonlar etkilenir. Ancak zihinsel yetenekler ve duyu organları (görme, işitme, tat alma) genellikle korunur.
-            </p>
+                    <!-- Section: Belirtiler -->
+                    <section id="belirtiler" class="scroll-mt-32 mb-16 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Belirtiler ve Hastalığın Seyri</h2>
+                        <p class="mb-10 text-gray-500">ALS belirtileri kişiden kişiye farklılık gösterse de, genellikle kas zayıflığı ile başlar ve zamanla tüm vücuda yayılır.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                            <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                                <h4 class="font-bold text-gray-900 mb-2">Erken Dönem İşaretleri</h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Kaslarda seğirme (fasikülasyon)</li>
+                                    <li>• Kas krampları ve sertliği</li>
+                                    <li>• El becerilerinde azalma (düğme ilikleme vb.)</li>
+                                    <li>• Sıklıkla takılma veya düşme</li>
+                                    <li>• Peltek veya yavaş konuşma</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                                <h4 class="font-bold text-gray-900 mb-2">İlerleyici Belirtiler</h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• Çiğneme ve yutma güçlüğü (Disfaji)</li>
+                                    <li>• Nefes darlığı ve solunum kaslarının kaybı</li>
+                                    <li>• Kas kütlesinde belirgin azalma (Atrofi)</li>
+                                    <li>• Aşırı salya üretiminde zorlanma</li>
+                                    <li>• Refleks değişiklikleri</li>
+                                </ul>
+                            </div>
+                        </div>
 
-            <h2 class="text-2xl font-bold text-gray-900">Güncel Durum ve Araştırmalar</h2>
-            <p>
-                Henüz ALS için kesin bir tedavi bulunmamasına rağmen, semptomların yönetimi ve yaşam kalitesinin artırılması konusunda önemli bilimsel ilerlemeler kaydedilmektedir. Dünyanın dört bir yanındaki araştırmacılar, hastalığın nedenlerini anlamak ve yeni tedavi yöntemleri geliştirmek için yoğun bir çalışma yürütmektedir.
-            </p>
+                        <div class="bg-amber-50 border border-amber-200 p-8 rounded-3xl mb-10">
+                            <h4 class="text-amber-900 font-bold mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                Genellikle Etkilenmeyen Fonksiyonlar
+                            </h4>
+                            <p class="text-amber-800 text-sm leading-relaxed mb-0">
+                                ALS genellikle beş duyuyu (görme, duyma, tat alma, koklama, dokunma) etkilemez. Ayrıca mesane ve bağırsak kontrolü ile göz kasları genellikle hastalığın son evrelerine kadar korunur. Hastaların zihinsel kapasiteleri genellikle etkilenmez, ancak bazı vakalarda frontal-temporal demans görülebilir.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Section: Nedenler -->
+                    <section id="nedenler" class="scroll-mt-32 mb-16 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Nedenler ve Risk Faktörleri</h2>
+                        <p class="mb-8">ALS vakalarının yaklaşık %90'ı "sporadik" yani nedeni bilinmeyen vakalardır. Araştırmalar şu faktörlere yoğunlaşmaktadır:</p>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="bg-blue-100 text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">1</div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Glutamat Dengesizliği</h4>
+                                    <p class="text-sm text-gray-600">Hücreler arasında sinyal taşıyan kimyasal bir madde olan glutamatın fazlalığı sinir hücreleri için toksik olabilir.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="bg-blue-100 text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">2</div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Bağışıklık Sistemi Yanıtları</h4>
+                                    <p class="text-sm text-gray-600">Vücudun kendi bağışıklık sisteminin motor nöronlara saldırması (otoimmün tepki) araştırılmaktadır.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="bg-blue-100 text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">3</div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Çevresel Faktörler</h4>
+                                    <p class="text-sm text-gray-600">Belirli kimyasallara maruz kalma, kurşun ve ağır metaller gibi faktörlerin risk teşkil edebileceğine dair kanıtlar bulunmaktadır.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: Türler -->
+                    <section id="turler" class="scroll-mt-32 mb-16 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">ALS Türleri</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-4">Sporadik ALS</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">
+                                    En yaygın türdür (%90-95). Ailede hastalık öyküsü yoktur. Dünyanın her yerinde, her yaştan kitleyi etkileyebilir ancak genellikle 40-70 yaşları arasında görülür.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-4">Ailesel (Genetik) ALS</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">
+                                    Vakaların %5-10'unu oluşturur. Genetik bir mutasyondan kaynaklanır. Anne veya babasında ALS geni bulunan birinin bu geni alma (veya taşınma) olasılığı %50'dir. **SOD1**, **C9orf72** en bilinen mutasyon genleridir.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: Tanı -->
+                    <section id="tani" class="scroll-mt-32 mb-16 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Tanı Süreci</h2>
+                        <p class="mb-8">ALS tanısı bir "dışlama" (exclusion) tanısıdır. Çünkü belirtileri MS, Lyme hastalığı veya boyun fıtığı ile benzerlik gösterebilir. Tek bir test sonucuyla tanı konulamaz.</p>
+                        <div class="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100">
+                            <h4 class="font-bold text-gray-900 mb-6">Kullanılan Temel Tetkikler:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <div class="text-primary font-black text-xl mb-1 italic">EMG</div>
+                                    <p class="text-xs text-gray-500">Kasların elektriksel aktivitesini ölçer. ALS tanısında en kritik testtir.</p>
+                                </div>
+                                <div>
+                                    <div class="text-primary font-black text-xl mb-1 italic">MRI</div>
+                                    <p class="text-xs text-gray-500">Beyin ve omurilik görüntülenerek benzer belirtileri verebilecek tümör veya fıtıklar elenir.</p>
+                                </div>
+                                <div>
+                                    <div class="text-primary font-black text-xl mb-1 italic">Lomber Ponksiyon</div>
+                                    <p class="text-xs text-gray-500">Omurilik sıvısı (BOS) analizi yapılarak inflamatuar hastalıklar elenir.</p>
+                                </div>
+                                <div>
+                                    <div class="text-primary font-black text-xl mb-1 italic">Kan & İdrar Testleri</div>
+                                    <p class="text-xs text-gray-500">Vitamin eksiklikleri veya ağır metal zehirlenmeleri kontrol edilir.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: Tedavi -->
+                    <section id="tedavi" class="scroll-mt-32 mb-16 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Tedavi ve Yönetim</h2>
+                        <p class="mb-10 leading-relaxed">Şu an için ALS'nin kesin bir tedavisi (kür) bulunmamaktadır. Ancak, modern tıp hastalığın hızını yavaşlatmak ve yaşam süresini uzatmak için önemli araçlara sahiptir.</p>
+                        
+                        <div class="space-y-12">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 border-l-4 border-primary pl-4">İlaç Tedavileri</h4>
+                                <ul class="list-disc pl-5 space-y-4 text-gray-600">
+                                    <li><strong>Riluzol (Rilutek):</strong> Glutamat seviyelerini düşürerek sinir hücrelerini korumaya yardımcı olur. Yaşam süresini birkaç ay uzattığı kanıtlanmıştır.</li>
+                                    <li><strong>Edaravone (Radicava):</strong> Oksidatif stresi azaltarak günlük fonksiyon kaybını yavaşlatır.</li>
+                                    <li><strong>Tofersen (Qalsody):</strong> Yalnızca SOD1 gen mutasyonu olan hastalar için geliştirilmiş yeni bir genetik tedavidir.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-indigo-50 p-8 rounded-3xl">
+                                <h4 class="text-indigo-900 font-bold mb-4">Multidisipliner Bakım</h4>
+                                <p class="text-indigo-800/80 text-sm mb-0">ALS hastaları için en etkili yaklaşım; nörolog, fizik tedavi uzmanı, konuşma terapisti, beslenme uzmanı ve psikologdan oluşan geniş bir ekibin takibidir. Bu klinikler, hastaların yaşam kalitesini standart bakıma göre %30-40 daha fazla artırmaktadır.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: Yaşam Kalitesi -->
+                    <section id="yasam" class="scroll-mt-32 mb-20 border-t border-gray-100 pt-16">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8">Yaşam Kalitesini Artıran Destekler</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                                <span class="bg-blue-50 text-primary p-3 rounded-2xl block mb-4 w-fit">🌬️ Solunum</span>
+                                <p class="text-xs text-gray-500 leading-relaxed">Gece kullanılan küçük maskeler (BiPAP) uyku kalitesini ve enerjiyi artırır.</p>
+                            </div>
+                            <div class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                                <span class="bg-blue-50 text-primary p-3 rounded-2xl block mb-4 w-fit">🍲 Beslenme</span>
+                                <p class="text-xs text-gray-500 leading-relaxed">Yutma güçleştiğinde, mideden besleme (PEG) yoluyla kilo kaybı ve enfeksiyon önlenebilir.</p>
+                            </div>
+                            <div class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                                <span class="bg-blue-50 text-primary p-3 rounded-2xl block mb-4 w-fit">🗣️ İletişim</span>
+                                <p class="text-xs text-gray-500 leading-relaxed">Konuşma zorlaştığında, göz takip cihazları (Eye-tracking) hastaların dünyayla bağını korur.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Disclaimer -->
+                    <footer class="mt-20 pt-10 border-t border-gray-200">
+                        <div class="flex items-center gap-4 bg-gray-50 p-6 rounded-2xl">
+                            <svg class="w-10 h-10 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <p class="text-xs text-gray-400 italic mb-0">
+                                Kaynaklar: ALS Association (USA), Mayo Clinic, NIH (National Institutes of Health). 
+                                <strong>Yasal Uyarı:</strong> Bu sayfadaki bilgiler genel bilgilendirme içindir. Tanı ve tedavi için mutlaka uzman bir hekime başvurunuz. AI tarafından derlenmiştir.
+                            </p>
+                        </div>
+                    </footer>
+
+                </article>
+            </main>
         </div>
+    </div>
 
-        <div class="mt-20 p-8 bg-gray-50 rounded-3xl border border-gray-200">
-            <h3 class="text-xl font-bold text-gray-900 mb-4 italic">Önemli Hatırlatma</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">
-                Bu sayfadaki bilgiler yalnızca genel bilgilendirme amaçlıdır. Bir tanı konulması veya tedavi süreci için mutlaka nöroloji uzmanına başvurunuz.
-            </p>
-        </div>
-    </article>
+    <!-- Active Section Highlighter Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('aside a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-blue-50', 'text-primary');
+                    link.classList.add('text-gray-500');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('bg-blue-50', 'text-primary');
+                        link.classList.remove('text-gray-500');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

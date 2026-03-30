@@ -60,6 +60,15 @@ class ContentController extends Controller
         return view('frontend.content.index', compact('contents', 'title'));
     }
 
+    public function news()
+    {
+        $contents = Content::where('status', 'published')
+            ->orderByRaw("COALESCE(source_published_at, published_at, created_at) DESC")
+            ->paginate(12);
+        $title = "Haberler ve Güncel Gelişmeler";
+        return view('frontend.content.index', compact('contents', 'title'));
+    }
+
     public function guidelines()
     {
         $contents = Guideline::where('status', 'published')

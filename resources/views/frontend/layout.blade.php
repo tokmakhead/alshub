@@ -39,6 +39,9 @@
                             
                             <a href="{{ route('drugs') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">İlaçlar</a>
                             <div class="h-4 w-px bg-gray-100 mx-1"></div>
+
+                            <a href="{{ route('news') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Haberler</a>
+                            <div class="h-4 w-px bg-gray-100 mx-1"></div>
                             
                             <a href="{{ route('guidelines') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Klinik Rehberler</a>
                             <div class="h-4 w-px bg-gray-100 mx-1"></div>
@@ -49,9 +52,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <a href="mailto:info@alshub.app" class="hidden lg:flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-xs font-black hover:bg-blue-900 transition shadow-lg shadow-blue-900/10">
-                        Bize Ulaşın
-                    </a>
+                    {{-- Bize Ulaşın Kaldırıldı --}}
                     
                     <!-- Mobile Menu Button -->
                     <button class="md:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">

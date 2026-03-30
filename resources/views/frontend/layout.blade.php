@@ -22,7 +22,7 @@
                 <!-- Left: Logo -->
                 <div class="shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center">
-                        <img src="{{ asset('images/logo.png') }}" class="h-13 w-auto py-1.5" alt="ALSHub Logo">
+                        <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="ALSHub Logo">
                     </a>
                 </div>
                 

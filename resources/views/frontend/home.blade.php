@@ -15,7 +15,7 @@
         </div>
         <div class="absolute inset-0 bg-gradient-to-br from-blue-200/40 via-transparent to-purple-200/30"></div>
         
-        <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 relative text-center">
+        <div class="max-w-7xl mx-auto px-4 pt-48 pb-24 sm:px-6 lg:px-8 relative text-center">
             <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
                 ALS Hakkında Bilgiye <br/>
                 <span class="text-primary bg-blue-50 px-4 rounded-2xl">Güvenilir</span> Erişim

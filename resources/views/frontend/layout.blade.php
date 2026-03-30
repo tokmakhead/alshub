@@ -63,7 +63,7 @@
     </header>
 
     <!-- Content -->
-    <main class="flex-grow pt-32 md:pt-40">
+    <main class="flex-grow">
         @yield('content')
     </main>
 

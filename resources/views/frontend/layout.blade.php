@@ -18,46 +18,43 @@
     <!-- Floating Header -->
     <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50">
         <nav class="bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_20px_50px_rgba(15,76,129,0.05)] rounded-[2.5rem] px-8">
-            <div class="grid grid-cols-3 items-center h-20">
+            <div class="flex justify-between items-center h-20">
                 <!-- Left: Logo -->
-                <div class="flex justify-start items-center shrink-0">
-                    <a href="{{ route('home') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto py-1" alt="ALSHub Logo">
+                <div class="shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.png') }}" class="h-13 w-auto py-1.5" alt="ALSHub Logo">
                     </a>
                 </div>
                 
-                <!-- Center: Desktop Menu (Grid Center) -->
-                <div class="hidden md:flex justify-center items-center">
-                    <div class="flex items-center space-x-1 whitespace-nowrap">
+                <!-- Right: Desktop Menu & Mobile Trigger -->
+                <div class="flex items-center gap-8">
+                    <!-- Desktop Menu -->
+                    <div class="hidden lg:flex items-center space-x-1 whitespace-nowrap">
                         <a href="{{ route('about.als') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">ALS Nedir?</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('publications') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Araştırmalar</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('trials') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Klinik Çalışmalar</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('drugs') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">İlaçlar</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('news') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Haberler</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('guidelines') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Klinik Rehberler</a>
-                        <div class="h-4 w-px bg-gray-100 mx-1"></div>
+                        <div class="h-3 w-px bg-gray-100/60"></div>
                         
                         <a href="{{ route('experts.index') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">Uzmanlar & Merkezler</a>
                     </div>
-                </div>
 
-                <!-- Right: Mobile Menu / Balance -->
-                <div class="flex justify-end items-center">
-                    <button class="md:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">
+                    <!-- Mobile Trigger -->
+                    <button class="lg:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <!-- PC'de dengeleyici boş div -->
-                    <div class="hidden md:block w-8"></div>
                 </div>
             </div>
         </nav>

@@ -197,14 +197,30 @@
                         </div>
                     </section>
 
-                    <!-- Disclaimer -->
+                    <!-- Sources & Disclaimer -->
                     <footer class="mt-20 pt-10 border-t border-gray-200">
-                        <div class="flex items-center gap-4 bg-gray-50 p-6 rounded-2xl">
-                            <svg class="w-10 h-10 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                            <p class="text-xs text-gray-400 italic mb-0">
-                                Kaynaklar: ALS Association (USA), Mayo Clinic, NIH (National Institutes of Health). 
-                                <strong>Yasal Uyarı:</strong> Bu sayfadaki bilgiler genel bilgilendirme içindir. Tanı ve tedavi için mutlaka uzman bir hekime başvurunuz. AI tarafından derlenmiştir.
-                            </p>
+                        <div class="space-y-6">
+                            <!-- Kaynaklar -->
+                            <div class="flex items-start gap-4 bg-blue-50/50 p-6 rounded-3xl">
+                                <span class="text-2xl mt-1">📚</span>
+                                <div>
+                                    <h5 class="text-sm font-bold text-gray-900 mb-1">Kaynaklar</h5>
+                                    <p class="text-xs text-gray-500 leading-relaxed mb-0">
+                                        ALS Association (USA), Mayo Clinic, NIH (National Institutes of Health), ALS-MNH Derneği (Türkiye).
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Yasal Uyarı -->
+                            <div class="flex items-start gap-4 bg-gray-50 p-6 rounded-3xl">
+                                <span class="text-2xl mt-1">⚖️</span>
+                                <div>
+                                    <h5 class="text-sm font-bold text-gray-900 mb-1">Yasal Uyarı</h5>
+                                    <p class="text-xs text-gray-500 italic leading-relaxed mb-0">
+                                        Bu sayfada yer alan bilgiler yalnızca genel bilgilendirme amaçlıdır ve bir tıp uzmanının görüşü yerine geçmez. Tanı, teşhis ve tedavi süreçleriniz için mutlaka alanında uzman bir nöroloji hekimine başvurunuz.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </footer>
 

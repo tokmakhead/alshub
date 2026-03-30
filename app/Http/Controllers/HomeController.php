@@ -67,7 +67,13 @@ class HomeController extends Controller
 
     public function aboutUs()
     {
-        return view('frontend.pages.about_us');
+        $stats = [
+            'research' => \App\Models\ResearchArticle::count(),
+            'trials' => \App\Models\ClinicalTrial::count(),
+            'drugs' => \App\Models\Drug::count(),
+            'guidelines' => \App\Models\Guideline::count(),
+        ];
+        return view('frontend.pages.about_us', compact('stats'));
     }
 
     public function contact()

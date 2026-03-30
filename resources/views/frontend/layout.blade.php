@@ -18,17 +18,17 @@
     <!-- Floating Header -->
     <header class="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50">
         <nav class="bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_20px_50px_rgba(15,76,129,0.05)] rounded-[2.5rem] px-8">
-            <div class="flex justify-between items-center h-20 relative">
+            <div class="grid grid-cols-3 items-center h-20">
                 <!-- Left: Logo -->
-                <div class="flex items-center shrink-0">
+                <div class="flex justify-start items-center shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center gap-2">
                         <span class="text-2xl font-black text-primary tracking-tight italic">ALS<span class="text-gray-300 font-light not-italic">Hub</span></span>
                     </a>
                 </div>
                 
-                <!-- Center: Desktop Menu (Absolutely Centered) -->
-                <div class="hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center">
-                    <div class="flex items-center space-x-1">
+                <!-- Center: Desktop Menu (Grid Center) -->
+                <div class="hidden md:flex justify-center items-center">
+                    <div class="flex items-center space-x-1 whitespace-nowrap">
                         <a href="{{ route('about.als') }}" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-bold transition rounded-xl hover:bg-blue-50/50">ALS Nedir?</a>
                         <div class="h-4 w-px bg-gray-100 mx-1"></div>
                         
@@ -51,13 +51,13 @@
                     </div>
                 </div>
 
-                <!-- Right: Mobile Menu / Spacer -->
-                <div class="flex items-center">
+                <!-- Right: Mobile Menu / Balance -->
+                <div class="flex justify-end items-center">
                     <button class="md:hidden p-2 text-gray-500 hover:bg-gray-50 rounded-xl">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
-                    <!-- PC'de denge için boş div -->
-                    <div class="hidden md:block w-32"></div>
+                    <!-- PC'de dengeleyici boş div -->
+                    <div class="hidden md:block w-8"></div>
                 </div>
             </div>
         </nav>

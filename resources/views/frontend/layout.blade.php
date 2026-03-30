@@ -64,7 +64,7 @@
     </header>
 
     <!-- Content -->
-    <main class="flex-grow {{ request()->routeIs('home') ? '' : 'pt-36 md:pt-48' }}">
+    <main class="flex-grow {{ request()->routeIs('home') ? '' : 'pt-20 md:pt-28' }}">
         @yield('content')
     </main>
 
